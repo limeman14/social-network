@@ -1,24 +1,32 @@
 package com.skillbox.socialnetwork.main.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "post_file")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "post_files")
 public class PostFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
+    @NonNull
+    @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(nullable = false)
+    @NonNull
     private String name;
 
-    @Column(nullable = false)
+    @NonNull
+    @Type(type = "text")
     private String path;
 }

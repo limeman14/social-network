@@ -1,26 +1,34 @@
 package com.skillbox.socialnetwork.main.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "friendship")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "friendships")
 public class Friendship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NonNull
     @JoinColumn(name = "status_id", nullable = false)
     private FriendshipStatus friendshipStatus;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NonNull
     @JoinColumn(name = "src_person_id", nullable = false)
     private Person srcPerson;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "dst_person_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NonNull
+    @JoinColumn(name = "dst_person_id")
     private Person dstPerson;
 }

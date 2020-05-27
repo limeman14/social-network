@@ -1,38 +1,53 @@
 package com.skillbox.socialnetwork.main.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
-@Table(name = "post_comment")
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "post_comments")
 public class PostComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     //@TODO: При сериализации возвращать long
-    private final LocalDateTime time = LocalDateTime.now();
+    private LocalDateTime time;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
+    @NonNull
+    @JoinColumn(name = "post_id")
     private Post post;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //может быть null, так как нет родительского коммента
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private PostComment parentComment;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NonNull
+    @JoinColumn(name = "author_id")
     private Person author;
 
-    @Column(name = "comment_text", nullable = false)
+    @Type(type = "text")
+    @Column(name = "comment_text")
     private String comment;
 
-    //@TODO: Посмотреть, в каком виде Api возвращает это значение
-    @Column(name = "is_blocked", nullable = false)
-    private Boolean isBlocked;
+    @NonNull
+    @Column(name = "is_blocked")
+    private Boolean blocked;
+
+    @OneToMany(mappedBy = "comment")
+    private List<BlockHistory> blockHistories;
+
+    @OneToMany(mappedBy = "parentComment") //Список комментов к этому комменту
+    private List<PostComment> childrenComments;
 }

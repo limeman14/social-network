@@ -1,27 +1,34 @@
 package com.skillbox.socialnetwork.main.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "post_like")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "post_likes")
 public class PostLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     //@TODO: При сериализации возвращать long
-    @Column(nullable = false)
+    @NonNull
     private LocalDateTime time;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NonNull
+    @JoinColumn(name = "person_id")
     private Person person;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
+    @NonNull
+    @JoinColumn(name = "post_id")
     private Post post;
 }

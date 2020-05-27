@@ -1,34 +1,56 @@
 package com.skillbox.socialnetwork.main.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
-@Table(name = "post")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "posts")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     //@TODO: При сериализации возвращать long
-    @Column(nullable = false)
+    @NonNull
     private LocalDateTime time;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NonNull
+    @JoinColumn(name = "author_id")
     private Person author;
 
-    @Column(nullable = false)
+    @NonNull
     private String title;
 
-    //@TODO: У HTML-текста тип String?
-    @Column(name = "post_text", nullable = false)
+    @NonNull
+    @Type(type = "text")
     private String postText;
 
-    //@TODO: Посмотреть, в каком виде Api возвращает это значение
     @Column(name = "is_blocked")
-    private Boolean isBlocked = false;
+    private Boolean blocked;
+
+    @OneToMany(mappedBy = "post")
+    private List<BlockHistory> blockHistories;
+
+    @OneToMany(mappedBy = "post")
+    private List<Post2tag> post2tagList;
+
+    @OneToMany(mappedBy = "post")
+    private List<PostLike> likes;
+
+    @OneToMany(mappedBy = "post")
+    private List<PostFile> files;
+
+    @OneToMany(mappedBy = "post")
+    private List<PostComment> comments;
 }
