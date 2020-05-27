@@ -3,7 +3,7 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
 
@@ -17,17 +17,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NonNull
+    @NotNull
     private String name;
 
-    @NonNull
+    @NotNull
     @Column(name = "e_mail", unique = true)
     private String email;
 
-    @NonNull
+    @NotNull
     private String password;
 
-    @NonNull
+    @NotNull
     @Enumerated(value = EnumType.STRING)
     private UserType type;
 }

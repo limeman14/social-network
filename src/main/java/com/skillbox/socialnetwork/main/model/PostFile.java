@@ -3,7 +3,7 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -19,14 +19,14 @@ public class PostFile {
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NonNull
+    @NotNull
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @NonNull
+    @NotNull
     private String name;
 
-    @NonNull
+    @NotNull
     @Type(type = "text")
     private String path;
 }

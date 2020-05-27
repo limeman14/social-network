@@ -3,7 +3,7 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -24,7 +24,7 @@ public class PostComment {
     private LocalDateTime time;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NonNull
+    @NotNull
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -33,7 +33,7 @@ public class PostComment {
     private PostComment parentComment;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NonNull
+    @NotNull
     @JoinColumn(name = "author_id")
     private Person author;
 
@@ -41,7 +41,7 @@ public class PostComment {
     @Column(name = "comment_text")
     private String comment;
 
-    @NonNull
+    @NotNull
     @Column(name = "is_blocked")
     private Boolean blocked;
 

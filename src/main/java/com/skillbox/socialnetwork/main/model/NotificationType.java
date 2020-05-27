@@ -3,7 +3,7 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
 
@@ -18,9 +18,9 @@ public class NotificationType {
     private Integer id;
 
     @Enumerated(value = EnumType.STRING)
-    @NonNull
+    @NotNull
     private NotificationCode code;
 
-    @NonNull
+    @NotNull
     private String name;
 }

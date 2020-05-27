@@ -3,7 +3,7 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
 
@@ -18,12 +18,12 @@ public class Post2tag {
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @NonNull
+    @NotNull
     @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @NonNull
+    @NotNull
     @JoinColumn(name = "tag_id")
     private Tag tag;
 }

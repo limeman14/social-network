@@ -3,7 +3,7 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,13 +19,13 @@ public class FriendshipStatus {
     private Integer id;
 
     //@TODO: При сериализации возвращать long
-    @NonNull
+    @NotNull
     private LocalDateTime time;
 
     //Что тут хранить? Удаляем?
     private String name;
 
     @Enumerated(value = EnumType.STRING)
-    @NonNull
+    @NotNull
     private FriendshipCode code;
 }

@@ -3,10 +3,10 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,10 +21,10 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NonNull
+    @NotNull
     private String firstName;
 
-    @NonNull
+    @NotNull
     private String lastName;
 
     //@TODO: При сериализации возвращать long
@@ -33,13 +33,13 @@ public class Person {
     //@TODO: При сериализации возвращать long
     private LocalDate birthDate;
 
-    @NonNull
+    @NotNull
     @Column(name = "e_mail", unique = true)
     private String email;
 
     private String phone;
 
-    @NonNull
+    @NotNull
     private String password;
 
     @Type(type = "text")

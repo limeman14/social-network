@@ -3,7 +3,7 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ public class Notification {
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NonNull
+    @NotNull
     @JoinColumn(name = "type_id")
     private NotificationType type;
 
@@ -27,12 +27,12 @@ public class Notification {
     private LocalDateTime sentTime;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NonNull
+    @NotNull
     @JoinColumn(name = "person_id")
     private Person person;
 
     //@TODO: добавить entity_id!
 
-    @NonNull
+    @NotNull
     private String contact;
 }

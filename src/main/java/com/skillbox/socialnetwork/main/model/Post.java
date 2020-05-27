@@ -3,7 +3,7 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -21,18 +21,18 @@ public class Post {
     private Integer id;
 
     //@TODO: При сериализации возвращать long
-    @NonNull
+    @NotNull
     private LocalDateTime time;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NonNull
+    @NotNull
     @JoinColumn(name = "author_id")
     private Person author;
 
-    @NonNull
+    @NotNull
     private String title;
 
-    @NonNull
+    @NotNull
     @Type(type = "text")
     private String postText;
 
