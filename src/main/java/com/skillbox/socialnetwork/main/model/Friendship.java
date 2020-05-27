@@ -13,14 +13,14 @@ public class Friendship {
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "status_id", nullable = false)
+    @JoinColumn(name = "status_id", nullable = false)
     private FriendshipStatus friendshipStatus;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "src_person_id", nullable = false)
+    @JoinColumn(name = "src_person_id", nullable = false)
     private Person srcPerson;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "dst_person_id", nullable = false)
+    @JoinColumn(name = "dst_person_id", nullable = false)
     private Person dstPerson;
 }

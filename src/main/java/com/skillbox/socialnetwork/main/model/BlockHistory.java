@@ -7,21 +7,28 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "post_like")
-public class PostLike {
+@Table(name = "block_history")
+public class BlockHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     //@TODO: При сериализации возвращать long
-    @Column(nullable = false)
-    private LocalDateTime time;
+    private final LocalDateTime time = LocalDateTime.now();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id", nullable = false)
+    private PostComment comment;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(columnDefinition = "enum", nullable = false)
+    private BlockHistoryAction action;
 }

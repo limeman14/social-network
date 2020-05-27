@@ -18,11 +18,11 @@ public class Message {
     private LocalDateTime time;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = false)
     private Person author;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "recipient_id", nullable = false)
+    @JoinColumn(name = "recipient_id", nullable = false)
     private Person recipient;
 
     @Column(name = "message_text", nullable = false)

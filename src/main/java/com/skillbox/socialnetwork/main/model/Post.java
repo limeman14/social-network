@@ -18,13 +18,13 @@ public class Post {
     private LocalDateTime time;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = false)
     private Person author;
 
     @Column(nullable = false)
     private String title;
 
-    //У HTML-текста тип String?
+    //@TODO: У HTML-текста тип String?
     @Column(name = "post_text", nullable = false)
     private String postText;
 

@@ -28,11 +28,12 @@ public class Person {
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @Column(name = "e_mail")
+    @Column(name = "e_mail", nullable = false)
     private String email;
 
     private String phone;
 
+    @Column(nullable = false)
     private String password;
 
     private String photo;
@@ -41,9 +42,10 @@ public class Person {
     private String about;
 
     //@TODO: Подумать, как лучше реализовать Town
+    @Column(nullable = false)
     private String town;
 
-    @Column(name = "confirmation_code")
+    @Column(name = "confirmation_code", nullable = false)
     private String confirmationCode;
 
     //@TODO: Посмотреть, в каком виде Api возвращает это значение
