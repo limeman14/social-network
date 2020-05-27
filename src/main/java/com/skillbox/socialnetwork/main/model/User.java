@@ -20,5 +20,6 @@ public class User {
     private String password;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(columnDefinition = "enum")
     private UserType type;
 }
