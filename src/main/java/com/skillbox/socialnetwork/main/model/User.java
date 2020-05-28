@@ -1,14 +1,11 @@
 package com.skillbox.socialnetwork.main.model;
 
-import lombok.AllArgsConstructor;
+import com.skillbox.socialnetwork.main.model.enumerated.UserType;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Data
 @Table(name = "users")

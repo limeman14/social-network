@@ -1,18 +1,14 @@
 package com.skillbox.socialnetwork.main.model;
 
-import lombok.AllArgsConstructor;
+import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Data
 @Table(name = "persons")
@@ -29,10 +25,10 @@ public class Person {
 
     //@TODO: При сериализации возвращать long
     @NotNull
-    private LocalDateTime regDate;
+    private Date regDate;
 
     //@TODO: При сериализации возвращать long
-    private LocalDate birthDate;
+    private Date birthDate;
 
     @NotNull
     @Column(unique = true)
@@ -49,8 +45,9 @@ public class Person {
     @Type(type = "text")
     private String about;
 
-    //@TODO: Подумать, как лучше реализовать Town
-    private String town;
+    @ManyToOne
+    @JoinColumn(name = "town_id")
+    private City town;
 
     @NotNull
     private String confirmationCode;
@@ -61,9 +58,12 @@ public class Person {
     @Enumerated(EnumType.STRING)
     private Permission messagesPermission;
 
-    private LocalDateTime lastOnlineTime;
+    private Date lastOnlineTime;
 
     private Boolean isBlocked;
+
+    @ManyToOne
+    private PersonRole role;
 
     @OneToMany(mappedBy = "srcPerson")
     private List<Friendship> srcFriendships;

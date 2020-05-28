@@ -1,16 +1,13 @@
 package com.skillbox.socialnetwork.main.model;
 
-import lombok.AllArgsConstructor;
+import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Data
 @Table(name = "friendship_status")
@@ -21,7 +18,7 @@ public class FriendshipStatus {
 
     @NotNull
     //@TODO: При сериализации возвращать long
-    private LocalDateTime time;
+    private Date time;
 
     //Не используется
     private String name;
