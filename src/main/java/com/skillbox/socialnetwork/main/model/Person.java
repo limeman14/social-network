@@ -1,32 +1,31 @@
 package com.skillbox.socialnetwork.main.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Data
 @Table(name = "person")
+@NoArgsConstructor
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "first_name", nullable = false)
+    @Column(nullable = false)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(nullable = false)
     private String lastName;
 
-    //@TODO: При сериализации возвращать long
-    @Column(name = "reg_date", nullable = false)
-    private final LocalDateTime regDate = LocalDateTime.now();
+    @Column(nullable = false)
+    private Date regDate;
 
-    //@TODO: При сериализации возвращать long
-    @Column(name = "birth_date", nullable = false)
-    private LocalDate birthDate;
+    @Column(nullable = false)
+    private Date birthDate;
 
     @Column(name = "e_mail")
     private String email;
@@ -37,27 +36,23 @@ public class Person {
 
     private String photo;
 
-    @Column(columnDefinition = "TEXT")
     private String about;
 
-    //@TODO: Подумать, как лучше реализовать Town
     private String town;
 
-    @Column(name = "confirmation_code")
     private String confirmationCode;
 
-    //@TODO: Посмотреть, в каком виде Api возвращает это значение
     @Column(name = "is_approved")
-    private Boolean approved = false;
+    private Byte approved;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "messages_permission", columnDefinition = "enum")
+    @Column
     private Permission messagesPermission;
 
     @Column(name = "last_online_time")
-    private LocalDateTime lastOnline;
+    private Date lastOnline;
 
-    //@TODO: Посмотреть, в каком виде Api возвращает это значение
+
     @Column(name = "is_blocked")
     private Boolean blocked;
 }

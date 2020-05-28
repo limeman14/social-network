@@ -1,4 +1,19 @@
-spring.datasource.url: jdbc:mysql://localhost:3306/social_network?createDatabaseIfNotExist=true&useUnicode=true&useSSL=false&serverTimezone=Europe/Moscow&characterEncoding=utf8
-spring.datasource.username: root
-spring.datasource.password: 1234
-spring.jpa.hibernate.ddl-auto: none
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/social_network?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password: ab33aa4c
+    initialization-mode: always
+    data: classpath:/bd/data.sql
+  jpa:
+    hibernate.ddl-auto: create-drop
+    generate-ddl: true
+    properties.hibernate.dialect: org.hibernate.dialect.MySQL55Dialect
+
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+
+jwt.token:
+  secret: jwtappdemo
+  expired: 3600000
