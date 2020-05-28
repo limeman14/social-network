@@ -1,21 +1,29 @@
 package com.skillbox.socialnetwork.main.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Data
-@Table(name = "notification_type")
+@Table(name = "notification_types")
 public class NotificationType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     @Enumerated(value = EnumType.STRING)
-    @JoinColumn(columnDefinition = "enum", nullable = false)
     private NotificationCode code;
 
-    @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "type")
+    private List<Notification> notifications;
 }

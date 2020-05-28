@@ -1,10 +1,16 @@
 package com.skillbox.socialnetwork.main.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Data
 @Table(name = "friendship_status")
@@ -13,14 +19,17 @@ public class FriendshipStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     //@TODO: При сериализации возвращать long
-    @Column(nullable = false)
     private LocalDateTime time;
 
-    //Что здесь хранится?
+    //Не используется
     private String name;
 
+    @NotNull
     @Enumerated(value = EnumType.STRING)
-    @Column(columnDefinition = "enum", nullable = false)
     private FriendshipCode code;
+
+    @OneToMany(mappedBy = "status")
+    private List<Friendship> friendships;
 }

@@ -1,34 +1,43 @@
 package com.skillbox.socialnetwork.main.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Data
-@Table(name = "message")
+@Table(name = "messages")
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     //@TODO: При сериализации возвращать long
-    @Column(nullable = false)
+    @NotNull
     private LocalDateTime time;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
+    @NotNull
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
     private Person author;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipient_id", nullable = false)
+    @NotNull
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipient_id")
     private Person recipient;
 
-    @Column(name = "message_text", nullable = false)
+    @NotNull
+    @Type(type = "text")
     private String messageText;
 
+    @NotNull
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "read_status", nullable = false, columnDefinition = "enum")
     private ReadStatus readStatus;
 }
