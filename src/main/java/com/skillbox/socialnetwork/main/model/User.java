@@ -29,12 +29,4 @@ public class User {
     @NotNull
     @Enumerated(value = EnumType.STRING)
     private UserType type;
-
-//    public User(Integer id, @NotNull String name, @NotNull String eMail, @NotNull String password, @NotNull UserType type) {
-//        this.id = id;
-//        this.name = name;
-//        this.eMail = eMail;
-//        this.password = password;
-//        this.type = type;
-//    }
 }
