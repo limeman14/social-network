@@ -9,10 +9,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "messages")
 public class Message {
     @Id
@@ -23,13 +23,13 @@ public class Message {
     @NotNull
     private LocalDateTime time;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Person author;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "recipient_id")
     private Person recipient;
 
@@ -37,7 +37,7 @@ public class Message {
     @Type(type = "text")
     private String messageText;
 
-    @Enumerated(value = EnumType.STRING)
     @NotNull
+    @Enumerated(value = EnumType.STRING)
     private ReadStatus readStatus;
 }

@@ -3,14 +3,14 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
-@Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Data
 @Table(name = "users")
 public class User {
     @Id
@@ -21,8 +21,7 @@ public class User {
     private String name;
 
     @NotNull
-    @Column(name = "e_mail", unique = true)
-    private String email;
+    private String eMail;
 
     @NotNull
     private String password;

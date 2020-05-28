@@ -11,10 +11,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Data
 @Table(name = "persons")
 public class Person {
     @Id
@@ -28,14 +28,15 @@ public class Person {
     private String lastName;
 
     //@TODO: При сериализации возвращать long
+    @NotNull
     private LocalDateTime regDate;
 
     //@TODO: При сериализации возвращать long
     private LocalDate birthDate;
 
     @NotNull
-    @Column(name = "e_mail", unique = true)
-    private String email;
+    @Column(unique = true)
+    private String eMail;
 
     private String phone;
 
@@ -51,34 +52,30 @@ public class Person {
     //@TODO: Подумать, как лучше реализовать Town
     private String town;
 
+    @NotNull
     private String confirmationCode;
 
-    @Column(name = "is_approved")
-    private Boolean approved;
+    private Boolean isApproved;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Permission messagesPermission;
 
-    @Column(name = "last_online_time")
-    private LocalDateTime lastOnline;
+    private LocalDateTime lastOnlineTime;
 
-    @Column(name = "is_blocked")
-    private Boolean blocked;
-
-    @OneToMany(mappedBy = "person")
-    private List<BlockHistory> blockHistories;
+    private Boolean isBlocked;
 
     @OneToMany(mappedBy = "srcPerson")
-    private List<Friendship> friendshipsSrc;
+    private List<Friendship> srcFriendships;
 
     @OneToMany(mappedBy = "dstPerson")
-    private List<Friendship> friendshipsDst;
+    private List<Friendship> dstFriendships;
 
     @OneToMany(mappedBy = "author")
     private List<Message> sentMessages;
 
     @OneToMany(mappedBy = "recipient")
-    private List<Message> recipientMessages;
+    private List<Message> receivedMessages;
 
     @OneToMany(mappedBy = "author")
     private List<Post> posts;
@@ -91,4 +88,7 @@ public class Person {
 
     @OneToMany(mappedBy = "person")
     private List<Notification> notifications;
+
+    @OneToMany(mappedBy = "person")
+    private List<BlockHistory> blockHistories;
 }

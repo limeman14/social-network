@@ -3,15 +3,15 @@ package com.skillbox.socialnetwork.main.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Data
 @Table(name = "block_histories")
 public class BlockHistory {
     @Id
@@ -21,8 +21,8 @@ public class BlockHistory {
     //@TODO: При сериализации возвращать long
     private LocalDateTime time;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
     private Person person;
 
@@ -34,7 +34,7 @@ public class BlockHistory {
     @JoinColumn(name = "comment_id")
     private PostComment comment;
 
-    @Enumerated(value = EnumType.STRING)
     @NotNull
+    @Enumerated(value = EnumType.STRING)
     private BlockHistoryAction action;
 }
