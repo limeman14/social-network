@@ -1,33 +1,30 @@
 package com.skillbox.socialnetwork.main.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "notifications")
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
+    @ManyToOne
     @JoinColumn(name = "type_id")
     private NotificationType type;
 
     //@TODO: При сериализации возвращать long
-    private LocalDateTime sentTime;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
+    private Date sentTime;
+
+    @NotNull
+    @ManyToOne
     @JoinColumn(name = "person_id")
     private Person person;
 

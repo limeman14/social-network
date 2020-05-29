@@ -1,29 +1,25 @@
 package com.skillbox.socialnetwork.main.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "posts2tags")
+@Table(name = "post2tags")
 public class Post2tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
     @NotNull
+    @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne(cascade = CascadeType.ALL)
     @NotNull
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tag_id")
     private Tag tag;
 }

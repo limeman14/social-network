@@ -1,18 +1,15 @@
 package com.skillbox.socialnetwork.main.model;
 
-import lombok.AllArgsConstructor;
+import com.skillbox.socialnetwork.main.model.enumerated.ReadStatus;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "messages")
 public class Message {
     @Id
@@ -21,15 +18,15 @@ public class Message {
 
     //@TODO: При сериализации возвращать long
     @NotNull
-    private LocalDateTime time;
+    private Date time;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private Person author;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
+    @ManyToOne
     @JoinColumn(name = "recipient_id")
     private Person recipient;
 
@@ -37,7 +34,7 @@ public class Message {
     @Type(type = "text")
     private String messageText;
 
-    @Enumerated(value = EnumType.STRING)
     @NotNull
+    @Enumerated(value = EnumType.STRING)
     private ReadStatus readStatus;
 }

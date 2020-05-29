@@ -1,17 +1,13 @@
 package com.skillbox.socialnetwork.main.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "tags")
 public class Tag {
     @Id
@@ -22,5 +18,5 @@ public class Tag {
     private String tag;
 
     @OneToMany(mappedBy = "tag")
-    private List<Post2tag> post2tagList;
+    private List<Post2tag> posts;
 }

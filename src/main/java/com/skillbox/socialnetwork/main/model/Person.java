@@ -1,20 +1,17 @@
 package com.skillbox.socialnetwork.main.model;
 
-import lombok.AllArgsConstructor;
+import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "persons")
 public class Person {
     @Id
@@ -50,21 +47,21 @@ public class Person {
     private String about;
 
     //@TODO: Подумать, как лучше реализовать Town
-    @ManyToOne
-    private Town town;
+    private String town;
 
+    @NotNull
     private String confirmationCode;
 
-    @Column(name = "is_approved")
-    private Boolean approved;
+    private Boolean isApproved;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Permission messagesPermission;
 
     @Column(name = "last_online_time")
     private Calendar lastOnline;
 
-    @Column(name = "is_blocked", nullable = false)
+    @Column(name = "is_blocked")
     private Boolean blocked;
 
     @OneToMany(mappedBy = "person")

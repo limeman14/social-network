@@ -1,31 +1,32 @@
 package com.skillbox.socialnetwork.main.model;
 
-import lombok.AllArgsConstructor;
+import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "friendship_statuses")
+@Table(name = "friendship_status")
 public class FriendshipStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //@TODO: При сериализации возвращать long
     @NotNull
-    private LocalDateTime time;
+    //@TODO: При сериализации возвращать long
+    private Date time;
 
-    //Что тут хранить? Удаляем?
+    //Не используется
     private String name;
 
-    @Enumerated(value = EnumType.STRING)
     @NotNull
+    @Enumerated(value = EnumType.STRING)
     private FriendshipCode code;
+
+    @OneToMany(mappedBy = "status")
+    private List<Friendship> friendships;
 }

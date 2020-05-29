@@ -1,19 +1,15 @@
 package com.skillbox.socialnetwork.main.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "posts")
 public class Post {
     @Id
@@ -22,10 +18,10 @@ public class Post {
 
     //@TODO: При сериализации возвращать long
     @NotNull
-    private LocalDateTime time;
+    private Date time;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private Person author;
 
@@ -36,14 +32,11 @@ public class Post {
     @Type(type = "text")
     private String postText;
 
-    @Column(name = "is_blocked")
-    private Boolean blocked;
+    @NotNull
+    private Boolean isBlocked;
 
-    @OneToMany(mappedBy = "post")
-    private List<BlockHistory> blockHistories;
-
-    @OneToMany(mappedBy = "post")
-    private List<Post2tag> post2tagList;
+    @OneToMany(mappedBy = "tag")
+    private List<Post2tag> tags;
 
     @OneToMany(mappedBy = "post")
     private List<PostLike> likes;
@@ -53,4 +46,7 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     private List<PostComment> comments;
+
+    @OneToMany(mappedBy = "post")
+    private List<BlockHistory> blockHistories;
 }
