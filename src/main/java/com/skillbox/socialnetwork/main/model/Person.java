@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.List;
 
 @Entity
@@ -28,10 +28,11 @@ public class Person {
     private String lastName;
 
     //@TODO: При сериализации возвращать long
-    private LocalDateTime regDate;
+    @CreatedDate
+    private Calendar regDate;
 
     //@TODO: При сериализации возвращать long
-    private LocalDate birthDate;
+    private Calendar birthDate;
 
     @NotNull
     @Column(name = "e_mail", unique = true)
@@ -49,7 +50,8 @@ public class Person {
     private String about;
 
     //@TODO: Подумать, как лучше реализовать Town
-    private String town;
+    @ManyToOne
+    private Town town;
 
     private String confirmationCode;
 
@@ -60,9 +62,9 @@ public class Person {
     private Permission messagesPermission;
 
     @Column(name = "last_online_time")
-    private LocalDateTime lastOnline;
+    private Calendar lastOnline;
 
-    @Column(name = "is_blocked")
+    @Column(name = "is_blocked", nullable = false)
     private Boolean blocked;
 
     @OneToMany(mappedBy = "person")
@@ -91,4 +93,11 @@ public class Person {
 
     @OneToMany(mappedBy = "person")
     private List<Notification> notifications;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<Role> roles;
+
 }
