@@ -3,6 +3,7 @@ package com.skillbox.socialnetwork.main.model;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
 import org.hibernate.annotations.Type;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,16 +24,14 @@ public class Person {
     @NotNull
     private String lastName;
 
-    //@TODO: При сериализации возвращать long
-    @NotNull
+    @CreatedDate
     private Date regDate;
 
-    //@TODO: При сериализации возвращать long
     private Date birthDate;
 
     @NotNull
     @Column(unique = true)
-    private String eMail;
+    private String email;
 
     private String phone;
 
@@ -47,7 +46,7 @@ public class Person {
 
     @ManyToOne
     @JoinColumn(name = "town_id")
-    private City town;
+    private Town town;
 
     @NotNull
     private String confirmationCode;
@@ -62,8 +61,8 @@ public class Person {
 
     private Boolean isBlocked;
 
-    @ManyToOne
-    private PersonRole role;
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    private List<BlockHistory> blockHistories;
 
     @OneToMany(mappedBy = "srcPerson")
     private List<Friendship> srcFriendships;
@@ -89,6 +88,10 @@ public class Person {
     @OneToMany(mappedBy = "person")
     private List<Notification> notifications;
 
-    @OneToMany(mappedBy = "person")
-    private List<BlockHistory> blockHistories;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<Role> roles;
+
 }

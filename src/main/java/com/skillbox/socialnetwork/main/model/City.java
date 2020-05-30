@@ -2,25 +2,17 @@ package com.skillbox.socialnetwork.main.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-@Entity
 @Data
-@Table(name = "cities")
+@Entity
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
-    @NotNull
     private String title;
-
-    @ManyToOne
-    @JoinColumn(name = "country_id")
-    private Country country;
-
-    @OneToMany(mappedBy = "town")
-    private List<Person> persons;
 }
