@@ -3,10 +3,10 @@ spring:
     url: jdbc:mysql://localhost:3306/social_network?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
     password: ab33aa4c
-    initialization-mode: always
-    data: classpath:/bd/data.sql
+#    initialization-mode: always
+#    data: classpath:/bd/data.sql
   jpa:
-    hibernate.ddl-auto: create-drop
+    hibernate.ddl-auto: update
     generate-ddl: true
     properties.hibernate.dialect: org.hibernate.dialect.MySQL55Dialect
 

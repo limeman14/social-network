@@ -1,15 +1,23 @@
 package com.skillbox.socialnetwork.main.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+
 
 @Entity
 @Data
-@Table(name = "person")
+@AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "people")
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,35 +32,38 @@ public class Person {
     @Column(nullable = false)
     private Date regDate;
 
-    @Column(nullable = false)
-    private Date birthDate;
+    private LocalDate birthDate;
 
-    @Column(name = "e_mail")
     private String email;
 
     private String phone;
 
+    @JsonIgnore
     private String password;
 
     private String photo;
 
+    @Column
     private String about;
 
     private String town;
 
+    @Column(name = "confirmation_code")
     private String confirmationCode;
 
-    @Column(name = "is_approved")
-    private Byte approved;
+    private Boolean approved;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(name = "messages_permission")
     private Permission messagesPermission;
 
-    @Column(name = "last_online_time")
-    private Date lastOnline;
+    private LocalDateTime lastOnline;
 
-
-    @Column(name = "is_blocked")
     private Boolean blocked;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = {@JoinColumn(name = "person_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<Role> roles;
 }

@@ -1,12 +1,15 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skillbox.socialnetwork.main.dto.auth.*;
+import com.skillbox.socialnetwork.main.dto.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
+import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
+import com.skillbox.socialnetwork.main.dto.register.request.RegisterRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ErrorResponseDto;
+import com.skillbox.socialnetwork.main.dto.users.PersonResponseFactory;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
 import com.skillbox.socialnetwork.main.service.PersonService;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +18,17 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 
 @RestController
-@RequestMapping("/api/v1/")
 public class AuthenticationRestControllerV1 {
     private final AuthenticationManager authenticationManager;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final PersonService personService;
 
     @Autowired
@@ -37,39 +38,50 @@ public class AuthenticationRestControllerV1 {
         this.personService = personService;
     }
 
-    @PostMapping("auth/login")
-    public ResponseEntity<AuthResponseDto> login(@RequestBody AuthenticationRequestDto requestDto) {
+    @PostMapping("/api/v1/auth/login")
+    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto){
         try {
-            String username = requestDto.getEmail();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-            Person person = personService.findByEmail(username);
+            String email = requestDto.getEmail();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, requestDto.getPassword()));
+            Person user = personService.findByEmail(email);
 
-            if (person == null) {
-                throw new UsernameNotFoundException("User with username: " + username + " not found");
+            if (user == null) {
+                throw new UsernameNotFoundException("User with username: " + email + " not found");
             }
 
-            String token = jwtTokenProvider.createToken(username);
-
-            AuthResponseDto responseDto = new AuthResponseDto();
-
-            responseDto.setIsBlocked(person.getBlocked());
-            responseDto.setLastOnlineTime(new Date().getTime());
-            responseDto.setMessagesPermission(person.getMessagesPermission());
-            responseDto.setTimestamp(new Date().getTime());
-            responseDto.setData(new PersonData(person));
-            responseDto.setToken(token);
-
-            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+            String token = jwtTokenProvider.createToken(email);
+            return ResponseEntity.ok(AuthResponseFactory.getAuthResponse(user, token));
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password");
         }
     }
 
-    @PostMapping("auth/logout")
+    @PostMapping("/api/v1/account/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDto requestDto){
+        ResponseDto responseDto = personService.registration(requestDto);
+
+        return ResponseEntity
+                .status(
+                        ((ErrorResponseDto)responseDto).getError().equals("invalid_request") ?
+                                HttpStatus.BAD_REQUEST : HttpStatus.OK)
+                .body(responseDto);
+    }
+
+
+    @PostMapping("/api/v1/auth/logout")
     public ResponseEntity<?> logout() {
-        LogoutDto responseDto = new LogoutDto();
-        responseDto.setTimestamp(new Date().getTime());
-        responseDto.setData(new Message());
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto());
+    }
+
+    @GetMapping("/api/v1/users/me")
+    public ResponseEntity<?> getMe(HttpServletRequest request){
+        try {
+            String email = jwtTokenProvider.getUsername(request.getHeader("Authorization"));
+            Person person = personService.findByEmail(email);
+
+            return ResponseEntity.status(HttpStatus.OK).body(PersonResponseFactory.getPerson(person));
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }

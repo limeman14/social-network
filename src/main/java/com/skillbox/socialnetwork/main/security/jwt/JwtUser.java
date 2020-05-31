@@ -1,31 +1,40 @@
 package com.skillbox.socialnetwork.main.security.jwt;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skillbox.socialnetwork.main.model.Permission;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 
-@Data
 @AllArgsConstructor
+@Getter
 public class JwtUser implements UserDetails {
 
+    private int id;
+    private String firstName;
+    private String lastName;
+    private Date regDate;
+    private LocalDate birthDate;
+    private String email;
+    private String phone;
     @JsonIgnore
-    private final Integer id;
-    private final String firstName;
-    private final String lastName;
-    private final Collection<? extends GrantedAuthority> authorities;
-
-    @JsonIgnore
-    private final String password;
-
-    private final String email;
-
-    private final boolean enabled;
-    private final Date lastUpdate;
+    private String password;
+    private String photo;
+    private String about;
+    private String town;
+    private String confirmationCode;
+    private boolean isApproved;
+    private Permission messagePermission;
+    private LocalDateTime lastOnline;
+    private boolean isBlocked;
+    private Collection<? extends GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -39,7 +48,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return firstName + " " + lastName;
+        return email;
     }
 
     @Override
@@ -49,7 +58,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isBlocked;
     }
 
     @Override
@@ -59,6 +68,6 @@ public class JwtUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return isApproved;
     }
 }

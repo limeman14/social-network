@@ -13,10 +13,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class JwtTokenProvider {
@@ -44,11 +42,8 @@ public class JwtTokenProvider {
     public String createToken(String username) {
 
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("roles", getRoleNames());
-
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
@@ -60,24 +55,15 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-
             if (claims.getBody().getExpiration().before(new Date())) {
                 return false;
             }
-
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             throw new JwtAuthenticationException("JWT token is expired or invalid");
         }
     }
 
-    private List<String> getRoleNames() {
-        List<String> result = new ArrayList<>();
-        result.add("USER");
-
-
-        return result;
-    }
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
@@ -89,10 +75,14 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
-            return bearerToken.substring(7, bearerToken.length());
+        String bearerToken = req.getHeader(HEADER);
+
+        if (bearerToken != null) {
+            return bearerToken;
         }
         return null;
     }
+
+    public static final String HEADER = "Authorization";
+
 }

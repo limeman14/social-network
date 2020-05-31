@@ -1,7 +1,6 @@
 package com.skillbox.socialnetwork.main.security;
 
 import com.skillbox.socialnetwork.main.model.Person;
-import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
 import com.skillbox.socialnetwork.main.security.jwt.JwtUserFactory;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +28,6 @@ public class JwtUserDetailsService implements UserDetailsService {
         if (person == null) {
             throw new UsernameNotFoundException("User with email: " + email + " not found");
         }
-
-        JwtUser jwtUser = JwtUserFactory.create(person);
-
-        log.info("IN loadUserByUsername - user with username: {} successfully loaded", person.getEmail());
-        return jwtUser;
+        return JwtUserFactory.create(person);
     }
 }
