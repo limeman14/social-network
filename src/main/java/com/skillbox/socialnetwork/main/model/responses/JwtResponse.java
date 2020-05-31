@@ -1,30 +1,34 @@
 package com.skillbox.socialnetwork.main.model.responses;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.skillbox.socialnetwork.main.model.City;
 import com.skillbox.socialnetwork.main.model.Country;
-import com.skillbox.socialnetwork.main.model.Permission;
+import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.List;
 
 @Data
 public class JwtResponse implements Response{
-    //private String type = "Bearer";
+
     @JsonView(View.MyInfoResponse.class)
     private int id;
+
     @JsonView(View.MyInfoResponse.class)
+    @JsonProperty("first_name")
+
     private String firstName;
+
     @JsonView(View.MyInfoResponse.class)
+    @JsonProperty("last_name")
     private String lastName;
+
     @JsonView(View.MyInfoResponse.class)
-    private long reg_date;
+    @JsonProperty("reg_date")
+    private long regDate;
+
     @JsonView(View.MyInfoResponse.class)
-    private long birth_date;
+    @JsonProperty("birth_date")
+    private long birthDate;
     @JsonView(View.MyInfoResponse.class)
     private String email;
     @JsonView(View.MyInfoResponse.class)
@@ -37,12 +41,19 @@ public class JwtResponse implements Response{
     private City city;
     @JsonView(View.MyInfoResponse.class)
     private Country country;
+
     @JsonView(View.MyInfoResponse.class)
-    private Permission messages_permission;
+    @JsonProperty("messages_permission")
+    private Permission messagesPermission;
+
     @JsonView(View.MyInfoResponse.class)
-    private long last_online_time;
+    @JsonProperty("last_online_time")
+    private long lastOnlineTime;
+
     @JsonView(View.MyInfoResponse.class)
+    @JsonProperty("is_blocked")
     private boolean isBlocked;
+
 
     @JsonView(View.LoginResponse.class)
     private String token;

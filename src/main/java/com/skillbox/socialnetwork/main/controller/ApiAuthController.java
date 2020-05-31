@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -93,6 +94,7 @@ public class ApiAuthController {
         person.setEmail(signUpRequest.getEmail());
         person.setPassword(encoder.encode(signUpRequest.getPasswd1()));
         person.setBlocked(false);
+        person.setIsApproved(false);
 
         personRepository.save(person);
 
@@ -101,9 +103,10 @@ public class ApiAuthController {
 
     @JsonView(View.MyInfoResponse.class)
     @GetMapping("/users/me")
-    public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails){
-
-        Person person = personRepository.findByEmail(userDetails.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User Not Found "));
+    public ResponseEntity<?> getMyInfo(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Person person = personRepository.findByEmail(auth.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found "));
+        System.out.println(person.getEmail());
         JwtResponse response = personToJwt(person);
 
         GeneralResponse model = new GeneralResponse(null, response);
@@ -116,15 +119,15 @@ public class ApiAuthController {
         jwtResponse.setId(person.getId());
         jwtResponse.setFirstName(person.getFirstName());
         jwtResponse.setLastName(person.getLastName());
-        jwtResponse.setReg_date(person.getRegDate().getTimeInMillis());
+        jwtResponse.setRegDate(person.getRegDate().getTimeInMillis());
         jwtResponse.setEmail(person.getEmail());
         jwtResponse.setPhone(person.getPhone());
         jwtResponse.setPhoto(person.getPhoto());
         jwtResponse.setAbout(person.getAbout());
         jwtResponse.setCity(person.getTown() != null ? person.getTown().getCity() : null);
         jwtResponse.setCountry(person.getTown() != null ? person.getTown().getCountry() : null);
-        jwtResponse.setMessages_permission(person.getMessagesPermission());
-        jwtResponse.setLast_online_time(person.getLastOnline() == null ? Calendar.getInstance().getTimeInMillis() : person.getLastOnline().getTimeInMillis());
+        jwtResponse.setMessagesPermission(person.getMessagesPermission());
+        jwtResponse.setLastOnlineTime(person.getLastOnline() == null ? Calendar.getInstance().getTimeInMillis() : person.getLastOnline().getTimeInMillis());
         jwtResponse.setBlocked(person.getBlocked());
         return jwtResponse;
     }

@@ -6,7 +6,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Entity
 @Data
 @Table(name = "roles")
 public class PersonRole {

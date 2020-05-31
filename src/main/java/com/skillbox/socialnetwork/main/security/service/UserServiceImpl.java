@@ -20,10 +20,10 @@ public class UserServiceImpl implements UserService {
 
     private final PersonRepository personRepository;
     private final RoleRepository roleRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(PersonRepository personRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(PersonRepository personRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Person register(Person user) {
-        Role roleUser = roleRepository.findByName("ROLE_USER");
+        Role roleUser = roleRepository.findByName("USER");
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(roleUser);
 

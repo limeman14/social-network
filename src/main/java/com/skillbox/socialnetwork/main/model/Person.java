@@ -2,12 +2,11 @@ package com.skillbox.socialnetwork.main.model;
 
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.List;
 
 @Entity
@@ -18,26 +17,20 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
     private String firstName;
 
-    @NotNull
     private String lastName;
 
-    //@TODO: При сериализации возвращать long
-    @CreatedDate
+    @CreationTimestamp
     private Calendar regDate;
 
-    //@TODO: При сериализации возвращать long
     private Calendar birthDate;
 
-    @NotNull
     @Column(name = "e_mail", unique = true)
     private String email;
 
     private String phone;
 
-    @NotNull
     private String password;
 
     @Type(type = "text")
@@ -46,15 +39,13 @@ public class Person {
     @Type(type = "text")
     private String about;
 
-    //@TODO: Подумать, как лучше реализовать Town
-    private String town;
+    @ManyToOne
+    private Town town;
 
-    @NotNull
     private String confirmationCode;
 
     private Boolean isApproved;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Permission messagesPermission;
 

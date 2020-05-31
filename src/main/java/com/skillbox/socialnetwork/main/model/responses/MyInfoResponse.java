@@ -2,7 +2,7 @@ package com.skillbox.socialnetwork.main.model.responses;
 
 import com.skillbox.socialnetwork.main.model.City;
 import com.skillbox.socialnetwork.main.model.Country;
-import com.skillbox.socialnetwork.main.model.Permission;
+import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
 
 @Data
