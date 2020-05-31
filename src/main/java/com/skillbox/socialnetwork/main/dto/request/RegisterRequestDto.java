@@ -1,4 +1,4 @@
-package com.skillbox.socialnetwork.main.dto.register.request;
+package com.skillbox.socialnetwork.main.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

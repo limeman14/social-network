@@ -1,4 +1,4 @@
-package com.skillbox.socialnetwork.main.dto.auth.request;
+package com.skillbox.socialnetwork.main.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
