@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,9 +41,16 @@ public class UserServiceImpl implements UserService {
 
         Person registeredPerson = personRepository.save(person);
 
-        log.info("IN register - user: {} successfully registered", registeredPerson);
+        log.info("IN register - user: {} successfully registered", registeredPerson.getEmail());
 
         return registeredPerson;
+    }
+
+    @Override
+    public void logout(Person person) {
+        person.setLastOnlineTime(new Date());
+        personRepository.save(person);
+        log.info("IN logout - user: {} logged out", person.getEmail());
     }
 
     @Override
@@ -62,7 +70,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Person findById(int id) {
         Person person = personRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User Not Found with id: " + id));
-        log.info("IN findById - user: {} found by id: {}", person, id);
+        log.info("IN findById - user: {} found by id: {}", person.getEmail(), id);
         return person;
     }
 

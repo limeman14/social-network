@@ -8,24 +8,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        // securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -37,13 +36,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .httpBasic().disable()
                 .csrf().disable()
+                .cors()
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 .antMatchers(
-                        "/api/v1/auth/*",
-                        "/api/v1/account/register",
-                        "/api/v1/account/password/*",
+                        "/api/v1/auth/**",
+                        "/api/v1/account/register/**",
+                        "/api/v1/account/password/**",
                         "/api/v1/platform/languages",
                         "/api/v1/storage/*"
                 )
@@ -52,11 +53,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasRole("USER")                //allow access to all other pages only for registered users
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
     }
 }

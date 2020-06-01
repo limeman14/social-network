@@ -8,6 +8,8 @@ public interface UserService {
 
     Person register(Person person);
 
+    void logout(Person person);
+
     List<Person> getAll();
 
     Person findByEmail(String email);

@@ -1,8 +1,6 @@
 package com.skillbox.socialnetwork.main.model.responses;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 

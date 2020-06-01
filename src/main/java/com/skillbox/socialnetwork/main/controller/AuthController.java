@@ -1,7 +1,10 @@
 package com.skillbox.socialnetwork.main.controller;
 
 import com.skillbox.socialnetwork.main.model.Person;
+import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import com.skillbox.socialnetwork.main.model.requests.AuthRequest;
+import com.skillbox.socialnetwork.main.model.requests.RegisterRequest;
+import com.skillbox.socialnetwork.main.model.responses.ErrorResponse;
 import com.skillbox.socialnetwork.main.model.responses.GeneralResponse;
 import com.skillbox.socialnetwork.main.model.responses.MessageResponse;
 import com.skillbox.socialnetwork.main.model.responses.PersonInfoResponse;
@@ -17,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +30,6 @@ import javax.validation.Valid;
 import java.util.Date;
 
 @RestController
-@RequestMapping(value = "/api/v1/auth/")
 @Slf4j
 public class AuthController {
 
@@ -36,14 +39,17 @@ public class AuthController {
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordEncoder encoder;
 
-    @PostMapping("/login")
+    @PostMapping("/api/v1/auth/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthRequest authRequest) {
         try {
             String login = authRequest.getEmail();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, authRequest.getPassword()));
             Person person = userService.findByEmail(login);
 
+            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, authRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authenticate);
             if (person == null) {
                 throw new UsernameNotFoundException("User with username " + login + " not found");
             }
@@ -58,18 +64,42 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        String email = jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(request));
-        userService.findByEmail(email).setLastOnlineTime(new Date());
+    @PostMapping("/api/v1/auth/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-
+        //setting last time online to now()
+        userService.logout(userService.findByEmail(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(request))));
         MessageResponse data = new MessageResponse("ok");
         return ResponseEntity.ok(new GeneralResponse("string", data));
+    }
+
+    @PostMapping("/api/v1/account/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            if (userService.findByEmail(request.getEmail()) != null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("invalid_request", "user already exists!"));
+            }
+        }
+        catch (UsernameNotFoundException e) {
+            log.info("It's ok");
+        }
+        //Registering new user + adding to DB
+        Person person = new Person();
+        person.setFirstName(request.getFirstName());
+        person.setLastName(request.getLastName());
+        person.setEmail(request.getEmail());
+        person.setPassword(encoder.encode(request.getPasswd1()));
+        person.setConfirmationCode(request.getCode());
+        person.setIsBlocked(false);
+        person.setMessagesPermission(Permission.ALL);
+        person.setRegDate(new Date());
+        userService.register(person);
+
+        return ResponseEntity.ok(new GeneralResponse("string", new MessageResponse("ok")));
     }
 
     private PersonInfoResponse personToResponse(Person person) {
