@@ -4,6 +4,7 @@ import com.skillbox.socialnetwork.main.dto.AbstractResponse;
 import com.skillbox.socialnetwork.main.model.Person;
 
 import java.time.ZoneId;
+import java.util.Date;
 
 public class AuthResponseFactory {
 
@@ -15,9 +16,8 @@ public class AuthResponseFactory {
                     person.getLastName(),
 
                     person.getRegDate().getTime(),
-                        person.getBirthDate() != null ?
-                                person.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toEpochSecond() :
-                                null,
+                    person.getBirthDate() != null ?
+                                person.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toEpochSecond():null,
                     person.getEmail(),
                     person.getPhone(),
                     person.getPhoto(),

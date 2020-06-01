@@ -16,7 +16,7 @@ public class PersonResponseFactory {
                     person.getFirstName(),
                     person.getLastName(),
                     person.getRegDate().getTime(),
-                    person.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toEpochSecond(),
+                    person.getBirthDate() != null ? person.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toEpochSecond() : null,
                     person.getEmail(),
                     person.getPhone(),
                     person.getPhoto(),

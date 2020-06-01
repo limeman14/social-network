@@ -76,6 +76,7 @@ public class PersonServiceImpl implements PersonService {
                 person.setMessagesPermission(Permission.ALL);
                 person.setRoles(getBasePermission());
                 person.setLastOnline(LocalDateTime.now());
+
                 repository.save(person);
 
                 return new BaseResponseDto();

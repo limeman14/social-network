@@ -5,7 +5,6 @@ import com.skillbox.socialnetwork.main.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +18,7 @@ public class FeedsRestController {
     private final PersonService personService;
 
     @Autowired
-    public FeedsRestController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, PersonService personService) {
+    public FeedsRestController(JwtTokenProvider jwtTokenProvider, PersonService personService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.personService = personService;
     }
