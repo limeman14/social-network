@@ -19,8 +19,10 @@ public class AuthResponseFactory {
                     person.getPhone(),
                     person.getPhoto(),
                     person.getAbout(),
-                    new CityDto(1, "Москва"),
-                    new CountryDto(1, "Россия"),
+                    person.getTown() != null ?
+                                person.getTown().getCity().getTitle() : null,
+                    person.getTown() != null ?
+                                person.getTown().getCountry().getTitle() : null,
                     person.getIsBlocked(),
                     person.getLastOnlineTime().getTime(),
                     person.getMessagesPermission().toString(),

@@ -621,6 +621,33 @@ databaseChangeLog:
       author: devolek
       changes:
         - insert:
+            tableName: country
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: title
+                  value: "Россия"
+        - insert:
+            tableName: city
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: title
+                  value: "Москва"
+        - insert:
+            tableName: town
+            columns:
+              - column:
+                  name: city_id
+                  value: 1
+              - column:
+                  name: country_id
+                  value: 1
+        - insert:
             tableName: persons
             columns:
               - column:
@@ -659,6 +686,9 @@ databaseChangeLog:
               - column:
                   name: reg_date
                   valueDate: "2020-06-01 21:19:09"
+              - column:
+                  name: town_id
+                  value: 1
         - insert:
             tableName: user_roles
             columns:

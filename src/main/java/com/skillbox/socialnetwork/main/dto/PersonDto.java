@@ -24,8 +24,8 @@ public class PersonDto implements ResponseDto {
     protected String phone;
     protected String photo;
     protected String about;
-    protected CityDto city;
-    protected CountryDto country;
+    protected String city;
+    protected String country;
     @JsonProperty("is_blocked")
     protected Boolean isBlocked;
     @JsonProperty("last_online_time")
