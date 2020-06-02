@@ -26,4 +26,6 @@ public interface PersonService {
     void delete(Integer id);
 
     ResponseDto registration(RegisterRequestDto dto);
+
+    void logout(Person person);
 }

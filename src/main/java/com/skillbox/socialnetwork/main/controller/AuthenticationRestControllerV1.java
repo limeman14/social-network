@@ -19,6 +19,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -65,7 +66,9 @@ public class AuthenticationRestControllerV1 {
 
 
     @PostMapping("/api/v1/auth/logout")
-    public ResponseEntity<?> logout() {
+    public ResponseEntity<?> logout(@RequestHeader(name = "Authorization") String token) {
+        String email = jwtTokenProvider.getUsername(token);
+        personService.logout(personService.findByEmail(email));
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto());
     }
 

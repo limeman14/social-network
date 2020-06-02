@@ -103,4 +103,10 @@ public class PersonServiceImpl implements PersonService {
         return userRoles;
     }
 
+    public void logout(Person person) {
+        person.setLastOnlineTime(new Date());
+        log.info("IN logout - user: {} logged out", repository.save(person));
+    }
+
+
 }

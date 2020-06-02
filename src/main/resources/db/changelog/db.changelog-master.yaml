@@ -660,6 +660,15 @@ databaseChangeLog:
                   name: reg_date
                   valueDate: "2020-06-01 21:19:09"
         - insert:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: role_id
+                  value: 1
+        - insert:
             tableName: posts
             columns:
               - column:
