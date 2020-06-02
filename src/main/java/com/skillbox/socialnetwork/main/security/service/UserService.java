@@ -15,4 +15,6 @@ public interface UserService {
     Person findById(int id);
 
     void delete(int id);
+
+    void logout(Person user);
 }

@@ -2,6 +2,7 @@ package com.skillbox.socialnetwork.main.security.service;
 
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
+import com.skillbox.socialnetwork.main.model.enumerated.ERole;
 import com.skillbox.socialnetwork.main.repo.PersonRepository;
 import com.skillbox.socialnetwork.main.repo.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -31,15 +33,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Person register(Person user) {
-        Role roleUser = roleRepository.findByName("USER");
+        Role roleUser = roleRepository.findByName(ERole.USER);
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(roleUser);
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(userRoles);
-
+        user.setBlocked(false);
+        user.setIsApproved(false);
         Person registeredUser = personRepository.save(user);
-
         log.info("IN register - user: {} successfully registered", registeredUser);
 
         return registeredUser;
@@ -77,4 +78,11 @@ public class UserServiceImpl implements UserService {
         personRepository.deleteById(id);
         log.info("IN delete - user with id: {} successfully deleted", id);
     }
+
+    @Override
+    public void logout(Person person) {
+        person.setLastOnline(Calendar.getInstance());
+        log.info("IN logout - user: {} logged out", personRepository.save(person));
+    }
+
 }

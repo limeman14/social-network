@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.model;
 
+import com.skillbox.socialnetwork.main.model.enumerated.ERole;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -11,11 +12,12 @@ import java.util.List;
 public class Role {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "name")
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private ERole name;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private List<Person> users;

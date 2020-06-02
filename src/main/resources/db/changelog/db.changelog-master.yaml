@@ -595,7 +595,7 @@ databaseChangeLog:
                   name: role_id
                   type: INT
   - changeSet:
-      id: 1.1.0
+      id: 1.1.1
       author: devolek
       changes:
         - insert:
@@ -616,3 +616,52 @@ databaseChangeLog:
               - column:
                   name: name
                   value: "ADMIN"
+  - changeSet:
+      id: 1.1.2
+      author: devolek
+      changes:
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: post_text
+                  value: "Первый пост для теста. Бла-бла-бла."
+              - column:
+                  name: time
+                  valueDate: "2020-05-31 19:39:10"
+              - column:
+                  name: title
+                  value: "Первый пост"
+              - column:
+                  name: author_id
+                  value: 1
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: post_text
+                  value: "Второй пост для теста. Бла-бла-бла."
+              - column:
+                  name: time
+                  valueDate: "2020-05-31 20:39:10"
+              - column:
+                  name: title
+                  value: "Второй пост"
+              - column:
+                  name: author_id
+                  value: 1
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: post_text
+                  value: "Третий пост для теста. Бла-бла-бла."
+              - column:
+                  name: time
+                  valueDate: "2020-05-31 21:39:10"
+              - column:
+                  name: title
+                  value: "Третий пост"
+              - column:
+                  name: author_id
+                  value: 1

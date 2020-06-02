@@ -1,7 +1,10 @@
 package com.skillbox.socialnetwork.main.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.mysql.cj.xdevapi.Collection;
 import com.skillbox.socialnetwork.main.model.Person;
+import com.skillbox.socialnetwork.main.model.Role;
+import com.skillbox.socialnetwork.main.model.enumerated.ERole;
 import com.skillbox.socialnetwork.main.model.requests.LoginRequest;
 import com.skillbox.socialnetwork.main.model.requests.SignupRequest;
 import com.skillbox.socialnetwork.main.model.responses.*;
@@ -10,6 +13,7 @@ import com.skillbox.socialnetwork.main.repo.PersonRepository;
 import com.skillbox.socialnetwork.main.security.UserDetailsImpl;
 import com.skillbox.socialnetwork.main.security.jwt.JwtUtils;
 import com.skillbox.socialnetwork.main.security.service.UserService;
+import com.skillbox.socialnetwork.main.security.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -44,7 +49,7 @@ public class ApiAuthController {
     PasswordEncoder encoder;
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -68,12 +73,17 @@ public class ApiAuthController {
     }
 
     @PostMapping("/auth/logout")
-    public ResponseEntity<?> logoutUser(HttpServletRequest request, HttpServletResponse response){
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<?> logoutUser(@RequestHeader(name = "Authorization") String token){
+        String email = jwtUtils.getUsername(token);
+        userService.logout(userService.findByEmail(email));
+        /*Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
+            System.out.println(auth.getPrincipal());
+            Person person = personRepository.findByEmail(auth.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found "));
+            System.out.println(person.getEmail());
+            person.setLastOnline(Calendar.getInstance());
             new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
+        }*/
         MessageResponse data = new MessageResponse("ok");
         return ResponseEntity.ok(new GeneralResponse(null, data));
     }
@@ -92,20 +102,18 @@ public class ApiAuthController {
         person.setFirstName(signUpRequest.getFirstName());
         person.setLastName(signUpRequest.getLastName());
         person.setEmail(signUpRequest.getEmail());
-        person.setPassword(encoder.encode(signUpRequest.getPasswd1()));
-        person.setBlocked(false);
-        person.setIsApproved(false);
-
-        personRepository.save(person);
+        person.setPassword(signUpRequest.getPasswd1());
+        userService.register(person);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
     @JsonView(View.MyInfoResponse.class)
     @GetMapping("/users/me")
-    public ResponseEntity<?> getMyInfo(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Person person = personRepository.findByEmail(auth.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found "));
+    public ResponseEntity<?> getMyInfo(@RequestHeader(name = "Authorization") String token){
+        String email = jwtUtils.getUsername(token);
+        System.out.println(personRepository.findByEmail(email).get().getEmail());
+        Person person = personRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User Not Found "));
         System.out.println(person.getEmail());
         JwtResponse response = personToJwt(person);
 
