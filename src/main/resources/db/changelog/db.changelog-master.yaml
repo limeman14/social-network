@@ -576,7 +576,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                   name: name
-                  type: ENUM("USER", "MODERATOR", "ADMIN")
+                  type: ENUM("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
   - changeSet:
       id: 1.0.19
       author: devolek
@@ -603,23 +603,62 @@ databaseChangeLog:
             columns:
               - column:
                   name: name
-                  value: "USER"
+                  value: "ROLE_USER"
         - insert:
             tableName: roles
             columns:
               - column:
                   name: name
-                  value: "MODERATOR"
+                  value: "ROLE_MODERATOR"
         - insert:
             tableName: roles
             columns:
               - column:
                   name: name
-                  value: "ADMIN"
+                  value: "ROLE_ADMIN"
   - changeSet:
       id: 1.1.2
       author: devolek
       changes:
+        - insert:
+            tableName: persons
+            columns:
+              - column:
+                  name: about
+                  value: "Первый пользователь"
+              - column:
+                  name: is_approved
+                  valueBoolean: true
+              - column:
+                  name: birth_date
+                  valueDate: "2000-05-31 20:39:10"
+              - column:
+                  name: confirmation_code
+                  value: "12345678"
+              - column:
+                  name: e_mail
+                  value: "email@mail.com"
+              - column:
+                  name: first_name
+                  value: "FirstName"
+              - column:
+                  name: last_name
+                  value: "LastName"
+              - column:
+                  name: last_online_time
+                  valueDate: "2020-06-02 21:19:09"
+              - column:
+                  name: messages_permission
+                  value: "ALL"
+              - column:
+                  name: password
+                  value: "$2a$04$qEny7rvkaG6fdW5rFyLljO5yMHiCTUVB8mHKUXr26roxu9G/wlTkW"
+              - column:
+                  name: phone
+                  value: "8921587454"
+              - column:
+                  name: reg_date
+                  valueDate: "2020-06-01 21:19:09"
         - insert:
             tableName: posts
             columns:

@@ -5,7 +5,6 @@ import com.skillbox.socialnetwork.main.model.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public class JwtUserFactory {
                 user.getAbout(),
                 user.getTown(),
                 user.getConfirmationCode(),
-                user.getApproved(),
+                user.getIsApproved(),
                 user.getMessagesPermission(),
                 user.getLastOnline(),
                 user.getBlocked(),
@@ -39,7 +38,7 @@ public class JwtUserFactory {
     private static List<GrantedAuthority> getAuthorities(List<Role> userRoles){
         return userRoles.stream()
                 .map(role ->
-                        new SimpleGrantedAuthority(role.getName())
+                        new SimpleGrantedAuthority(role.getName().toString())
                 ).collect(Collectors.toList());
     }
 }

@@ -3,7 +3,9 @@ package com.skillbox.socialnetwork.main.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skillbox.socialnetwork.main.model.Permission;
+import com.skillbox.socialnetwork.main.model.Town;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,18 +23,18 @@ public class JwtUser implements UserDetails {
     private String firstName;
     private String lastName;
     private Date regDate;
-    private LocalDate birthDate;
+    private Date birthDate;
     private String email;
     private String phone;
     @JsonIgnore
     private String password;
     private String photo;
     private String about;
-    private String town;
+    private Town town;
     private String confirmationCode;
     private boolean isApproved;
     private Permission messagePermission;
-    private LocalDateTime lastOnline;
+    private Date lastOnline;
     private boolean isBlocked;
     private Collection<? extends GrantedAuthority> authorities;
 

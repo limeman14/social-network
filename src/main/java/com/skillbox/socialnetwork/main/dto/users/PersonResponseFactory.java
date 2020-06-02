@@ -16,7 +16,7 @@ public class PersonResponseFactory {
                     person.getFirstName(),
                     person.getLastName(),
                     person.getRegDate().getTime(),
-                    person.getBirthDate() != null ? person.getBirthDate().atStartOfDay(ZoneId.systemDefault()).toEpochSecond() : null,
+                    person.getBirthDate() != null ? person.getBirthDate().getTime() : null,
                     person.getEmail(),
                     person.getPhone(),
                     person.getPhoto(),
@@ -24,7 +24,7 @@ public class PersonResponseFactory {
                     new CityDto(1, "Москва"),
                     new CountryDto(1, "Россия"),
                     person.getBlocked(),
-                    person.getLastOnline().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                    person.getLastOnline().getTime(),
                     person.getMessagesPermission().toString()
             )
         );

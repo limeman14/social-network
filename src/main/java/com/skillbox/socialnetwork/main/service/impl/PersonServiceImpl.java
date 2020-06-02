@@ -7,6 +7,7 @@ import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
 import com.skillbox.socialnetwork.main.model.Permission;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
+import com.skillbox.socialnetwork.main.model.enumerated.ERole;
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import com.skillbox.socialnetwork.main.repository.RoleRepository;
 import com.skillbox.socialnetwork.main.service.PersonService;
@@ -71,11 +72,10 @@ public class PersonServiceImpl implements PersonService {
                 person.setLastName(dto.getLastName());
                 person.setConfirmationCode(dto.getCode());
                 person.setBlocked(false);
-                person.setApproved(true);
-                person.setRegDate(new Date());
+                person.setIsApproved(true);
                 person.setMessagesPermission(Permission.ALL);
                 person.setRoles(getBasePermission());
-                person.setLastOnline(LocalDateTime.now());
+                person.setLastOnline(new Date());
 
                 repository.save(person);
 
@@ -96,7 +96,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     private List<Role> getBasePermission(){
-        Role roleUser = roleRepository.findByName("ROLE_USER");
+        Role roleUser = roleRepository.findByName(ERole.ROLE_USER);
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(roleUser);
 
