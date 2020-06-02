@@ -29,8 +29,8 @@ public class JwtUserFactory {
                 user.getConfirmationCode(),
                 user.getIsApproved(),
                 user.getMessagesPermission(),
-                user.getLastOnline(),
-                user.getBlocked(),
+                user.getLastOnlineTime(),
+                user.getIsBlocked(),
                 getAuthorities(user.getRoles())
         );
     }

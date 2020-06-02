@@ -47,9 +47,9 @@ public class Person {
     @Enumerated(EnumType.STRING)
     private Permission messagesPermission;
 
-    private Date lastOnline;
+    private Date lastOnlineTime;
 
-    private Boolean blocked;
+    private Boolean isBlocked;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",

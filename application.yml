@@ -5,7 +5,6 @@ spring:
     password: testtest
   jpa:
     hibernate.ddl-auto: none
-    generate-ddl: true
     properties.hibernate.dialect: org.hibernate.dialect.MySQL55Dialect
 
     properties:

@@ -21,8 +21,8 @@ public class AuthResponseFactory {
                     person.getAbout(),
                     new CityDto(1, "Москва"),
                     new CountryDto(1, "Россия"),
-                    person.getBlocked(),
-                    person.getLastOnline().getTime(),
+                    person.getIsBlocked(),
+                    person.getLastOnlineTime().getTime(),
                     person.getMessagesPermission().toString(),
                     token
                 )

@@ -71,11 +71,9 @@ public class PersonServiceImpl implements PersonService {
                 person.setFirstName(dto.getFirstName());
                 person.setLastName(dto.getLastName());
                 person.setConfirmationCode(dto.getCode());
-                person.setBlocked(false);
                 person.setIsApproved(true);
-                person.setMessagesPermission(Permission.ALL);
                 person.setRoles(getBasePermission());
-                person.setLastOnline(new Date());
+                person.setLastOnlineTime(new Date());
 
                 repository.save(person);
 
