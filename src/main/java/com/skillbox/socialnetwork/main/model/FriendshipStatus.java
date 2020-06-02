@@ -16,7 +16,7 @@ public class FriendshipStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Calendar time;
+    private Date time;
 
     private String name;
 

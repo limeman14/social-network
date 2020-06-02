@@ -13,12 +13,10 @@ public class Post2tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @NotNull
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tag_id")
     private Tag tag;

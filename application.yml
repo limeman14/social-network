@@ -1,13 +1,22 @@
-spring.datasource.url: jdbc:mysql://localhost:3306/social_network?allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true&useUnicode=true&useSSL=false&serverTimezone=Europe/Moscow&characterEncoding=utf8
-spring.datasource.username: root
-spring.datasource.password: testtest
-spring.jpa.hibernate.ddl-auto: none
-spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
-spring.jpa.show-sql: true
-spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/social_network?&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password: ab33aa4c
+#    initialization-mode: always
+#    data: classpath:/bd/data.sql
+  jpa:
+    hibernate.ddl-auto: none
+    generate-ddl: true
+    properties.hibernate.dialect: org.hibernate.dialect.MySQL55Dialect
+
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+
+jwt.token:
+  secret: jwtappdemo
+  expired: 3600000
 
 server:
   port : 8086
-
-skillbox.app.jwtSecret: skillboxSecretKey
-skillbox.app.jwtExpirationMs: 86400000

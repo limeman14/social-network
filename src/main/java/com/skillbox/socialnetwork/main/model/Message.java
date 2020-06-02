@@ -15,7 +15,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Calendar time;
+    private Date time;
 
     @ManyToOne
     @JoinColumn(name = "author_id")

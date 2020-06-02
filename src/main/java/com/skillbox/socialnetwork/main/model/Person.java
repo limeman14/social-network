@@ -1,13 +1,10 @@
 package com.skillbox.socialnetwork.main.model;
 
-import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Calendar;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -22,21 +19,20 @@ public class Person {
     private String lastName;
 
     @CreationTimestamp
-    private Calendar regDate;
+    private Date regDate;
 
-    private Calendar birthDate;
+    private Date birthDate;
 
     @Column(name = "e_mail", unique = true)
     private String email;
 
     private String phone;
 
+    @JsonIgnore
     private String password;
 
-    @Type(type = "text")
     private String photo;
 
-    @Type(type = "text")
     private String about;
 
     @ManyToOne
@@ -49,11 +45,15 @@ public class Person {
     @Enumerated(EnumType.STRING)
     private Permission messagesPermission;
 
-    @Column(name = "last_online_time")
-    private Calendar lastOnline;
+    private Date lastOnline;
 
-    @Column(name = "is_blocked")
     private Boolean blocked;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = {@JoinColumn(name = "person_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<Role> roles;
 
     @OneToMany(mappedBy = "person")
     private List<BlockHistory> blockHistories;
