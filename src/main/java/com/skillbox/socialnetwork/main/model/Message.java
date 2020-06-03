@@ -5,7 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.util.Calendar;
 import java.util.Date;
 
 @Entity
@@ -16,25 +16,19 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //@TODO: При сериализации возвращать long
-    @NotNull
     private Date time;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Person author;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "recipient_id")
     private Person recipient;
 
-    @NotNull
     @Type(type = "text")
     private String messageText;
 
-    @NotNull
     @Enumerated(value = EnumType.STRING)
     private ReadStatus readStatus;
 }

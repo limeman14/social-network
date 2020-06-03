@@ -5,6 +5,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -16,23 +17,17 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //@TODO: При сериализации возвращать long
-    @NotNull
     private Date time;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Person author;
 
-    @NotNull
     private String title;
 
-    @NotNull
     @Type(type = "text")
     private String postText;
 
-    @NotNull
     private Boolean isBlocked;
 
     @OneToMany(mappedBy = "tag")
@@ -49,4 +44,9 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     private List<BlockHistory> blockHistories;
+
+    @Override
+    public String toString(){
+        return id + " " + title + " " + postText;
+    }
 }

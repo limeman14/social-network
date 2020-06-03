@@ -1,26 +1,42 @@
 package com.skillbox.socialnetwork.main.security.jwt;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skillbox.socialnetwork.main.model.Permission;
+import com.skillbox.socialnetwork.main.model.Town;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Objects;
+import java.util.Date;
 
+@AllArgsConstructor
+@Getter
 public class JwtUser implements UserDetails {
 
-    private Integer id;
+    private int id;
+    private String firstName;
+    private String lastName;
+    private Date regDate;
+    private Date birthDate;
     private String email;
+    private String phone;
     @JsonIgnore
     private String password;
+    private String photo;
+    private String about;
+    private Town town;
+    private String confirmationCode;
+    private boolean isApproved;
+    private Permission messagePermission;
+    private Date lastOnline;
+    private boolean isBlocked;
     private Collection<? extends GrantedAuthority> authorities;
-
-    public JwtUser(Integer id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -44,7 +60,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isBlocked;
     }
 
     @Override
@@ -54,16 +70,6 @@ public class JwtUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        JwtUser user = (JwtUser) o;
-        return Objects.equals(id, user.id);
+        return isApproved;
     }
 }

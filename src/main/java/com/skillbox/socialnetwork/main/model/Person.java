@@ -1,12 +1,10 @@
 package com.skillbox.socialnetwork.main.model;
 
-import com.skillbox.socialnetwork.main.model.enumerated.Permission;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.hibernate.annotations.Type;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -18,42 +16,34 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
     private String firstName;
 
-    @NotNull
     private String lastName;
 
-    @CreatedDate
+    @CreationTimestamp
     private Date regDate;
 
     private Date birthDate;
 
-    @NotNull
-    @Column(unique = true)
+    @Column(name = "e_mail", unique = true)
     private String email;
 
     private String phone;
 
-    @NotNull
+    @JsonIgnore
     private String password;
 
-    @Type(type = "text")
     private String photo;
 
-    @Type(type = "text")
     private String about;
 
     @ManyToOne
-    @JoinColumn(name = "town_id")
     private Town town;
 
-    @NotNull
     private String confirmationCode;
 
     private Boolean isApproved;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Permission messagesPermission;
 
@@ -61,20 +51,26 @@ public class Person {
 
     private Boolean isBlocked;
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<Role> roles;
+
+    @OneToMany(mappedBy = "person")
     private List<BlockHistory> blockHistories;
 
     @OneToMany(mappedBy = "srcPerson")
-    private List<Friendship> srcFriendships;
+    private List<Friendship> friendshipsSrc;
 
     @OneToMany(mappedBy = "dstPerson")
-    private List<Friendship> dstFriendships;
+    private List<Friendship> friendshipsDst;
 
     @OneToMany(mappedBy = "author")
     private List<Message> sentMessages;
 
     @OneToMany(mappedBy = "recipient")
-    private List<Message> receivedMessages;
+    private List<Message> recipientMessages;
 
     @OneToMany(mappedBy = "author")
     private List<Post> posts;
@@ -88,10 +84,5 @@ public class Person {
     @OneToMany(mappedBy = "person")
     private List<Notification> notifications;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private List<Role> roles;
 
 }

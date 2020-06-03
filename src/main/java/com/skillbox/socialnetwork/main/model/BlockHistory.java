@@ -4,8 +4,7 @@ import com.skillbox.socialnetwork.main.model.enumerated.BlockHistoryAction;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.util.Calendar;
 
 @Entity
 @Data
@@ -15,10 +14,8 @@ public class BlockHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //@TODO: При сериализации возвращать long
-    private Date time;
+    private Calendar time;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "person_id")
     private Person person;
@@ -31,7 +28,6 @@ public class BlockHistory {
     @JoinColumn(name = "comment_id")
     private PostComment comment;
 
-    @NotNull
     @Enumerated(value = EnumType.STRING)
     private BlockHistoryAction action;
 }
