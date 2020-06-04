@@ -3,11 +3,11 @@ package com.skillbox.socialnetwork.main.service.impl;
 import com.skillbox.socialnetwork.main.dto.ResponseDto;
 import com.skillbox.socialnetwork.main.dto.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseErrorResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.model.Permission;
+import com.skillbox.socialnetwork.main.dto.universal.BaseOkDto;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
+import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import com.skillbox.socialnetwork.main.repository.RoleRepository;
 import com.skillbox.socialnetwork.main.service.PersonService;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,7 +78,7 @@ public class PersonServiceImpl implements PersonService {
 
                 repository.save(person);
 
-                return new BaseResponseDto();
+                return new BaseOkDto();
             }else{
                 return new BaseErrorResponseDto("invalid_request", "Данный email уже зарегистрирован");
             }

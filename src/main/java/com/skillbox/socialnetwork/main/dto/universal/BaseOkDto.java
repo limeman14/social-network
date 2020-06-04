@@ -1,7 +1,5 @@
 package com.skillbox.socialnetwork.main.dto.universal;
 
-import com.skillbox.socialnetwork.main.dto.AbstractResponse;
-import com.skillbox.socialnetwork.main.dto.ResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,14 +9,13 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @Data
-public class BaseResponseDto extends ErrorResponseDto {
-
+public class BaseOkDto extends ErrorResponseDto {
     private Long timestamp;
-    private ResponseDto data;
+    private DataDto data;
 
-    public BaseResponseDto(ResponseDto data) {
+    public BaseOkDto(){
         super("string");
         timestamp = new Date().getTime();
-        this.data = data;
+        data = new DataDto("ok");
     }
 }

@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 

@@ -4,7 +4,7 @@ import com.skillbox.socialnetwork.main.dto.ResponseDto;
 import com.skillbox.socialnetwork.main.dto.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.request.RegisterRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseOkDto;
 import com.skillbox.socialnetwork.main.dto.universal.ErrorResponseDto;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
@@ -69,7 +69,7 @@ public class AuthenticationRestControllerV1 {
     public ResponseEntity<?> logout(@RequestHeader(name = "Authorization") String token) {
         String email = jwtTokenProvider.getUsername(token);
         personService.logout(personService.findByEmail(email));
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto());
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseOkDto());
     }
 
 }
