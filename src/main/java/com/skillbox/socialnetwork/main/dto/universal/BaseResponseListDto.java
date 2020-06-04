@@ -5,17 +5,18 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Date;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
 @Data
-public class BaseOkDto extends ErrorResponseDto {
+@AllArgsConstructor
+public class BaseResponseListDto extends ErrorResponseDto{
     private Long timestamp;
-    private DataDto data;
+    private List<ResponseDto> data;
 
-    public BaseOkDto(){
+    public BaseResponseListDto(List<ResponseDto> data) {
         super("string");
         timestamp = new Date().getTime();
-        data = new DataDto("ok");
+        this.data = data;
     }
 }

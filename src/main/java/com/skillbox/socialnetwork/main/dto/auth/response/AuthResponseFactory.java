@@ -1,13 +1,13 @@
 package com.skillbox.socialnetwork.main.dto.auth.response;
 
-import com.skillbox.socialnetwork.main.dto.AbstractResponse;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
 import com.skillbox.socialnetwork.main.model.Person;
 
 public class AuthResponseFactory {
 
-    public static AbstractResponse getAuthResponse(Person person, String token){
-        return new AbstractResponse(
-                new AuthPersonDto(
+    public static BaseResponseDto getAuthResponse(Person person, String token){
+        return new BaseResponseDto(
+                new AuthPersonResponseDto(
                     person.getId(),
                     person.getFirstName(),
                     person.getLastName(),

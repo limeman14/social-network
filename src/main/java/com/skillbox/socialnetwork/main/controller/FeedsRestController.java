@@ -1,6 +1,6 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.post.PostsListResponseFactory;
+import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
 import com.skillbox.socialnetwork.main.service.PersonService;
@@ -40,7 +40,7 @@ public class FeedsRestController {
 
         //@TODO: Реализовать работу поиска, отступов и лимита на страницу
         List<Post> posts = postService.getAll();
-        return ResponseEntity.status(HttpStatus.OK).body(PostsListResponseFactory.getPosts(posts));
+        return ResponseEntity.status(HttpStatus.OK).body(PostResponseFactory.getPosts(posts));
     }
 
 }

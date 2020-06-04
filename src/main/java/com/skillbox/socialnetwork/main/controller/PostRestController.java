@@ -1,9 +1,8 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.AbstractResponseList;
-import com.skillbox.socialnetwork.main.dto.post.PostResponseFactory;
-import com.skillbox.socialnetwork.main.dto.post.PostsListResponseFactory;
-import com.skillbox.socialnetwork.main.dto.request.UpdatePostDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
+import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
+import com.skillbox.socialnetwork.main.dto.post.request.UpdatePostRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.service.PostService;
@@ -25,7 +24,7 @@ public class PostRestController {
     }
 
     @GetMapping("/api/v1/post")
-    public ResponseEntity<AbstractResponseList> getPosts(
+    public ResponseEntity<BaseResponseListDto> getPosts(
 //            @RequestParam String text,
 //            @RequestParam(name = "date_from", required = false) Long dateFrom,
 //            @RequestParam(name = "date_to", required = false) Long dateTo,
@@ -36,7 +35,7 @@ public class PostRestController {
         //@TODO: Реализовать работу поиска, отступов и лимита на страницу и лимита по дате
 
         List<Post> posts = postService.getAll();
-        return ResponseEntity.status(HttpStatus.OK).body(PostsListResponseFactory.getPosts(posts));
+        return ResponseEntity.status(HttpStatus.OK).body(PostResponseFactory.getPosts(posts));
     }
 
     @GetMapping("/api/v1/post/{id}")
@@ -46,7 +45,7 @@ public class PostRestController {
     }
 
     @PutMapping("api/v1/post/{id}")
-    public ResponseEntity<?> updatePost(@PathVariable int id, @RequestParam(name = "publish_date", required = false) Long publishDate, @RequestBody UpdatePostDto postDto) {
+    public ResponseEntity<?> updatePost(@PathVariable int id, @RequestParam(name = "publish_date", required = false) Long publishDate, @RequestBody UpdatePostRequestDto postDto) {
         Post post = postService.findById(id);
         post.setPostText(postDto.getPostText());
         post.setTitle(postDto.getTitle());

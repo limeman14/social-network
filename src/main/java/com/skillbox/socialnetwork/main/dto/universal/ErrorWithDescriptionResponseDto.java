@@ -6,12 +6,12 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class BaseErrorResponseDto extends ErrorResponseDto{
+public class ErrorWithDescriptionResponseDto extends ErrorResponseDto{
 
     @JsonProperty("error_description")
     private String errorDescription;
 
-    public BaseErrorResponseDto(String error, String errorDescription){
+    public ErrorWithDescriptionResponseDto(String error, String errorDescription){
         super(error);
         this.errorDescription = errorDescription;
     }
