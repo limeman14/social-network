@@ -41,11 +41,6 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person findByUsername(String username) {
-        return null;
-    }
-
-    @Override
     public Person findByEmail(String email) {
         return repository.findByEmail(email);
     }
@@ -108,6 +103,4 @@ public class PersonServiceImpl implements PersonService {
         person.setLastOnlineTime(new Date());
         log.info("IN logout - user: {} logged out", repository.save(person));
     }
-
-
 }
