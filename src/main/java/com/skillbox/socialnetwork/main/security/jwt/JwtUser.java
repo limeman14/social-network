@@ -2,8 +2,8 @@ package com.skillbox.socialnetwork.main.security.jwt;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.skillbox.socialnetwork.main.model.Permission;
 import com.skillbox.socialnetwork.main.model.Town;
+import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;

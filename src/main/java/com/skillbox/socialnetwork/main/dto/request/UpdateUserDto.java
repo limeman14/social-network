@@ -1,7 +1,7 @@
 package com.skillbox.socialnetwork.main.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skillbox.socialnetwork.main.model.Permission;
+import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
