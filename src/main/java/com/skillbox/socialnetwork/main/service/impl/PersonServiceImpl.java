@@ -1,9 +1,10 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.skillbox.socialnetwork.main.dto.ResponseDto;
-import com.skillbox.socialnetwork.main.dto.request.RegisterRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseErrorResponseDto;
+import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ErrorWithDescriptionResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

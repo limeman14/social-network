@@ -1,10 +1,9 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.skillbox.socialnetwork.main.dto.AbstractResponse;
-import com.skillbox.socialnetwork.main.dto.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
+import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
-import com.skillbox.socialnetwork.main.dto.request.AuthenticationRequestDto;
-import com.skillbox.socialnetwork.main.dto.request.RegisterRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
@@ -32,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AbstractResponse login(AuthenticationRequestDto request) {
+    public ResponseDto login(AuthenticationRequestDto request) {
         try {
             String email = request.getEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
@@ -51,8 +50,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseDto register(RegisterRequestDto request) {
-        ResponseDto responseDto = personService.registration(request);
-        return responseDto;
+
+        return personService.registration(request);
     }
 
     @Override

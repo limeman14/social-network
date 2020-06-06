@@ -1,23 +1,16 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.ResponseDto;
-import com.skillbox.socialnetwork.main.dto.request.AuthenticationRequestDto;
-import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
-import com.skillbox.socialnetwork.main.dto.request.RegisterRequestDto;
+
+import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
+import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.ErrorResponseDto;
-import com.skillbox.socialnetwork.main.model.Person;
-import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
+import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.service.AuthService;
-import com.skillbox.socialnetwork.main.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -53,7 +46,7 @@ public class AuthenticationRestControllerV1 {
     @PostMapping("/api/v1/auth/logout")
     public ResponseEntity<?> logout(@RequestHeader(name = "Authorization") String token) {
         authService.logout(token);
-        return ResponseEntity.ok(new BaseResponseDto());
+        return ResponseEntity.ok(new BaseResponseDto(new MessageResponseDto("ok")));
     }
 
 }

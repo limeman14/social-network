@@ -1,14 +1,15 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.skillbox.socialnetwork.main.dto.AbstractResponse;
+import com.skillbox.socialnetwork.main.dto.person.request.UpdatePersonRequestDto;
+import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
 import com.skillbox.socialnetwork.main.dto.post.PostResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.SearchPersonDto;
 import com.skillbox.socialnetwork.main.dto.profile.WallDto;
 import com.skillbox.socialnetwork.main.dto.profile.WallResponseFactory;
 import com.skillbox.socialnetwork.main.dto.request.AddPostRequestDto;
-import com.skillbox.socialnetwork.main.dto.request.UpdateUserDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.users.PersonResponseFactory;
+import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
 import com.skillbox.socialnetwork.main.repository.*;
@@ -32,32 +33,37 @@ public class ProfileServiceImpl implements ProfileService {
     private final FriendshipStatusRepo friendshipStatusRepo;
     private final FriendshipRepository friendshipRepository;
     private final P2TRepository p2TRepository;
+    private final FileRepository fileRepository;
 
 
     @Autowired
-    public ProfileServiceImpl(PersonRepository personRepository, PostRepository postRepository, TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo, FriendshipRepository friendshipRepository, P2TRepository p2TRepository) {
+    public ProfileServiceImpl(PersonRepository personRepository, PostRepository postRepository,
+                              TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo,
+                              FriendshipRepository friendshipRepository, P2TRepository p2TRepository,
+                              FileRepository fileRepository) {
         this.personRepository = personRepository;
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
         this.friendshipStatusRepo = friendshipStatusRepo;
         this.friendshipRepository = friendshipRepository;
         this.p2TRepository = p2TRepository;
+        this.fileRepository = fileRepository;
     }
 
 
     @Override
-    public AbstractResponse getMyProfile(Person person) {
+    public ResponseDto getMyProfile(Person person) {
         log.info("IN getMyProfile person: {} found", person);
         return PersonResponseFactory.getPerson(person);
     }
 
     @Override
-    public AbstractResponse editMyProfile(Person person, UpdateUserDto request) {
+    public ResponseDto editMyProfile(Person person, UpdatePersonRequestDto request) {
         person.setFirstName(request.getFirstName());
         person.setLastName(request.getLastName());
         person.setBirthDate(request.getBirthDate());
         person.setPhone(request.getPhone());
-        person.setPhoto(request.getPhotoId()); // Здесь надо изменить механизм присвоения картинок.
+        person.setPhoto(fileRepository.findById(request.getPhotoId()).getRelativeFilePath()); // Здесь надо изменить механизм присвоения картинок.
         person.setAbout(request.getAbout());
         person.setTown(null);// здесь нужно определить функциональность на счёт города
 
@@ -69,13 +75,13 @@ public class ProfileServiceImpl implements ProfileService {
     public BaseResponseDto deleteMyProfile(Person person) {
         personRepository.delete(person);
         log.info("IN deleteMyProfile user: {} deleted successfully", person);
-        return new BaseResponseDto();
+        return new BaseResponseDto(new MessageResponseDto("ok"));
     }
 
     @Override
-    public AbstractResponse getUserById(int id, Person authorizedUser) {
+    public ResponseDto getUserById(int id, Person authorizedUser) {
         Optional<Person> profile = personRepository.findById(id);
-        AbstractResponse result = null;
+        ResponseDto result = null;
         if(profile.isPresent()){
             //эта строчка проверяет, заблокировал ли текущий авторизованный юзер юзера, которого ищем по id
             profile.get().setIsBlocked(friendshipRepository.isBlocked(authorizedUser, profile.get()));
@@ -99,7 +105,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public AbstractResponse addPost(int id, long publishDate, AddPostRequestDto request) {
+    public ResponseDto addPost(int id, long publishDate, AddPostRequestDto request) {
         Optional<Person> person = personRepository.findById(id);
         if(person.isPresent()){
             Post post = new Post();
@@ -169,7 +175,7 @@ public class ProfileServiceImpl implements ProfileService {
 
             friendshipRepository.save(relation);
             log.info("IN blockUser user: {} blocked user {}", authorizedUser.getEmail(), profileToBlock.get().getEmail());
-            return new BaseResponseDto();
+            return new BaseResponseDto(new MessageResponseDto("ok"));
         }
         log.info("IN blockUser user with id: {} not found", idOfABlockedUser);
         return null;
@@ -181,7 +187,7 @@ public class ProfileServiceImpl implements ProfileService {
         if(profileToBlock.isPresent()){
             friendshipRepository.delete(friendshipRepository.findRelation(authorizedUser, profileToBlock.get(), FriendshipCode.BLOCKED));
             log.info("IN unblockUser user: {} unblocked user {}", authorizedUser.getEmail(), profileToBlock.get().getEmail());
-            return new BaseResponseDto();
+            return new BaseResponseDto(new MessageResponseDto("ok"));
         }
         log.info("IN unblockUser user with id: {} not found", id);
         return null;

@@ -1,6 +1,6 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
+import com.skillbox.socialnetwork.main.dto.post.PostsListResponseFactory;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
 import com.skillbox.socialnetwork.main.service.PersonService;

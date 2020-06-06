@@ -1,7 +1,6 @@
-package com.skillbox.socialnetwork.main.dto.request;
+package com.skillbox.socialnetwork.main.dto.person.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UpdateUserDto {
+public class UpdatePersonRequestDto {
     @JsonProperty("first_name")
     private String firstName;
     @JsonProperty("last_name")

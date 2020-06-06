@@ -8,5 +8,5 @@ import java.io.IOException;
 
 public interface FileService {
     FileDto saveImage(String token, MultipartFile file) throws IOException;
-    void resizeImage(File file, String dstFolder) throws IOException;
+    void resizeImage(File file, String dstFolder, String fileFormat) throws IOException;
 }

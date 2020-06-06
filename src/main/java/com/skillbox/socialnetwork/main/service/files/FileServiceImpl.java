@@ -6,6 +6,7 @@ import com.skillbox.socialnetwork.main.model.enumerated.FileType;
 import com.skillbox.socialnetwork.main.repository.FileRepository;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
 import com.skillbox.socialnetwork.main.service.impl.PersonServiceImpl;
+import liquibase.pro.packaged.S;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,21 +50,23 @@ public class FileServiceImpl implements FileService{
 
         String id = UUID.randomUUID().toString();
         int ownerId = personService.findByEmail(jwtTokenProvider.getUsername(token)).getId();
-        String fileName = file.getOriginalFilename();
-        String relativeFilePath = uploadPath + "/img/resize/" + id + "." + fileName;
-        String rawFileURL = uploadPath + "/img/full/" + id + "." + fileName;
+        String fullFileName = file.getOriginalFilename();
+        String fileName = fullFileName.substring(0, fullFileName.lastIndexOf("."));
+        String fileFormat = fullFileName.substring(fullFileName.lastIndexOf(".") + 1);
+
+        String relativeFilePath = uploadPath + "/img/resize/" + id + "." + fileName + "." + fileFormat;
+        String rawFileURL = uploadPath + "/img/full/" + id + "." + fileName + "." + fileFormat;
         assert fileName != null;
-        String fileFormat = fileName.substring(fileName.lastIndexOf(".") + 1);
         long bytes = file.getSize();
         FileType fileType = FileType.IMAGE;
 
         File fullFile = new File(rawFileURL);
 
         file.transferTo(fullFile);
-        resizeImage(fullFile, relativeFilePath);
+        resizeImage(fullFile, relativeFilePath , fileFormat);
 
-        relativeFilePath = "/img/resize/" + id + "." + fileName;
-        rawFileURL = "/img/full/" + id + "." + fileName;
+        relativeFilePath = "/img/resize/" + id + "." + fullFileName;
+        rawFileURL = "/img/full/" + id + "." + fullFileName;
 
 
 
@@ -85,7 +88,7 @@ public class FileServiceImpl implements FileService{
     }
 
     @Override
-    public void resizeImage(File file, String dstFolder) throws IOException {
+    public void resizeImage(File file, String dstFolder, String fileFormat) throws IOException {
         BufferedImage image = ImageIO.read(file);
 
         int newWidth = 300;
@@ -99,6 +102,6 @@ public class FileServiceImpl implements FileService{
                 newWidth, newHeight, Scalr.OP_ANTIALIAS);
 
         File newFile = new File(dstFolder);
-        ImageIO.write(scaledImg2, "jpg", newFile);
+        ImageIO.write(scaledImg2, fileFormat, newFile);
     }
 }

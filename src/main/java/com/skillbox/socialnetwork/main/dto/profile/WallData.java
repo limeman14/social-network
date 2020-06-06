@@ -1,8 +1,7 @@
 package com.skillbox.socialnetwork.main.dto.profile;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skillbox.socialnetwork.main.dto.AbstractResponse;
-import com.skillbox.socialnetwork.main.dto.PersonDto;
+import com.skillbox.socialnetwork.main.dto.person.response.PersonDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,6 @@
 package com.skillbox.socialnetwork.main.dto.profile;
 
-import com.skillbox.socialnetwork.main.dto.PersonDto;
-import com.skillbox.socialnetwork.main.dto.users.PersonResponseFactory;
+import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
 import com.skillbox.socialnetwork.main.model.Post;
 
 import java.util.ArrayList;
@@ -20,6 +19,8 @@ public class WallResponseFactory {
                 data
         );
     }
+
+
     private static List<WallData> getData(List<Post> posts){
         List<WallData> data = new ArrayList<>();
 

@@ -1,14 +1,15 @@
 package com.skillbox.socialnetwork.main.dto.post;
 
-import com.skillbox.socialnetwork.main.dto.AbstractResponse;
-import com.skillbox.socialnetwork.main.dto.users.PersonResponseFactory;
+import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.model.Post;
 
 import java.util.ArrayList;
 
 public class PostResponseFactory {
-    public static AbstractResponse getPost(Post post) {
-        return new AbstractResponse(
+    public static ResponseDto getPost(Post post) {
+        return new BaseResponseDto(
                 new PostDto(
                         post.getId(),
                         post.getTime().getTime(),

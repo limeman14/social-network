@@ -1,9 +1,9 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
-import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
 import com.skillbox.socialnetwork.main.dto.post.request.UpdatePostRequestDto;
+import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
