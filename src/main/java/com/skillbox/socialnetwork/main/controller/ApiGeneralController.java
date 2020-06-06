@@ -1,8 +1,8 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.ResponseDto;
 import com.skillbox.socialnetwork.main.dto.files.response.FileDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.service.files.FileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

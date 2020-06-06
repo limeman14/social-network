@@ -1,7 +1,7 @@
 package com.skillbox.socialnetwork.main.dto.files.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skillbox.socialnetwork.main.dto.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.model.enumerated.FileType;
 import lombok.Data;
 
