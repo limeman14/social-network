@@ -11,13 +11,14 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class BaseResponseDto extends ErrorResponseDto {
+
     private Long timestamp;
     private ResponseDto data;
 
-    public BaseResponseDto(){
+    public BaseResponseDto(ResponseDto data) {
         super("string");
         timestamp = new Date().getTime();
-        data = new DataDto("ok");
+        this.data = data;
     }
 
 

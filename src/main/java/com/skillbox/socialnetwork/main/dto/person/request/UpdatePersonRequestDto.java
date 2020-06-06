@@ -1,4 +1,4 @@
-package com.skillbox.socialnetwork.main.dto.request;
+package com.skillbox.socialnetwork.main.dto.person.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserDto {
+public class UpdatePersonRequestDto {
     @JsonProperty("last_name")
     private String firstName;
     @JsonProperty("birth_date")

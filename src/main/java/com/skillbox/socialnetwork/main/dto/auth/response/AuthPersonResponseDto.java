@@ -1,15 +1,15 @@
 package com.skillbox.socialnetwork.main.dto.auth.response;
 
-import com.skillbox.socialnetwork.main.dto.PersonDto;
+import com.skillbox.socialnetwork.main.dto.person.response.PersonDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AuthPersonDto extends PersonDto {
+public class AuthPersonResponseDto extends PersonDto {
     private String token;
 
-    public AuthPersonDto(
+    public AuthPersonResponseDto(
             int id,
             String firstName,
             String lastName,

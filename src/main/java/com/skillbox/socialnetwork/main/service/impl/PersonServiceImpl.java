@@ -1,9 +1,10 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.skillbox.socialnetwork.main.dto.ResponseDto;
-import com.skillbox.socialnetwork.main.dto.request.RegisterRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseErrorResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.ErrorWithDescriptionResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
@@ -24,7 +25,7 @@ import java.util.List;
 @Slf4j
 public class PersonServiceImpl implements PersonService {
 
-    private PersonRepository repository;
+    private final PersonRepository repository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     @Autowired
@@ -78,12 +79,12 @@ public class PersonServiceImpl implements PersonService {
 
                 repository.save(person);
 
-                return new BaseResponseDto();
+                return new BaseResponseDto(new MessageResponseDto("ok"));
             }else{
-                return new BaseErrorResponseDto("invalid_request", "Данный email уже зарегистрирован");
+                return new ErrorWithDescriptionResponseDto("invalid_request", "Данный email уже зарегистрирован");
             }
         }else{
-            return new BaseErrorResponseDto("invalid_request", "Пароль указан некорректно");
+            return new ErrorWithDescriptionResponseDto("invalid_request", "Пароль указан некорректно");
         }
     }
 
