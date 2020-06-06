@@ -58,9 +58,13 @@ public class FileServiceImpl implements FileService{
         FileType fileType = FileType.IMAGE;
 
         File fullFile = new File(rawFileURL);
-        file.transferTo(fullFile);
 
+        file.transferTo(fullFile);
         resizeImage(fullFile, relativeFilePath);
+
+        relativeFilePath = "/img/resize/" + id + "." + fileName;
+        rawFileURL = "/img/full/" + id + "." + fileName;
+
 
 
         UploadFile uploadFile = new UploadFile();
@@ -73,12 +77,11 @@ public class FileServiceImpl implements FileService{
         uploadFile.setBytes(bytes);
         uploadFile.setFileFormat(fileFormat);
         uploadFile.setFileType(fileType);
-        uploadFile.setCreatedAt(new Date());
         fileRepository.save(uploadFile);
 
 
-        return new FileDto(id, ownerId, fileName, "/img/resize/" + id + "." + fileName,
-                "/img/full/" + id + "." + fileName, fileFormat, bytes, fileType, new Date());
+        return new FileDto(id, ownerId, fileName, relativeFilePath,
+                rawFileURL, fileFormat, bytes, fileType, new Date());
     }
 
     @Override
