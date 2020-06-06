@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
-@Table(name = "post2tags")
+@Table(name = "posts2tags")
 public class Post2tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

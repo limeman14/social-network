@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -34,15 +31,17 @@ public class ProfileServiceImpl implements ProfileService {
     private final TagRepository tagRepository;
     private final FriendshipStatusRepo friendshipStatusRepo;
     private final FriendshipRepository friendshipRepository;
+    private final P2TRepository p2TRepository;
 
 
     @Autowired
-    public ProfileServiceImpl(PersonRepository personRepository, PostRepository postRepository, TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo, FriendshipRepository friendshipRepository) {
+    public ProfileServiceImpl(PersonRepository personRepository, PostRepository postRepository, TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo, FriendshipRepository friendshipRepository, P2TRepository p2TRepository) {
         this.personRepository = personRepository;
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
         this.friendshipStatusRepo = friendshipStatusRepo;
         this.friendshipRepository = friendshipRepository;
+        this.p2TRepository = p2TRepository;
     }
 
 
@@ -89,7 +88,12 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public WallDto getWallPosts(int id, int offset, int limit) {
         Optional<Person> person = personRepository.findById(id);
-        WallDto result = person.map(value -> WallResponseFactory.getWall(value.getPosts(), offset, limit)).orElse(null);
+        WallDto result = null;
+        if(person.isPresent()) {
+            List<Post> posts = person.get().getPosts();
+            posts.sort(Comparator.comparing(Post::getTime).reversed());//сортирую по дате чтобы на стенке выводились сначала новые
+            result = WallResponseFactory.getWall(posts, offset, limit);
+        }
         log.info("IN getWallPosts posts" + (result!=null ? ": ("+result.getData().size()+") have found" : "not found") );
         return result;
     }
@@ -109,15 +113,17 @@ public class ProfileServiceImpl implements ProfileService {
             post.setPostText(request.getText());
             post.setIsBlocked(false);
             //collections initialized to avoid nullPointer in PostResponseFactoryMethods
-            post.setBlockHistories(new ArrayList<>());
+            post.setLikes(new ArrayList<>());
             post.setComments(new ArrayList<>());
             post.setFiles(new ArrayList<>());
-            post.setLikes(new ArrayList<>());
+            post.setBlockHistories(new ArrayList<>());
+
+            Post savedPost = postRepository.save(post);
             //tags
             List<Post2tag> tags = new ArrayList<>();
             request.getTags().forEach(tag -> {
                 Post2tag ttp = new Post2tag();
-                ttp.setPost(post);
+                ttp.setPost(savedPost);
                 if(!tagRepository.existsByTagIgnoreCase(tag)){
                     Tag t = new Tag();
                     t.setTag(tag);
@@ -126,9 +132,8 @@ public class ProfileServiceImpl implements ProfileService {
                 ttp.setTag(tagRepository.findFirstByTagIgnoreCase(tag));
                 tags.add(ttp);
             });
-            post.setTags(tags);
-            postRepository.save(post);
-            Post result = postRepository.save(post);
+            savedPost.setTags(p2TRepository.saveAll(tags));
+            Post result = postRepository.save(savedPost);
             log.info("IN addPost post: {} added with tags: {} successfully", result, tags);
             return PostResponseFactory.getPost(result);
         }
@@ -163,8 +168,10 @@ public class ProfileServiceImpl implements ProfileService {
             relation.setStatus(friendshipStatusRepo.save(status));
 
             friendshipRepository.save(relation);
+            log.info("IN blockUser user: {} blocked user {}", authorizedUser.getEmail(), profileToBlock.get().getEmail());
             return new BaseResponseDto();
         }
+        log.info("IN blockUser user with id: {} not found", idOfABlockedUser);
         return null;
     }
 
@@ -173,8 +180,10 @@ public class ProfileServiceImpl implements ProfileService {
         Optional<Person> profileToBlock = personRepository.findById(id);
         if(profileToBlock.isPresent()){
             friendshipRepository.delete(friendshipRepository.findRelation(authorizedUser, profileToBlock.get(), FriendshipCode.BLOCKED));
+            log.info("IN unblockUser user: {} unblocked user {}", authorizedUser.getEmail(), profileToBlock.get().getEmail());
             return new BaseResponseDto();
         }
+        log.info("IN unblockUser user with id: {} not found", id);
         return null;
     }
 
