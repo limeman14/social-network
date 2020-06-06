@@ -16,7 +16,7 @@ public interface ProfileService {
 
     BaseResponseDto deleteMyProfile(Person person);
 
-    AbstractResponse getUserById(int id);
+    AbstractResponse getUserById(int id, Person authorizedUser);
 
     WallDto getWallPosts(int id, int offset, int limit);
 
@@ -29,6 +29,9 @@ public interface ProfileService {
                                  String country,
                                  String city,
                                  Integer offset,
-                                 Integer limit);
+                                 Integer limit,
+                                 Person auhtorizedUser);
+    BaseResponseDto blockUser(int idOfABlockedUser, Person authorizedUser);
 
+    BaseResponseDto unblockUser(int id, Person authorizedUser);
 }

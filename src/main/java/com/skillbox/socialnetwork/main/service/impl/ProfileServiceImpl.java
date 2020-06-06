@@ -9,13 +9,9 @@ import com.skillbox.socialnetwork.main.dto.request.AddPostRequestDto;
 import com.skillbox.socialnetwork.main.dto.request.UpdateUserDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
 import com.skillbox.socialnetwork.main.dto.users.PersonResponseFactory;
-import com.skillbox.socialnetwork.main.model.Person;
-import com.skillbox.socialnetwork.main.model.Post;
-import com.skillbox.socialnetwork.main.model.Post2tag;
-import com.skillbox.socialnetwork.main.model.Tag;
-import com.skillbox.socialnetwork.main.repository.PersonRepository;
-import com.skillbox.socialnetwork.main.repository.PostRepository;
-import com.skillbox.socialnetwork.main.repository.TagRepository;
+import com.skillbox.socialnetwork.main.model.*;
+import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
+import com.skillbox.socialnetwork.main.repository.*;
 import com.skillbox.socialnetwork.main.service.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +32,17 @@ public class ProfileServiceImpl implements ProfileService {
     private final PersonRepository personRepository;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
+    private final FriendshipStatusRepo friendshipStatusRepo;
+    private final FriendshipRepository friendshipRepository;
 
 
     @Autowired
-    public ProfileServiceImpl(PersonRepository personRepository, PostRepository postRepository, TagRepository tagRepository) {
+    public ProfileServiceImpl(PersonRepository personRepository, PostRepository postRepository, TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo, FriendshipRepository friendshipRepository) {
         this.personRepository = personRepository;
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
+        this.friendshipStatusRepo = friendshipStatusRepo;
+        this.friendshipRepository = friendshipRepository;
     }
 
 
@@ -74,9 +74,14 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public AbstractResponse getUserById(int id) {
-        Optional<Person> person = personRepository.findById(id);
-        AbstractResponse result = person.map(PersonResponseFactory::getPerson).orElse(null);
+    public AbstractResponse getUserById(int id, Person authorizedUser) {
+        Optional<Person> profile = personRepository.findById(id);
+        AbstractResponse result = null;
+        if(profile.isPresent()){
+            //эта строчка проверяет, заблокировал ли текущий авторизованный юзер юзера, которого ищем по id
+            profile.get().setIsBlocked(friendshipRepository.isBlocked(authorizedUser, profile.get()));
+            result = PersonResponseFactory.getPerson(profile.get());
+        }
         log.info("IN getUserById user with id: {}"+(result!=null ? "  found." : "NOT FOUND"), id);
         return result;
     }
@@ -103,7 +108,7 @@ public class ProfileServiceImpl implements ProfileService {
             post.setTitle(request.getTitle());
             post.setPostText(request.getText());
             post.setIsBlocked(false);
-            //collections initialized for exluding nullPointer in PostResponseFactoryMethods
+            //collections initialized to avoid nullPointer in PostResponseFactoryMethods
             post.setBlockHistories(new ArrayList<>());
             post.setComments(new ArrayList<>());
             post.setFiles(new ArrayList<>());
@@ -132,7 +137,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public SearchPersonDto searchPeople(String name, String surname, Integer ageFrom, Integer ageTo, String country,
-                                        String city, Integer offset, Integer limit) {
+                                        String city, Integer offset, Integer limit, Person authorizedUser) {
         // превращаю из локалдейт в дату ибо spring jpa не может в query воспринимать LocalDate и принимает только Date
         Date dateTo = Date.from(LocalDate.now().minusYears(ageFrom).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//плюс день для верхней даты и минус день
         Date dateFrom = Date.from(LocalDate.now().minusYears(ageTo).minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//для нижней т.к. between строгое сравнение.(<>)
@@ -141,6 +146,36 @@ public class ProfileServiceImpl implements ProfileService {
         log.info("IN searchPeople by parameters: name {}, surname {}, ageFrom {}, ageTo {}, country {}, city {} found {} result",
                 name, surname, ageFrom, ageTo, country, city, result.size());
         return PersonResponseFactory.formatPeopleSearchResultSet(result, offset, limit);
+    }
+
+    @Override
+    public BaseResponseDto blockUser(int idOfABlockedUser, Person authorizedUser) {
+        Optional<Person> profileToBlock = personRepository.findById(idOfABlockedUser);
+        if(profileToBlock.isPresent()){
+            FriendshipStatus status = new FriendshipStatus();
+            status.setCode(FriendshipCode.BLOCKED);
+            status.setName("name");//Для чего поле ??
+            status.setTime(new Date());
+
+            Friendship relation = new Friendship();
+            relation.setSrcPerson(authorizedUser);
+            relation.setDstPerson(profileToBlock.get());
+            relation.setStatus(friendshipStatusRepo.save(status));
+
+            friendshipRepository.save(relation);
+            return new BaseResponseDto();
+        }
+        return null;
+    }
+
+    @Override
+    public BaseResponseDto unblockUser(int id, Person authorizedUser) {
+        Optional<Person> profileToBlock = personRepository.findById(id);
+        if(profileToBlock.isPresent()){
+            friendshipRepository.delete(friendshipRepository.findRelation(authorizedUser, profileToBlock.get(), FriendshipCode.BLOCKED));
+            return new BaseResponseDto();
+        }
+        return null;
     }
 
 }
