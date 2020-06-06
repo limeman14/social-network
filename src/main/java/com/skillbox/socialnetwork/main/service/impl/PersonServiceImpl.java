@@ -1,10 +1,9 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
-import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.ErrorWithDescriptionResponseDto;
+import com.skillbox.socialnetwork.main.dto.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.request.RegisterRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseErrorResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +28,7 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository repository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+
     @Autowired
     public PersonServiceImpl(PersonRepository repository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository){
         this.repository = repository;
@@ -38,11 +39,6 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public List<Person> getAll() {
         return repository.findAll();
-    }
-
-    @Override
-    public Person findByUsername(String username) {
-        return null;
     }
 
     @Override
@@ -63,8 +59,8 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public ResponseDto registration(RegisterRequestDto dto) {
 
-        if(checkUserRegisterPassword(dto.getPassword1(), dto.getPassword2())) {
-            if(checkUserLogin(dto.getEmail())) {
+        if (checkUserRegisterPassword(dto.getPassword1(), dto.getPassword2())) {
+            if (checkUserLogin(dto.getEmail())) {
                 Person person = new Person();
                 person.setEmail(dto.getEmail());
                 person.setPassword(passwordEncoder.encode(dto.getPassword1()));
@@ -88,14 +84,15 @@ public class PersonServiceImpl implements PersonService {
         }
     }
 
-    private boolean checkUserRegisterPassword(String password1, String password2){
+    private boolean checkUserRegisterPassword(String password1, String password2) {
         return password1.equals(password2);
     }
-    private boolean checkUserLogin(String email){
+
+    private boolean checkUserLogin(String email) {
         return repository.findByEmail(email) == null;
     }
 
-    private List<Role> getBasePermission(){
+    private List<Role> getBasePermission() {
         Role roleUser = roleRepository.findByName(ERole.ROLE_USER);
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(roleUser);

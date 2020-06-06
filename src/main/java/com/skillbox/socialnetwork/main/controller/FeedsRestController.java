@@ -40,7 +40,7 @@ public class FeedsRestController {
 
         //@TODO: Реализовать работу поиска, отступов и лимита на страницу
         List<Post> posts = postService.getAll();
-        return ResponseEntity.status(HttpStatus.OK).body(PostResponseFactory.getPosts(posts));
+        return ResponseEntity.status(HttpStatus.OK).body(PostsListResponseFactory.getPosts(posts));
     }
 
 }

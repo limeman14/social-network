@@ -10,8 +10,6 @@ public interface PersonService {
 
     List<Person> getAll();
 
-    Person findByUsername(String username);
-
     Person findByEmail(String email);
 
     Person findById(Integer id);

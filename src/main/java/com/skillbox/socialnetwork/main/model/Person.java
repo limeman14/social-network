@@ -73,7 +73,7 @@ public class Person {
     @OneToMany(mappedBy = "recipient")
     private List<Message> recipientMessages;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Post> posts;
 
     @OneToMany(mappedBy = "person")

@@ -1,36 +1,125 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
+import com.skillbox.socialnetwork.main.dto.AbstractResponse;
+import com.skillbox.socialnetwork.main.dto.profile.WallDto;
+import com.skillbox.socialnetwork.main.dto.request.AddPostRequestDto;
+import com.skillbox.socialnetwork.main.dto.request.UpdateUserDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseErrorResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
 import com.skillbox.socialnetwork.main.model.Person;
-import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
-import com.skillbox.socialnetwork.main.service.PersonService;
+import com.skillbox.socialnetwork.main.service.AuthService;
+import com.skillbox.socialnetwork.main.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ProfileController {
-    private final JwtTokenProvider jwtTokenProvider;
-    private final PersonService personService;
+    private final AuthService authService;
+    private final ProfileService profileService;
 
     @Autowired
-    public ProfileController(JwtTokenProvider jwtTokenProvider, PersonService personService) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.personService = personService;
+    public ProfileController(AuthService authService, ProfileService profileService) {
+        this.authService = authService;
+        this.profileService = profileService;
     }
 
     @GetMapping("/api/v1/users/me")
-    public ResponseEntity<?> getMeProfile(HttpServletRequest request){
-        try {
-            String email = jwtTokenProvider.getUsername(request.getHeader("Authorization"));
-            Person person = personService.findByEmail(email);
-            return ResponseEntity.status(HttpStatus.OK).body(PersonResponseFactory.getPerson(person));
-        }catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<?> getMeProfile(@RequestHeader(name = "Authorization") String token) {
+        return authService.isAuthorized(token)
+                ? ResponseEntity.ok(profileService.getMyProfile(authService.getAuthorizedUser(token)))
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseErrorResponseDto("invalid request", "unauthorized"));
+    }
+
+    @PutMapping("/api/v1/users/me")
+    public ResponseEntity<?> editProfile(@RequestHeader(name = "Authorization") String token,
+                                         @RequestBody UpdateUserDto request) {
+        return authService.isAuthorized(token)
+                ? ResponseEntity.ok(profileService.editMyProfile(authService.getAuthorizedUser(token), request))
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseErrorResponseDto("invalid request", "unauthorized"));
+    }
+
+    @DeleteMapping("/api/v1/users/me")
+    public ResponseEntity<?> deleteProfile(@RequestHeader(name = "Authorization") String token) {
+        //нужен логаут вместе с удалением хедера авторизации
+        authService.logout(token);
+        return authService.isAuthorized(token)
+                ? ResponseEntity.ok(profileService.deleteMyProfile(authService.getAuthorizedUser(token)))
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseErrorResponseDto("invalid request", "unauthorized"));
+    }
+
+    @GetMapping("/api/v1/users/{id}")
+    public ResponseEntity<?> findUserById(@RequestHeader(name = "Authorization") String token, @PathVariable int id) {
+        if (authService.isAuthorized(token)) {
+            AbstractResponse result = profileService.getUserById(id, authService.getAuthorizedUser(token));
+            return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseErrorResponseDto("invalid request", "unauthorized"));
+    }
+
+    @GetMapping("/api/v1/users/{id}/wall")
+    public ResponseEntity<?> getWallById(
+            @RequestHeader(name = "Authorization") String token,
+            @PathVariable int id,
+            @RequestParam(name = "offset", defaultValue = "0") Integer offset,
+            @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit) {
+        if (authService.isAuthorized(token)) {
+            WallDto result = profileService.getWallPosts(id, offset, limit);
+            return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseErrorResponseDto("invalid request", "unauthorized"));
+
+    }
+
+    @PostMapping("/api/v1/users/{id}/wall")
+    public ResponseEntity<?> addPost(
+            @RequestHeader(name = "Authorization") String token,
+            @PathVariable int id,
+            @RequestParam(name = "publish_date", defaultValue = "0") Long publishDate,
+            @RequestBody AddPostRequestDto request
+    ) {
+        if (authService.isAuthorized(token)) {
+            AbstractResponse result = profileService.addPost(id, publishDate, request);
+            return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseErrorResponseDto("invalid request", "unauthorized"));
+
+    }
+
+    @GetMapping("/api/v1/users/search")
+    public ResponseEntity<?> searchProfile(
+            @RequestHeader(name = "Authorization") String token,
+            @RequestParam(name = "first_name", defaultValue = "", required = false) String name,
+            @RequestParam(name = "last_name", defaultValue = "", required = false) String surname,
+            @RequestParam(name = "age_from", defaultValue = "18", required = false) Integer ageFrom,
+            @RequestParam(name = "age_to", defaultValue = "200", required = false) Integer ageTo,
+            @RequestParam(name = "country", defaultValue = "", required = false) String country,
+            @RequestParam(name = "city", defaultValue = "", required = false) String city,
+            @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
+            @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit
+    ) {
+        return authService.isAuthorized(token)
+                ? ResponseEntity.ok(profileService.searchPeople(name, surname, ageFrom, ageTo, country, city, offset, limit, authService.getAuthorizedUser(token)))
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseErrorResponseDto("invalid request", "unauthorized"));
+
+    }
+
+    @PutMapping("/api/v1/users/block/{id}")
+    public ResponseEntity<?> blockProfile(@RequestHeader(name = "Authorization") String token, @PathVariable int id) {
+        if(authService.isAuthorized(token)){
+            BaseResponseDto result = profileService.blockUser(id, authService.getAuthorizedUser(token));
+            return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseErrorResponseDto("invalid request", "unauthorized"));
+    }
+
+    @DeleteMapping("/api/v1/users/block/{id}")
+    public ResponseEntity<?> unblockProfile(@RequestHeader(name = "Authorization") String token, @PathVariable int id) {
+        if(authService.isAuthorized(token)){
+            BaseResponseDto result = profileService.unblockUser(id, authService.getAuthorizedUser(token));
+            return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new BaseErrorResponseDto("invalid request", "unauthorized"));
     }
 }
