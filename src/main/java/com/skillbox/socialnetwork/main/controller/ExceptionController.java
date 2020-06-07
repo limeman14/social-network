@@ -17,14 +17,14 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(value = { ExpiredJwtException.class })
-    protected ResponseEntity<Object> handleUncaughtException(
+    protected ResponseEntity<Object> handleExpiredJwtException(
             ExpiredJwtException ex,
             WebRequest request
     ) {
         log.warn(ex.getMessage());
         return handleExceptionInternal(
                 ex,
-                ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto()),
+                new BaseResponseDto(),
                 new HttpHeaders(),
                 HttpStatus.OK,
                 request
