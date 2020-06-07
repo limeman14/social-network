@@ -1,7 +1,9 @@
 package com.skillbox.socialnetwork.main.service;
 
 import com.skillbox.socialnetwork.main.dto.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.request.PasswordSetDto;
 import com.skillbox.socialnetwork.main.dto.request.RegisterRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
 import com.skillbox.socialnetwork.main.model.Person;
 
 import java.util.List;
@@ -28,4 +30,8 @@ public interface PersonService {
     ResponseDto registration(RegisterRequestDto dto);
 
     void logout(Person person);
+
+    ResponseDto passwordRecovery(String email, String url);
+
+    ResponseDto passwordSet(PasswordSetDto dto);
 }

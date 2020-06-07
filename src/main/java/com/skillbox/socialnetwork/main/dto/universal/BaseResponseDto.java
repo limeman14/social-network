@@ -14,7 +14,7 @@ public class BaseResponseDto extends ErrorResponseDto {
     private DataDto data;
 
     public BaseResponseDto(){
-        super("string");
+        super("");
         timestamp = new Date().getTime();
         data = new DataDto("ok");
     }
