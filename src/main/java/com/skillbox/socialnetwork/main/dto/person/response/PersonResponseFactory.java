@@ -51,7 +51,7 @@ public class PersonResponseFactory {
                 person.getTown() != null ? person.getTown().getCity().getTitle() : null,
                 person.getTown() != null ? person.getTown().getCountry().getTitle() : null,
                 person.getIsBlocked(),
-                person.getLastOnlineTime().getTime(),
+                person.getLastOnlineTime()!= null ? person.getLastOnlineTime().getTime() : null,
                 person.getMessagesPermission().toString()
         );
     }

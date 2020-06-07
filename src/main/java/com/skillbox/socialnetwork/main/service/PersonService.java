@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.service;
 
+import com.skillbox.socialnetwork.main.dto.profile.PasswordSetRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.model.Person;
@@ -19,4 +20,6 @@ public interface PersonService {
     ResponseDto registration(RegisterRequestDto dto);
 
     void logout(Person person);
+
+    Person save(Person person);
 }

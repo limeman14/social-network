@@ -41543,7 +41543,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: first_name
-                  value: "Ronna"
+                  value: "Ron"
               - column:
                   name: last_name
                   value: "Wilman"
@@ -41555,7 +41555,7 @@ databaseChangeLog:
                   valueDate: null
               - column:
                   name: e_mail
-                  value: "rwilmanpo@wikipedia.org"
+                  value: "XXX-darkstalker-xxx_2007@wikipedia.org"
               - column:
                   name: phone
                   value: "null"
@@ -44952,6 +44952,51 @@ databaseChangeLog:
               - column:
                   name: last_online_time
                   valueDate: "2020-05-30 19:21:49"
+              - column:
+                  name: is_blocked
+                  valueBoolean: false
+              - column:
+                  name: password
+                  value: "$2a$04$qEny7rvkaG6fdW5rFyLljO5yMHiCTUVB8mHKUXr26roxu9G/wlTkW"
+        - insert:
+            tableName: persons
+            columns:
+              - column:
+                  name: first_name
+                  value: "Rudy"
+              - column:
+                  name: last_name
+                  value: "Malter"
+              - column:
+                  name: reg_date
+                  valueDate: "2020-04-17 12:24:53"
+              - column:
+                  name: birth_date
+                  valueDate: "2002-06-02"
+              - column:
+                  name: e_mail
+                  value: "rdsaddas@yolasite.com"
+              - column:
+                  name: phone
+                  value: "2461538608"
+              - column:
+                  name: photo
+                  value: "https://robohash.org/autnoneos.png?size=50x50&set=set1"
+              - column:
+                  name: about
+                  value: "Vestibulum rutrum rutrum neque. Aenean auctor gravida sem. Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo."
+              - column:
+                  name: confirmation_code
+                  value: "D0NwZ7"
+              - column:
+                  name: is_approved
+                  valueBoolean: true
+              - column:
+                  name: messages_permission
+                  value: "All"
+              - column:
+                  name: last_online_time
+                  valueDate: "2020-04-22 13:26:30"
               - column:
                   name: is_blocked
                   valueBoolean: false

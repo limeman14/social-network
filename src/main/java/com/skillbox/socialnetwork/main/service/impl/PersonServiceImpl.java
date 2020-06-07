@@ -105,5 +105,10 @@ public class PersonServiceImpl implements PersonService {
         log.info("IN logout - user: {} logged out", repository.save(person));
     }
 
+    @Override
+    public Person save(Person person) {
+        return repository.save(person);
+    }
+
 
 }
