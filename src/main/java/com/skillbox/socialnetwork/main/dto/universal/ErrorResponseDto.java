@@ -1,12 +1,17 @@
 package com.skillbox.socialnetwork.main.dto.universal;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ErrorResponseDto implements ResponseDto {
+public class ErrorResponseDto implements ResponseDto{
     private String error;
+
+    @JsonProperty("error_description")
+    private String errorDescription;
+
+    public ErrorResponseDto(String error, String errorDescription){
+        this.error = error;
+        this.errorDescription = errorDescription;
+    }
 }

@@ -2,12 +2,12 @@ package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.dto.person.request.UpdatePersonRequestDto;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
-import com.skillbox.socialnetwork.main.dto.post.PostResponseFactory;
+import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.SearchPersonDto;
-import com.skillbox.socialnetwork.main.dto.profile.WallDto;
 import com.skillbox.socialnetwork.main.dto.profile.WallResponseFactory;
 import com.skillbox.socialnetwork.main.dto.request.AddPostRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.model.*;
@@ -92,9 +92,9 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public WallDto getWallPosts(int id, int offset, int limit) {
+    public BaseResponseListDto getWallPosts(int id, int offset, int limit) {
         Optional<Person> person = personRepository.findById(id);
-        WallDto result = null;
+        BaseResponseListDto result = null;
         if(person.isPresent()) {
             List<Post> posts = person.get().getPosts();
             posts.sort(Comparator.comparing(Post::getTime).reversed());//сортирую по дате чтобы на стенке выводились сначала новые

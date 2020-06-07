@@ -3,7 +3,7 @@ package com.skillbox.socialnetwork.main.controller;
 import com.skillbox.socialnetwork.main.dto.files.response.FileDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
-import com.skillbox.socialnetwork.main.service.files.FileServiceImpl;
+import com.skillbox.socialnetwork.main.service.impl.FileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -38,7 +37,7 @@ public class ApiGeneralController {
                 }
                 default: response = new FileDto();
             }
-            return ResponseEntity.ok(new BaseResponseDto("", new Date().getTime(), response));
+            return ResponseEntity.ok(new BaseResponseDto(response));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }

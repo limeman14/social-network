@@ -1,6 +1,8 @@
 package com.skillbox.socialnetwork.main.dto.profile;
 
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.model.Post;
 
 import java.util.ArrayList;
@@ -9,10 +11,10 @@ import java.util.List;
 
 public class WallResponseFactory {
 
-    public static WallDto getWall(List<Post> posts, int offset, int limit){
+    public static BaseResponseListDto getWall(List<Post> posts, int offset, int limit){
         List<Post> limitedPostList = getElementsInRange(posts, offset, limit);
-        List<WallData> data = getData(limitedPostList);
-        return new WallDto(
+        List<ResponseDto> data = getData(limitedPostList);
+        return new BaseResponseListDto(
                 data.size(),
                 offset,
                 limit,
@@ -21,13 +23,13 @@ public class WallResponseFactory {
     }
 
 
-    private static List<WallData> getData(List<Post> posts){
-        List<WallData> data = new ArrayList<>();
+    private static List<ResponseDto> getData(List<Post> posts){
+        List<ResponseDto> data = new ArrayList<>();
 
         posts.stream()
                 .filter(post -> post.getTime().before(new Date()))//только текущие посты
                 .forEach(post -> data.add(
-                new WallData(
+                new WallDto(
                         PersonResponseFactory.getPersonDto(post.getAuthor()),
                         post.getTitle(),
                         post.getPostText(),

@@ -41,7 +41,7 @@ public class PostRestController {
     @GetMapping("/api/v1/post/{id}")
     public ResponseEntity<?> getPost(@PathVariable int id) {
         Post post = postService.findById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto(new Date().getTime(), PostResponseFactory.getPost(post).getData()));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto(PostResponseFactory.getPost(post).getData()));
     }
 
     @PutMapping("api/v1/post/{id}")
@@ -54,7 +54,7 @@ public class PostRestController {
         Date publishDateNow = new Date();
         post.setTime(publishDate == null ? publishDateNow : new Date(publishDate));
 
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto(publishDateNow.getTime(), PostResponseFactory.getPost(postService.save(post)).getData()));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto(PostResponseFactory.getPost(postService.save(post)).getData()));
     }
 }
 

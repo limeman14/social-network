@@ -1,4 +1,4 @@
-package com.skillbox.socialnetwork.main.service.files;
+package com.skillbox.socialnetwork.main.service;
 
 import com.skillbox.socialnetwork.main.dto.files.response.FileDto;
 import org.springframework.web.multipart.MultipartFile;

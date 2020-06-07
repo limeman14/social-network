@@ -6,6 +6,7 @@ import com.skillbox.socialnetwork.main.dto.profile.SearchPersonDto;
 import com.skillbox.socialnetwork.main.dto.profile.WallDto;
 import com.skillbox.socialnetwork.main.dto.request.AddPostRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.model.Person;
 
@@ -18,7 +19,7 @@ public interface ProfileService {
 
     ResponseDto getUserById(int id, Person authorizedUser);
 
-    WallDto getWallPosts(int id, int offset, int limit);
+    BaseResponseListDto getWallPosts(int id, int offset, int limit);
 
     ResponseDto addPost(int id, long publishDate, AddPostRequestDto request);
 

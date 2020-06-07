@@ -2,7 +2,7 @@ package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.ErrorWithDescriptionResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ErrorResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.model.Person;
@@ -77,10 +77,10 @@ public class PersonServiceImpl implements PersonService {
 
                 return new BaseResponseDto(new MessageResponseDto("ok"));
             }else{
-                return new ErrorWithDescriptionResponseDto("invalid_request", "Данный email уже зарегистрирован");
+                return new ErrorResponseDto("invalid_request", "Данный email уже зарегистрирован");
             }
         }else{
-            return new ErrorWithDescriptionResponseDto("invalid_request", "Пароль указан некорректно");
+            return new ErrorResponseDto("invalid_request", "Пароль указан некорректно");
         }
     }
 

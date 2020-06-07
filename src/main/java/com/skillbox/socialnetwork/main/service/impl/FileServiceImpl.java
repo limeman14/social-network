@@ -1,12 +1,12 @@
-package com.skillbox.socialnetwork.main.service.files;
+package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.dto.files.response.FileDto;
 import com.skillbox.socialnetwork.main.model.UploadFile;
 import com.skillbox.socialnetwork.main.model.enumerated.FileType;
 import com.skillbox.socialnetwork.main.repository.FileRepository;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
+import com.skillbox.socialnetwork.main.service.FileService;
 import com.skillbox.socialnetwork.main.service.impl.PersonServiceImpl;
-import liquibase.pro.packaged.S;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class FileServiceImpl implements FileService{
+public class FileServiceImpl implements FileService {
 
     @Value("${upload.path}")
     private String uploadPath;

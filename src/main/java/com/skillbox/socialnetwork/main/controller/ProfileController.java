@@ -5,7 +5,8 @@ import com.skillbox.socialnetwork.main.dto.person.request.UpdatePersonRequestDto
 import com.skillbox.socialnetwork.main.dto.profile.WallDto;
 import com.skillbox.socialnetwork.main.dto.request.AddPostRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.ErrorWithDescriptionResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
+import com.skillbox.socialnetwork.main.dto.universal.ErrorResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.ProfileService;
@@ -29,7 +30,7 @@ public class ProfileController {
     public ResponseEntity<?> getMeProfile(@RequestHeader(name = "Authorization") String token) {
         return authService.isAuthorized(token)
                 ? ResponseEntity.ok(profileService.getMyProfile(authService.getAuthorizedUser(token)))
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorWithDescriptionResponseDto("invalid request", "unauthorized"));
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
     }
 
     @PutMapping("/api/v1/users/me")
@@ -37,7 +38,7 @@ public class ProfileController {
                                          @RequestBody UpdatePersonRequestDto request) {
         return authService.isAuthorized(token)
                 ? ResponseEntity.ok(profileService.editMyProfile(authService.getAuthorizedUser(token), request))
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorWithDescriptionResponseDto("invalid request", "unauthorized"));
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
     }
 
     @DeleteMapping("/api/v1/users/me")
@@ -46,7 +47,7 @@ public class ProfileController {
         authService.logout(token);
         return authService.isAuthorized(token)
                 ? ResponseEntity.ok(profileService.deleteMyProfile(authService.getAuthorizedUser(token)))
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorWithDescriptionResponseDto("invalid request", "unauthorized"));
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
     }
 
     @GetMapping("/api/v1/users/{id}")
@@ -55,7 +56,7 @@ public class ProfileController {
             ResponseDto result = profileService.getUserById(id, authService.getAuthorizedUser(token));
             return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorWithDescriptionResponseDto("invalid request", "unauthorized"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
     }
 
     @GetMapping("/api/v1/users/{id}/wall")
@@ -65,10 +66,10 @@ public class ProfileController {
             @RequestParam(name = "offset", defaultValue = "0") Integer offset,
             @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit) {
         if (authService.isAuthorized(token)) {
-            WallDto result = profileService.getWallPosts(id, offset, limit);
+            BaseResponseListDto result = profileService.getWallPosts(id, offset, limit);
             return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorWithDescriptionResponseDto("invalid request", "unauthorized"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
 
     }
 
@@ -83,7 +84,7 @@ public class ProfileController {
             ResponseDto result = profileService.addPost(id, publishDate, request);
             return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorWithDescriptionResponseDto("invalid request", "unauthorized"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
 
     }
 
@@ -101,7 +102,7 @@ public class ProfileController {
     ) {
         return authService.isAuthorized(token)
                 ? ResponseEntity.ok(profileService.searchPeople(name, surname, ageFrom, ageTo, country, city, offset, limit, authService.getAuthorizedUser(token)))
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorWithDescriptionResponseDto("invalid request", "unauthorized"));
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
 
     }
 
@@ -111,7 +112,7 @@ public class ProfileController {
             BaseResponseDto result = profileService.blockUser(id, authService.getAuthorizedUser(token));
             return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorWithDescriptionResponseDto("invalid request", "unauthorized"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
     }
 
     @DeleteMapping("/api/v1/users/block/{id}")
@@ -120,6 +121,6 @@ public class ProfileController {
             BaseResponseDto result = profileService.unblockUser(id, authService.getAuthorizedUser(token));
             return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorWithDescriptionResponseDto("invalid request", "unauthorized"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
     }
 }
