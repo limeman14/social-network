@@ -1,6 +1,5 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.repository.PostRepository;
 import com.skillbox.socialnetwork.main.service.PostService;

@@ -13,7 +13,7 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/img/**")
-                //.addResourceLocations("file://" + uploadPath + "/img/"); //для деплоя на серв
-                .addResourceLocations("file:" + uploadPath + "/img/");
+                .addResourceLocations("file://" + uploadPath + "/img/"); //для деплоя на серв
+                //.addResourceLocations("file:" + uploadPath + "/img/"); //для локального хранилища
     }
 }
