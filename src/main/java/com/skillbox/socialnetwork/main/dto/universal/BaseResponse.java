@@ -7,12 +7,12 @@ import java.util.Date;
 
 @AllArgsConstructor
 @Data
-public class BaseResponseDto implements ResponseDto {
+public class BaseResponse implements Response {
     private String error;
     private Long timestamp;
-    private ResponseDto data;
+    private Dto data;
 
-    public BaseResponseDto(ResponseDto data) {
+    public BaseResponse(Dto data) {
         error = "string";
         timestamp = new Date().getTime();
         this.data = data;

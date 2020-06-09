@@ -1,12 +1,12 @@
 package com.skillbox.socialnetwork.main.dto.auth.response;
 
-import com.skillbox.socialnetwork.main.dto.person.response.PersonDto;
+import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AuthPersonResponseDto extends PersonDto {
+public class AuthPersonResponseDto extends PersonResponseDto {
     private String token;
 
     public AuthPersonResponseDto(
@@ -26,7 +26,9 @@ public class AuthPersonResponseDto extends PersonDto {
             String messagesPermission,
             String token
     ) {
-        super(id, firstName, lastName, regDate, birthDate, email, phone, photo, about, city, country, isBlocked, lastOnlineTime, messagesPermission);
+        super(id, firstName, lastName, regDate, birthDate, email,
+                phone, photo, about, city, country, isBlocked,
+                lastOnlineTime, messagesPermission);
         this.token = token;
     }
 

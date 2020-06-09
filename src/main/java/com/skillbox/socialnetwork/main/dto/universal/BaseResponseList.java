@@ -8,21 +8,21 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class BaseResponseListDto implements ResponseDto{
+public class BaseResponseList implements Response{
     private String error;
     private long timestamp;
     private Integer total;
     private Integer offset;
     private Integer perPage;
-    private List<ResponseDto> data;
+    private List<Dto> data;
 
-    public BaseResponseListDto(List<ResponseDto> data) {
+    public BaseResponseList(List<Dto> data) {
         error = "string";
         timestamp = new Date().getTime();
         this.data = data;
     }
 
-    public BaseResponseListDto(Integer total, Integer offset, Integer perPage, List<ResponseDto> data) {
+    public BaseResponseList(Integer total, Integer offset, Integer perPage, List<Dto> data) {
         error = "string";
         timestamp = new Date().getTime();
         this.total = total;

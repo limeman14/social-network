@@ -1,6 +1,6 @@
 package com.skillbox.socialnetwork.main.exception;
 
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
         log.warn(ex.getMessage());
         return handleExceptionInternal(
                 ex,
-                ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto(new MessageResponseDto("ok"))),
+                ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(new MessageResponseDto("ok"))),
                 new HttpHeaders(),
                 HttpStatus.OK,
                 request

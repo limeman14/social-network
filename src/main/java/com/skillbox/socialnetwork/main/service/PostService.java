@@ -1,6 +1,6 @@
 package com.skillbox.socialnetwork.main.service;
 
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.model.Post;
 
 import java.util.List;
@@ -12,5 +12,5 @@ public interface PostService {
 
     Post save(Post post);
 
-    BaseResponseListDto feeds(int offset, int limit);
+    BaseResponseList feeds(int offset, int limit);
 }

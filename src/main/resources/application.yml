@@ -19,7 +19,7 @@ server:
   port: 8080
 
 upload:
-  path: "C:/Users/User/Desktop/storage"
+  path: "C:/Users/Katerina/Desktop/storage"
 
 hostname: localhost:8080
 

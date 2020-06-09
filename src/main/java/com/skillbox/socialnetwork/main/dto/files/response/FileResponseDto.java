@@ -1,14 +1,14 @@
 package com.skillbox.socialnetwork.main.dto.files.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.model.enumerated.FileType;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class FileDto implements ResponseDto {
+public class FileResponseDto implements Dto {
     private String id;
 
     private int ownerId;
@@ -28,9 +28,9 @@ public class FileDto implements ResponseDto {
 
     private Date createdAt;
 
-    public FileDto(String id, int ownerId, String fileName, String relativeFilePath,
-                   String rawFileURL, String fileFormat, long bytes,
-                   FileType fileType, Date createdAt) {
+    public FileResponseDto(String id, int ownerId, String fileName, String relativeFilePath,
+                           String rawFileURL, String fileFormat, long bytes,
+                           FileType fileType, Date createdAt) {
         this.id = id;
         this.ownerId = ownerId;
         this.fileName = fileName;
@@ -42,6 +42,6 @@ public class FileDto implements ResponseDto {
         this.createdAt = createdAt;
     }
 
-    public FileDto() {
+    public FileResponseDto() {
     }
 }

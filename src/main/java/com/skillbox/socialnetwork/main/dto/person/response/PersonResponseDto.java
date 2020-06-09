@@ -1,7 +1,7 @@
 package com.skillbox.socialnetwork.main.dto.person.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonDto implements ResponseDto {
+public class PersonResponseDto implements Dto {
     protected int id;
     @JsonProperty("first_name")
     protected String firstName;

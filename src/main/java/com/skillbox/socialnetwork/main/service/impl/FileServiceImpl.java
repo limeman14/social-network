@@ -1,15 +1,14 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.skillbox.socialnetwork.main.dto.files.response.FileDto;
+import com.skillbox.socialnetwork.main.dto.files.response.FileResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.model.UploadFile;
 import com.skillbox.socialnetwork.main.model.enumerated.FileType;
 import com.skillbox.socialnetwork.main.repository.FileRepository;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
 import com.skillbox.socialnetwork.main.service.FileService;
-import com.skillbox.socialnetwork.main.service.impl.PersonServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,23 +27,24 @@ public class FileServiceImpl implements FileService {
     @Value("${upload.path}")
     private String uploadPath;
 
-    @Autowired
-    private FileRepository fileRepository;
+    private final FileRepository fileRepository;
+    private final PersonServiceImpl personService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private PersonServiceImpl personService;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    public FileServiceImpl(FileRepository fileRepository, PersonServiceImpl personService, JwtTokenProvider jwtTokenProvider) {
+        this.fileRepository = fileRepository;
+        this.personService = personService;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Override
-    public FileDto saveImage(String token, MultipartFile file) throws IOException {
+    public Dto saveImage(String token, MultipartFile file) throws IOException {
         File resizeDir = new File(uploadPath + "/img/resize");
         File fullDir = new File(uploadPath + "/img/full");
-        if (!resizeDir.exists()){
+        if (!resizeDir.exists()) {
             resizeDir.mkdirs();
         }
-        if (!fullDir.exists()){
+        if (!fullDir.exists()) {
             fullDir.mkdirs();
         }
 
@@ -63,11 +63,10 @@ public class FileServiceImpl implements FileService {
         File fullFile = new File(rawFileURL);
 
         file.transferTo(fullFile);
-        resizeImage(fullFile, relativeFilePath , fileFormat);
+        resizeImage(fullFile, relativeFilePath, fileFormat);
 
         relativeFilePath = "/img/resize/" + id + "." + fullFileName;
         rawFileURL = "/img/full/" + id + "." + fullFileName;
-
 
 
         UploadFile uploadFile = new UploadFile();
@@ -83,7 +82,7 @@ public class FileServiceImpl implements FileService {
         fileRepository.save(uploadFile);
 
 
-        return new FileDto(id, ownerId, fileName, relativeFilePath,
+        return new FileResponseDto(id, ownerId, fileName, relativeFilePath,
                 rawFileURL, fileFormat, bytes, fileType, new Date());
     }
 

@@ -1,7 +1,7 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.repository.PostRepository;
 import com.skillbox.socialnetwork.main.service.PostService;
@@ -35,9 +35,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public BaseResponseListDto feeds(int offset, int limit) {
-
-        return PostResponseFactory.getPosts(repository.limitQuery(offset, limit));
+    public BaseResponseList feeds(int offset, int limit) {
+        return PostResponseFactory.getPosts(repository.findAll(), offset, limit); //тут было интересное решение с limitQuery
     }
 
 

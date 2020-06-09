@@ -1,8 +1,8 @@
-package com.skillbox.socialnetwork.main.dto.profile;
+package com.skillbox.socialnetwork.main.dto.profile.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skillbox.socialnetwork.main.dto.person.response.PersonDto;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +12,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WallDto implements ResponseDto {
-    private PersonDto author;
+public class WallResponseDto implements Dto {
+    private PersonResponseDto author;
     private String title;
     @JsonProperty("post_text")
     private String text;

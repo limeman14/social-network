@@ -1,24 +1,28 @@
 package com.skillbox.socialnetwork.main.dto.post.response;
 
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Post;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PostResponseFactory {
-    public static BaseResponseDto getPost(Post post) {
-        return new BaseResponseDto(createPostResponse(post));
+    public static BaseResponse getPost(Post post) {
+        return ResponseFactory.getBaseResponse(getPostDto(post));
     }
 
-    public static BaseResponseListDto getPosts(List<Post> posts) {
-        return new BaseResponseListDto(createPostsListResponse(posts));
+    public static BaseResponseList getPosts(List<Post> posts, int offset, int limit) {
+        return ResponseFactory.getBaseResponseList(posts.stream()
+                        .map(PostResponseFactory::getPostDto)
+                        .collect(Collectors.toList()),
+                offset, limit);
     }
 
-    private static PostResponseDto createPostResponse(Post post) {
+    private static PostResponseDto getPostDto(Post post) {
         return new PostResponseDto(
                 post.getId(),
                 post.getTime().getTime(),
@@ -30,13 +34,5 @@ public class PostResponseFactory {
                 //@TODO: Возвращать тут комментарии
                 new ArrayList<>()
         );
-    }
-
-    private static List<ResponseDto> createPostsListResponse(List<Post> postList) {
-        List<ResponseDto> postDtoList = new ArrayList<>();
-        postList.forEach(p ->
-                postDtoList.add(createPostResponse(p))
-        );
-        return postDtoList;
     }
 }
