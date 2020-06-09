@@ -1,5 +1,5 @@
 .idea/
 *.iml
-application.yml
+#application.yml
 .log
 /target
