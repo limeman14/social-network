@@ -648,48 +648,6 @@ databaseChangeLog:
                   name: country_id
                   value: 1
         - insert:
-            tableName: persons
-            columns:
-              - column:
-                  name: about
-                  value: "Первый пользователь"
-              - column:
-                  name: is_approved
-                  valueBoolean: true
-              - column:
-                  name: birth_date
-                  valueDate: "2000-05-31 20:39:10"
-              - column:
-                  name: confirmation_code
-                  value: "12345678"
-              - column:
-                  name: e_mail
-                  value: "email@mail.com"
-              - column:
-                  name: first_name
-                  value: "FirstName"
-              - column:
-                  name: last_name
-                  value: "LastName"
-              - column:
-                  name: last_online_time
-                  valueDate: "2020-06-02 21:19:09"
-              - column:
-                  name: messages_permission
-                  value: "ALL"
-              - column:
-                  name: password
-                  value: "$2a$04$qEny7rvkaG6fdW5rFyLljO5yMHiCTUVB8mHKUXr26roxu9G/wlTkW"
-              - column:
-                  name: phone
-                  value: "8921587454"
-              - column:
-                  name: reg_date
-                  valueDate: "2020-06-01 21:19:09"
-              - column:
-                  name: town_id
-                  value: 1
-        - insert:
             tableName: user_roles
             columns:
               - column:
@@ -698,48 +656,44 @@ databaseChangeLog:
               - column:
                   name: role_id
                   value: 1
-        - insert:
-            tableName: posts
+  - changeSet:
+      id: 1.1.3
+      author: devolek
+      changes:
+        - createTable:
+            tableName: files
             columns:
               - column:
-                  name: post_text
-                  value: "Первый пост для теста. Бла-бла-бла."
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                  name: id
+                  type: VARCHAR(300)
               - column:
-                  name: time
-                  valueDate: "2020-05-31 19:39:10"
+                  name: owner_id
+                  type: INT
               - column:
-                  name: title
-                  value: "Первый пост"
+                  name: file_name
+                  type: VARCHAR(300)
               - column:
-                  name: author_id
-                  value: 1
-        - insert:
-            tableName: posts
-            columns:
+                  name: relative_file_path
+                  type: VARCHAR(300)
               - column:
-                  name: post_text
-                  value: "Второй пост для теста. Бла-бла-бла."
+                  name: raw_file_URL
+                  type: VARCHAR(300)
               - column:
-                  name: time
-                  valueDate: "2020-05-31 20:39:10"
+                  name: file_format
+                  type: VARCHAR(255)
               - column:
-                  name: title
-                  value: "Второй пост"
+                  name: bytes
+                  type: BIGINT
               - column:
-                  name: author_id
-                  value: 1
-        - insert:
-            tableName: posts
-            columns:
+                  name: file_type
+                  type: ENUM("IMAGE")
               - column:
-                  name: post_text
-                  value: "Третий пост для теста. Бла-бла-бла."
-              - column:
-                  name: time
-                  valueDate: "2020-05-31 21:39:10"
-              - column:
-                  name: title
-                  value: "Третий пост"
-              - column:
-                  name: author_id
-                  value: 1
+                  name: created_at
+                  type: datetime
+  - include:
+      file: db/changelog/db.changelog-insertPersons.yaml
+  - include:
+      file: db/changelog/db.changelog-insertPosts.yaml

@@ -18,8 +18,9 @@ public interface EmailService {
     void sendSimpleMessageUsingTemplate(
             String to,
             String subject,
-            String ...templateModel
+            String... templateModel
     );
+
     void sendMessageWithAttachment(
             String to,
             String subject,
@@ -27,4 +28,3 @@ public interface EmailService {
             String pathToAttachment
     );
 }
-

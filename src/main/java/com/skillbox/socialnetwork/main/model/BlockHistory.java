@@ -4,7 +4,7 @@ import com.skillbox.socialnetwork.main.model.enumerated.BlockHistoryAction;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Calendar;
+import java.util.Date;
 
 @Entity
 @Data
@@ -14,7 +14,7 @@ public class BlockHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Calendar time;
+    private Date time;
 
     @ManyToOne
     @JoinColumn(name = "person_id")

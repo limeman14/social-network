@@ -1,106 +1,68 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.ResponseDto;
-import com.skillbox.socialnetwork.main.dto.request.AuthenticationRequestDto;
-import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
-import com.skillbox.socialnetwork.main.dto.request.EmailDto;
-import com.skillbox.socialnetwork.main.dto.request.PasswordSetDto;
-import com.skillbox.socialnetwork.main.dto.request.RegisterRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseErrorResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.ErrorResponseDto;
-import com.skillbox.socialnetwork.main.model.Person;
-import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
-import com.skillbox.socialnetwork.main.service.PersonService;
-import io.jsonwebtoken.ExpiredJwtException;
-import lombok.extern.slf4j.Slf4j;
+
+import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
+import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
+import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
+import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.*;
+import com.skillbox.socialnetwork.main.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 @RestController
-@Slf4j
-@RequestMapping("/api/v1")
 public class AuthenticationRestControllerV1 {
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final PersonService personService;
+
+    private final AuthService authService;
 
     @Autowired
-    public AuthenticationRestControllerV1(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, PersonService personService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.personService = personService;
+    public AuthenticationRestControllerV1(AuthService authService) {
+        this.authService = authService;
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/api/v1/auth/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto){
-        try {
-            String email = requestDto.getEmail();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, requestDto.getPassword()));
-            Person user = personService.findByEmail(email);
-
-            if (user == null) {
-                throw new UsernameNotFoundException("User with username: " + email + " not found");
-            }
-
-            String token = jwtTokenProvider.createToken(email);
-            return ResponseEntity.ok(AuthResponseFactory.getAuthResponse(user, token));
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
-        }
+        return ResponseEntity.ok(authService.login(requestDto));
     }
 
-    @PostMapping("/account/register")
+    @PostMapping("/api/v1/account/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDto requestDto){
-        ResponseDto responseDto = personService.registration(requestDto);
-
+        Response result = authService.register(requestDto);
         return ResponseEntity
                 .status(
-                        ((ErrorResponseDto)responseDto).getError().equals("invalid_request") ?
+                        result instanceof ErrorResponse ?
                                 HttpStatus.BAD_REQUEST : HttpStatus.OK)
-                .body(responseDto);
+                .body(result);
     }
 
-    @PutMapping("/account/password/recovery")
-    public ResponseEntity<?> passwordRecovery(HttpServletRequest request, @RequestBody EmailDto dto){
-        ResponseDto responseDto = personService.passwordRecovery(dto.getEmail(),
+
+    @PostMapping("/api/v1/auth/logout")
+    public ResponseEntity<?> logout(@RequestHeader(name = "Authorization") String token) {
+        authService.logout(token);
+        return ResponseEntity.ok(ResponseFactory.getBaseResponse(new MessageResponseDto("ok")));
+    }
+
+    @PutMapping("/api/v1/account/password/recovery")
+    public ResponseEntity<?> passwordRecovery(HttpServletRequest request, @RequestBody EmailRequestDto dto){
+        Response response = authService.passwordRecovery(dto.getEmail(),
                 request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort());
         return ResponseEntity
                 .status(
-                        ((ErrorResponseDto)responseDto).getError().equals("invalid_request") ?
+                        response instanceof ErrorResponse ?
                                 HttpStatus.BAD_REQUEST : HttpStatus.OK)
-                .body(responseDto);
+                .body(response);
     }
 
-    @PutMapping("/account/password/set")
-    public ResponseEntity<?> passwordRecovery(@RequestHeader(name = "Referer") String referer, @RequestBody PasswordSetDto dto){
-        ResponseDto responseDto;
-        try {
-            URL ub = new URL(referer);
-            dto.setToken(ub.getQuery());
-            responseDto = personService.passwordSet(dto);
-        } catch (MalformedURLException e) {
-            responseDto = new BaseErrorResponseDto("invalid_request", "token not found");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    @PutMapping("/api/v1/account/password/set")
+    public ResponseEntity<?> passwordRecovery(
+            @RequestHeader(name = "Referer") String referer,
+            @RequestBody PasswordSetRequestDto dto
+    ){
+        return ResponseEntity.status(HttpStatus.OK).body(authService.passwordSet(dto, referer));
     }
 
-    @PostMapping("/auth/logout")
-    public ResponseEntity<?> logout(@RequestHeader(name = "Authorization") String token) {
-        String email = jwtTokenProvider.getUsername(token);
-        personService.logout(personService.findByEmail(email));
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto());
-    }
 }

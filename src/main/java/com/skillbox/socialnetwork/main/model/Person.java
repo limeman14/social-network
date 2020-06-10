@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -72,7 +73,7 @@ public class Person {
     @OneToMany(mappedBy = "recipient")
     private List<Message> recipientMessages;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Post> posts;
 
     @OneToMany(mappedBy = "person")
