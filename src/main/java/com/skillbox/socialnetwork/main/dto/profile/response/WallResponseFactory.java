@@ -23,6 +23,8 @@ public class WallResponseFactory {
                 .filter(post -> post.getTime().before(new Date()))//только текущие посты
                 .forEach(post -> data.add(
                         new WallResponseDto(
+                                post.getId(),
+                                post.getTime().getTime(),
                                 PersonResponseFactory.getPersonDto(post.getAuthor()),
                                 post.getTitle(),
                                 post.getPostText(),

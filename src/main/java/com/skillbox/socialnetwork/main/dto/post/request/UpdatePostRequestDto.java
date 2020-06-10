@@ -1,9 +1,12 @@
 package com.skillbox.socialnetwork.main.dto.post.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.skillbox.socialnetwork.main.model.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -13,4 +16,6 @@ public class UpdatePostRequestDto {
 
     @JsonProperty("post_text")
     private String postText;
+
+    private List<Tag> tags;
 }

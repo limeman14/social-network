@@ -11,28 +11,29 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PostResponseFactory {
-    public static BaseResponse getPost(Post post) {
-        return ResponseFactory.getBaseResponse(getPostDto(post));
+    public static BaseResponse getSinglePost(Post post) {
+        return ResponseFactory.getBaseResponse(postToDto(post));
     }
 
-    public static BaseResponseList getPosts(List<Post> posts, int offset, int limit) {
+    public static BaseResponseList getPostsList(List<Post> posts, int offset, int limit) {
         return ResponseFactory.getBaseResponseList(posts.stream()
-                        .map(PostResponseFactory::getPostDto)
+                        .map(PostResponseFactory::postToDto)
                         .collect(Collectors.toList()),
                 offset, limit);
     }
 
-    private static PostResponseDto getPostDto(Post post) {
+    private static PostResponseDto postToDto(Post post) {
         return new PostResponseDto(
                 post.getId(),
                 post.getTime().getTime(),
-                PersonResponseFactory.getPerson(post.getAuthor()).getData(),
+                PersonResponseFactory.getPersonDto(post.getAuthor()),
                 post.getTitle(),
                 post.getPostText(),
                 post.getIsBlocked(),
                 post.getLikes().size(),
                 //@TODO: Возвращать тут комментарии
-                new ArrayList<>()
+                new ArrayList<>(),
+                "POSTED" //@TODO ENUM postType
         );
     }
 }
