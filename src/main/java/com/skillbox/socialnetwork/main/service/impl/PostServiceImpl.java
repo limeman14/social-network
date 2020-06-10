@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public BaseResponseList feeds(int offset, int limit) {
-        return PostResponseFactory.getPostsList(postRepository.findAll(), offset, limit); //тут было интересное решение с limitQuery
+        return PostResponseFactory.getPostsList(postRepository.limitQuery(offset, limit)); //тут было интересное решение с limitQuery
     }
 
     @Override

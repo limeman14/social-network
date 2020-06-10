@@ -15,11 +15,15 @@ public class PostResponseFactory {
         return ResponseFactory.getBaseResponse(postToDto(post));
     }
 
-    public static BaseResponseList getPostsList(List<Post> posts, int offset, int limit) {
+/*    public static BaseResponseList getPostsList(List<Post> posts, int offset, int limit) {
         return ResponseFactory.getBaseResponseList(posts.stream()
                         .map(PostResponseFactory::postToDto)
                         .collect(Collectors.toList()),
                 offset, limit);
+    }*/
+
+    public static BaseResponseList getPostsList(List<Post> posts) {
+        return new BaseResponseList(posts.stream().map(PostResponseFactory::postToDto).collect(Collectors.toList()));
     }
 
     private static PostResponseDto postToDto(Post post) {
