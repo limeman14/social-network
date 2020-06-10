@@ -5,6 +5,8 @@ import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.ErrorResponse;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
+import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
+import com.skillbox.socialnetwork.main.exception.user.input.UserInputException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
@@ -43,7 +45,11 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Person findByEmail(String email) {
-        return repository.findByEmail(email);
+        Person person = repository.findByEmail(email);
+        if(person == null){
+            throw new PersonNotFoundException("Данный email не найден", "invalid_request");
+        }
+        return person;
     }
 
     @Override
@@ -57,46 +63,42 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Response registration(RegisterRequestDto dto) {
+    public Response registration(RegisterRequestDto dto) throws RuntimeException{
+        checkUserLogin(dto.getEmail());
+        checkUserRegisterPassword(dto.getPassword1(), dto.getPassword2());
 
-        if (checkUserRegisterPassword(dto.getPassword1(), dto.getPassword2())) {
-            if (checkUserLogin(dto.getEmail())) {
-                Person person = new Person();
-                person.setEmail(dto.getEmail());
-                person.setPassword(passwordEncoder.encode(dto.getPassword1()));
-                person.setFirstName(dto.getFirstName());
-                person.setLastName(dto.getLastName());
-                person.setConfirmationCode(dto.getCode());
-                person.setIsBlocked(false);
-                person.setMessagesPermission(Permission.ALL);
-                person.setIsApproved(true);
-                person.setRoles(getBasePermission());
-                person.setLastOnlineTime(new Date());
+        Person person = new Person();
+        person.setEmail(dto.getEmail());
+        person.setPassword(passwordEncoder.encode(dto.getPassword1()));
+        person.setFirstName(dto.getFirstName());
+        person.setLastName(dto.getLastName());
+        person.setConfirmationCode(dto.getCode());
+        person.setIsBlocked(false);
+        person.setMessagesPermission(Permission.ALL);
+        person.setIsApproved(true);
+        person.setRoles(getBasePermission());
+        person.setLastOnlineTime(new Date());
+        repository.save(person);
 
-                repository.save(person);
+        return new BaseResponse(new MessageResponseDto("ok"));
+    }
 
-                return new BaseResponse(new MessageResponseDto("ok"));
-            } else {
-                return new ErrorResponse("invalid_request", "Данный email уже зарегистрирован");
-            }
-        } else {
-            return new ErrorResponse("invalid_request", "Пароль указан некорректно");
+    private void checkUserRegisterPassword(String password1, String password2) throws RuntimeException{
+        if(!password1.equals(password2)){
+            throw new UserInputException("invalid_request", "Пароль указан некорректно");
         }
     }
 
-    private boolean checkUserRegisterPassword(String password1, String password2) {
-        return password1.equals(password2);
-    }
-
-    private boolean checkUserLogin(String email) {
-        return repository.findByEmail(email) == null;
+    private void checkUserLogin(String email) throws RuntimeException{
+        if(repository.findByEmail(email) != null){
+            throw new PersonNotFoundException("invalid_request", "Данный email уже зарегистрирован");
+        }
     }
 
     private List<Role> getBasePermission() {
         Role roleUser = roleRepository.findByName(ERole.ROLE_USER);
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(roleUser);
-
         return userRoles;
     }
 

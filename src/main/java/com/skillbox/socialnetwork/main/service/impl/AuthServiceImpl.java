@@ -5,6 +5,7 @@ import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.*;
+import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
@@ -34,10 +35,6 @@ public class AuthServiceImpl implements AuthService {
     private final BCryptPasswordEncoder passwordEncoder;
 
 
-    @Value("${project.name}")
-    private String projectName;
-
-
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, PersonService personService, EmailService emailService, BCryptPasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
@@ -49,28 +46,22 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public BaseResponse login(AuthenticationRequestDto request) {
+        String email = request.getEmail();
         try {
-            String email = request.getEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             Person user = personService.findByEmail(email);
-
-            if (user == null) {
-                throw new UsernameNotFoundException("User with username: " + email + " not found");
-            }
 
             String token = jwtTokenProvider.createToken(email);
             return AuthResponseFactory.getAuthResponse(user, token);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new BadCredentialsException("Invalid username or password for user " + email);
         }
     }
 
     @Override
     public Response register(RegisterRequestDto request) {
-
         Response registration = personService.registration(request);
-        if (!(registration instanceof ErrorResponse))
-        emailService.sendSimpleMessageUsingTemplate(request.getEmail(), projectName, request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
+        emailService.sendSimpleMessageUsingTemplate(request.getEmail(), request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
         return registration;
     }
 
@@ -98,15 +89,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Response passwordRecovery(String email, String url) {
         Person person = personService.findByEmail(email);
-        if (person != null) {
-            person.setConfirmationCode(CodeGenerator.codeGenerator());
-            personService.save(person);
-            String token = jwtTokenProvider.createToken(person.getEmail() + ":" + person.getConfirmationCode());
-            emailService.sendPasswordRecovery(email, projectName, person.getFirstName(), url + "/change-password?token=" + token);
-            return ResponseFactory.getBaseResponse(new MessageResponseDto("ok"));
-        } else {
-            return ResponseFactory.getErrorResponse("invalid_request", "Данный email не найден");
-        }
+        person.setConfirmationCode(CodeGenerator.codeGenerator());
+        personService.save(person);
+        String token = jwtTokenProvider.createToken(person.getEmail() + ":" + person.getConfirmationCode());
+        emailService.sendPasswordRecovery(email, person.getFirstName(), url + "/change-password?token=" + token);
+        return ResponseFactory.getBaseResponse(new MessageResponseDto("ok"));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +17,6 @@ public class NotificationsController {
             @RequestParam(defaultValue = "20") Integer itemPerPage
     ){
 
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto());
+        return ResponseEntity.status(HttpStatus.OK).body("true");
     }
 }
