@@ -2,12 +2,8 @@ package com.skillbox.socialnetwork.main.controller;
 
 
 import com.skillbox.socialnetwork.main.dto.person.request.UpdatePersonRequestDto;
-import com.skillbox.socialnetwork.main.dto.profile.WallDto;
-import com.skillbox.socialnetwork.main.dto.request.AddPostRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
-import com.skillbox.socialnetwork.main.dto.universal.ErrorResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.post.request.AddPostRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.*;
 import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +26,8 @@ public class ProfileController {
     public ResponseEntity<?> getMeProfile(@RequestHeader(name = "Authorization") String token) {
         return authService.isAuthorized(token)
                 ? ResponseEntity.ok(profileService.getMyProfile(authService.getAuthorizedUser(token)))
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
     }
 
     @PutMapping("/api/v1/users/me")
@@ -38,7 +35,8 @@ public class ProfileController {
                                          @RequestBody UpdatePersonRequestDto request) {
         return authService.isAuthorized(token)
                 ? ResponseEntity.ok(profileService.editMyProfile(authService.getAuthorizedUser(token), request))
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
     }
 
     @DeleteMapping("/api/v1/users/me")
@@ -47,16 +45,18 @@ public class ProfileController {
         authService.logout(token);
         return authService.isAuthorized(token)
                 ? ResponseEntity.ok(profileService.deleteMyProfile(authService.getAuthorizedUser(token)))
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
     }
 
     @GetMapping("/api/v1/users/{id}")
     public ResponseEntity<?> findUserById(@RequestHeader(name = "Authorization") String token, @PathVariable int id) {
         if (authService.isAuthorized(token)) {
-            ResponseDto result = profileService.getUserById(id, authService.getAuthorizedUser(token));
+            Response result = profileService.getUserById(id, authService.getAuthorizedUser(token));
             return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
     }
 
     @GetMapping("/api/v1/users/{id}/wall")
@@ -66,10 +66,11 @@ public class ProfileController {
             @RequestParam(name = "offset", defaultValue = "0") Integer offset,
             @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit) {
         if (authService.isAuthorized(token)) {
-            BaseResponseListDto result = profileService.getWallPosts(id, offset, limit);
+            BaseResponseList result = profileService.getWallPosts(id, offset, limit);
             return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
 
     }
 
@@ -81,10 +82,11 @@ public class ProfileController {
             @RequestBody AddPostRequestDto request
     ) {
         if (authService.isAuthorized(token)) {
-            ResponseDto result = profileService.addPost(id, publishDate, request);
+            Response result = profileService.addPost(id, publishDate, request);
             return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
 
     }
 
@@ -102,25 +104,28 @@ public class ProfileController {
     ) {
         return authService.isAuthorized(token)
                 ? ResponseEntity.ok(profileService.searchPeople(name, surname, ageFrom, ageTo, country, city, offset, limit, authService.getAuthorizedUser(token)))
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
 
     }
 
     @PutMapping("/api/v1/users/block/{id}")
     public ResponseEntity<?> blockProfile(@RequestHeader(name = "Authorization") String token, @PathVariable int id) {
         if(authService.isAuthorized(token)){
-            BaseResponseDto result = profileService.blockUser(id, authService.getAuthorizedUser(token));
+            BaseResponse result = profileService.blockUser(id, authService.getAuthorizedUser(token));
             return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
     }
 
     @DeleteMapping("/api/v1/users/block/{id}")
     public ResponseEntity<?> unblockProfile(@RequestHeader(name = "Authorization") String token, @PathVariable int id) {
         if(authService.isAuthorized(token)){
-            BaseResponseDto result = profileService.unblockUser(id, authService.getAuthorizedUser(token));
+            BaseResponse result = profileService.unblockUser(id, authService.getAuthorizedUser(token));
             return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDto("invalid request", "unauthorized"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
     }
 }

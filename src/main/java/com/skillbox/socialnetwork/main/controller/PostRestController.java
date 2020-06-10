@@ -2,8 +2,7 @@ package com.skillbox.socialnetwork.main.controller;
 
 import com.skillbox.socialnetwork.main.dto.post.request.UpdatePostRequestDto;
 import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,24 +23,24 @@ public class PostRestController {
     }
 
     @GetMapping("/api/v1/post")
-    public ResponseEntity<BaseResponseListDto> getPosts(
+    public ResponseEntity<BaseResponseList> getPosts(
 //            @RequestParam String text,
 //            @RequestParam(name = "date_from", required = false) Long dateFrom,
 //            @RequestParam(name = "date_to", required = false) Long dateTo,
-//            @RequestParam(required = false) Integer offset,
-//            @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
     ) {
 
         //@TODO: Реализовать работу поиска, отступов и лимита на страницу и лимита по дате
 
         List<Post> posts = postService.getAll();
-        return ResponseEntity.status(HttpStatus.OK).body(PostResponseFactory.getPosts(posts));
+        return ResponseEntity.status(HttpStatus.OK).body(PostResponseFactory.getPosts(posts, offset, itemPerPage));
     }
 
     @GetMapping("/api/v1/post/{id}")
     public ResponseEntity<?> getPost(@PathVariable int id) {
         Post post = postService.findById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto(PostResponseFactory.getPost(post).getData()));
+        return ResponseEntity.status(HttpStatus.OK).body(PostResponseFactory.getPost(post));
     }
 
     @PutMapping("api/v1/post/{id}")
@@ -54,7 +53,7 @@ public class PostRestController {
         Date publishDateNow = new Date();
         post.setTime(publishDate == null ? publishDateNow : new Date(publishDate));
 
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto(PostResponseFactory.getPost(postService.save(post)).getData()));
+        return ResponseEntity.status(HttpStatus.OK).body(PostResponseFactory.getPost(postService.save(post)));
     }
 }
 

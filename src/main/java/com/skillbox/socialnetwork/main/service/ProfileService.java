@@ -2,37 +2,35 @@ package com.skillbox.socialnetwork.main.service;
 
 
 import com.skillbox.socialnetwork.main.dto.person.request.UpdatePersonRequestDto;
-import com.skillbox.socialnetwork.main.dto.profile.SearchPersonDto;
-import com.skillbox.socialnetwork.main.dto.profile.WallDto;
-import com.skillbox.socialnetwork.main.dto.request.AddPostRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.post.request.AddPostRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.model.Person;
 
 public interface ProfileService {
-    ResponseDto getMyProfile(Person person);
+    BaseResponse getMyProfile(Person person);
 
-    ResponseDto editMyProfile(Person person, UpdatePersonRequestDto request);
+    BaseResponse editMyProfile(Person person, UpdatePersonRequestDto request);
 
-    BaseResponseDto deleteMyProfile(Person person);
+    BaseResponse deleteMyProfile(Person person);
 
-    ResponseDto getUserById(int id, Person authorizedUser);
+    BaseResponse getUserById(int id, Person authorizedUser);
 
-    BaseResponseListDto getWallPosts(int id, int offset, int limit);
+    BaseResponseList getWallPosts(int id, int offset, int limit);
 
-    ResponseDto addPost(int id, long publishDate, AddPostRequestDto request);
+    BaseResponse addPost(int id, long publishDate, AddPostRequestDto request);
 
-    SearchPersonDto searchPeople(String name,
-                                 String surname,
-                                 Integer ageFrom,
-                                 Integer ageTo,
-                                 String country,
-                                 String city,
-                                 Integer offset,
-                                 Integer limit,
-                                 Person auhtorizedUser);
-    BaseResponseDto blockUser(int idOfABlockedUser, Person authorizedUser);
+    BaseResponseList searchPeople(String name,
+                                  String surname,
+                                  Integer ageFrom,
+                                  Integer ageTo,
+                                  String country,
+                                  String city,
+                                  Integer offset,
+                                  Integer limit,
+                                  Person auhtorizedUser);
 
-    BaseResponseDto unblockUser(int id, Person authorizedUser);
+    BaseResponse blockUser(int idOfABlockedUser, Person authorizedUser);
+
+    BaseResponse unblockUser(int id, Person authorizedUser);
 }

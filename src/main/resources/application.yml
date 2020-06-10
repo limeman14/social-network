@@ -13,7 +13,7 @@ spring:
 
 jwt.token:
   secret: jwtappdemo
-  expired: 993600000
+  expired: 3600000
 
 server:
   port: 8080

@@ -3,11 +3,8 @@ package com.skillbox.socialnetwork.main.service.impl;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
-import com.skillbox.socialnetwork.main.dto.profile.PasswordSetRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.ErrorResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.*;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
@@ -51,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseDto login(AuthenticationRequestDto request) {
+    public BaseResponse login(AuthenticationRequestDto request) {
         try {
             String email = request.getEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
@@ -69,10 +66,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseDto register(RegisterRequestDto request) {
+    public Response register(RegisterRequestDto request) {
 
-        ResponseDto registration = personService.registration(request);
-        if (!(registration instanceof ErrorResponseDto))
+        Response registration = personService.registration(request);
+        if (!(registration instanceof ErrorResponse))
         emailService.sendSimpleMessageUsingTemplate(request.getEmail(), projectName, request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
         return registration;
     }
@@ -99,22 +96,22 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseDto passwordRecovery(String email, String url) {
+    public Response passwordRecovery(String email, String url) {
         Person person = personService.findByEmail(email);
         if (person != null) {
             person.setConfirmationCode(CodeGenerator.codeGenerator());
             personService.save(person);
             String token = jwtTokenProvider.createToken(person.getEmail() + ":" + person.getConfirmationCode());
             emailService.sendPasswordRecovery(email, projectName, person.getFirstName(), url + "/change-password?token=" + token);
-            return new BaseResponseDto(new MessageResponseDto("ok"));
+            return ResponseFactory.getBaseResponse(new MessageResponseDto("ok"));
         } else {
-            return new ErrorResponseDto("invalid_request", "Данный email не найден");
+            return ResponseFactory.getErrorResponse("invalid_request", "Данный email не найден");
         }
     }
 
     @Override
-    public ResponseDto passwordSet(PasswordSetRequestDto dto, String referer) {
-        ResponseDto responseDto;
+    public Response passwordSet(PasswordSetRequestDto dto, String referer) {
+        Response response;
         try {
             URL ub = new URL(referer);
             dto.setToken(ub.getQuery());
@@ -126,15 +123,15 @@ public class AuthServiceImpl implements AuthService {
                     person.setPassword(passwordEncoder.encode(dto.getPassword()));
                     person.setConfirmationCode("");
                     personService.save(person);
-                    return new BaseResponseDto(new MessageResponseDto("ok"));
+                    return ResponseFactory.getBaseResponse(new MessageResponseDto("ok"));
                 }
             }
-            return new ErrorResponseDto("invalid_request", "token error");
+            return ResponseFactory.getErrorResponse("invalid_request", "token error");
 
         } catch (MalformedURLException e) {
-            responseDto = new ErrorResponseDto("invalid_request", "token not found");
+            response = ResponseFactory.getErrorResponse("invalid_request", "token not found");
         }
-        return responseDto;
+        return response;
     }
 
 

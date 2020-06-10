@@ -1,8 +1,9 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.files.response.FileDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.files.request.FileRequestDto;
+import com.skillbox.socialnetwork.main.dto.files.response.FileResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.Dto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.service.impl.FileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -27,17 +27,18 @@ public class ApiGeneralController {
 
 
     @PostMapping("/storage")
-    public ResponseEntity<?> saveFile(@RequestHeader(name = "Authorization") String token, String type, MultipartFile file) throws IOException {
-        if (file != null){
-            ResponseDto response;
-            switch (type){
+    public ResponseEntity<?> saveFile(@RequestHeader(name = "Authorization") String token, FileRequestDto fileRequest) throws IOException {
+        if (fileRequest.getFile() != null) {
+            Dto dto;
+            switch (fileRequest.getType()) {
                 case "IMAGE": {
-                    response = fileService.saveImage(token, file);
+                    dto = fileService.saveImage(token, fileRequest.getFile());
                     break;
                 }
-                default: response = new FileDto();
+                default:
+                    dto = new FileResponseDto();
             }
-            return ResponseEntity.ok(new BaseResponseDto(response));
+            return ResponseEntity.ok(ResponseFactory.getBaseResponse(dto));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }

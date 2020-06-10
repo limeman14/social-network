@@ -1,10 +1,10 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.ErrorResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
+import com.skillbox.socialnetwork.main.dto.universal.ErrorResponse;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
@@ -30,7 +30,7 @@ public class PersonServiceImpl implements PersonService {
     private final RoleRepository roleRepository;
 
     @Autowired
-    public PersonServiceImpl(PersonRepository repository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository){
+    public PersonServiceImpl(PersonRepository repository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
@@ -57,7 +57,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public ResponseDto registration(RegisterRequestDto dto) {
+    public Response registration(RegisterRequestDto dto) {
 
         if (checkUserRegisterPassword(dto.getPassword1(), dto.getPassword2())) {
             if (checkUserLogin(dto.getEmail())) {
@@ -75,12 +75,12 @@ public class PersonServiceImpl implements PersonService {
 
                 repository.save(person);
 
-                return new BaseResponseDto(new MessageResponseDto("ok"));
-            }else{
-                return new ErrorResponseDto("invalid_request", "Данный email уже зарегистрирован");
+                return new BaseResponse(new MessageResponseDto("ok"));
+            } else {
+                return new ErrorResponse("invalid_request", "Данный email уже зарегистрирован");
             }
-        }else{
-            return new ErrorResponseDto("invalid_request", "Пароль указан некорректно");
+        } else {
+            return new ErrorResponse("invalid_request", "Пароль указан некорректно");
         }
     }
 

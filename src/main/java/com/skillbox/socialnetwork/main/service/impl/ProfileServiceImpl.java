@@ -2,14 +2,12 @@ package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.dto.person.request.UpdatePersonRequestDto;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
+import com.skillbox.socialnetwork.main.dto.post.request.AddPostRequestDto;
 import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
-import com.skillbox.socialnetwork.main.dto.profile.SearchPersonDto;
-import com.skillbox.socialnetwork.main.dto.profile.WallResponseFactory;
-import com.skillbox.socialnetwork.main.dto.request.AddPostRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponseListDto;
+import com.skillbox.socialnetwork.main.dto.profile.response.WallResponseFactory;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
 import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
 import com.skillbox.socialnetwork.main.repository.*;
@@ -52,13 +50,13 @@ public class ProfileServiceImpl implements ProfileService {
 
 
     @Override
-    public ResponseDto getMyProfile(Person person) {
+    public BaseResponse getMyProfile(Person person) {
         log.info("IN getMyProfile person: {} found", person);
         return PersonResponseFactory.getPerson(person);
     }
 
     @Override
-    public ResponseDto editMyProfile(Person person, UpdatePersonRequestDto request) {
+    public BaseResponse editMyProfile(Person person, UpdatePersonRequestDto request) {
         person.setFirstName(request.getFirstName());
         person.setLastName(request.getLastName());
         person.setBirthDate(request.getBirthDate());
@@ -72,42 +70,42 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public BaseResponseDto deleteMyProfile(Person person) {
+    public BaseResponse deleteMyProfile(Person person) {
         personRepository.delete(person);
         log.info("IN deleteMyProfile user: {} deleted successfully", person);
-        return new BaseResponseDto(new MessageResponseDto("ok"));
+        return new BaseResponse(new MessageResponseDto("ok"));
     }
 
     @Override
-    public ResponseDto getUserById(int id, Person authorizedUser) {
+    public BaseResponse getUserById(int id, Person authorizedUser) {
         Optional<Person> profile = personRepository.findById(id);
-        ResponseDto result = null;
-        if(profile.isPresent()){
+        BaseResponse result = null;
+        if (profile.isPresent()) {
             //эта строчка проверяет, заблокировал ли текущий авторизованный юзер юзера, которого ищем по id
             profile.get().setIsBlocked(friendshipRepository.isBlocked(authorizedUser, profile.get()));
             result = PersonResponseFactory.getPerson(profile.get());
         }
-        log.info("IN getUserById user with id: {}"+(result!=null ? "  found." : "NOT FOUND"), id);
+        log.info("IN getUserById user with id: {}" + (result != null ? "  found." : "NOT FOUND"), id);
         return result;
     }
 
     @Override
-    public BaseResponseListDto getWallPosts(int id, int offset, int limit) {
+    public BaseResponseList getWallPosts(int id, int offset, int limit) {
         Optional<Person> person = personRepository.findById(id);
-        BaseResponseListDto result = null;
-        if(person.isPresent()) {
+        BaseResponseList result = null;
+        if (person.isPresent()) {
             List<Post> posts = person.get().getPosts();
             posts.sort(Comparator.comparing(Post::getTime).reversed());//сортирую по дате чтобы на стенке выводились сначала новые
             result = WallResponseFactory.getWall(posts, offset, limit);
         }
-        log.info("IN getWallPosts posts" + (result!=null ? ": ("+result.getData().size()+") have found" : "not found") );
+        log.info("IN getWallPosts posts" + (result != null ? ": (" + result.getData().size() + ") have found" : "not found"));
         return result;
     }
 
     @Override
-    public ResponseDto addPost(int id, long publishDate, AddPostRequestDto request) {
+    public BaseResponse addPost(int id, long publishDate, AddPostRequestDto request) {
         Optional<Person> person = personRepository.findById(id);
-        if(person.isPresent()){
+        if (person.isPresent()) {
             Post post = new Post();
             post.setAuthor(person.get());
             if (publishDate == 0) {
@@ -130,7 +128,7 @@ public class ProfileServiceImpl implements ProfileService {
             request.getTags().forEach(tag -> {
                 Post2tag ttp = new Post2tag();
                 ttp.setPost(savedPost);
-                if(!tagRepository.existsByTagIgnoreCase(tag)){
+                if (!tagRepository.existsByTagIgnoreCase(tag)) {
                     Tag t = new Tag();
                     t.setTag(tag);
                     tagRepository.save(t);
@@ -147,8 +145,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public SearchPersonDto searchPeople(String name, String surname, Integer ageFrom, Integer ageTo, String country,
-                                        String city, Integer offset, Integer limit, Person authorizedUser) {
+    public BaseResponseList searchPeople(String name, String surname, Integer ageFrom, Integer ageTo, String country,
+                                         String city, Integer offset, Integer limit, Person authorizedUser) {
         // превращаю из локалдейт в дату ибо spring jpa не может в query воспринимать LocalDate и принимает только Date
         Date dateTo = Date.from(LocalDate.now().minusYears(ageFrom).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//плюс день для верхней даты и минус день
         Date dateFrom = Date.from(LocalDate.now().minusYears(ageTo).minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//для нижней т.к. between строгое сравнение.(<>)
@@ -156,13 +154,13 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info("IN searchPeople by parameters: name {}, surname {}, ageFrom {}, ageTo {}, country {}, city {} found {} result",
                 name, surname, ageFrom, ageTo, country, city, result.size());
-        return PersonResponseFactory.formatPeopleSearchResultSet(result, offset, limit);
+        return PersonResponseFactory.getPersons(result, offset, limit);
     }
 
     @Override
-    public BaseResponseDto blockUser(int idOfABlockedUser, Person authorizedUser) {
+    public BaseResponse blockUser(int idOfABlockedUser, Person authorizedUser) {
         Optional<Person> profileToBlock = personRepository.findById(idOfABlockedUser);
-        if(profileToBlock.isPresent()){
+        if (profileToBlock.isPresent()) {
             FriendshipStatus status = new FriendshipStatus();
             status.setCode(FriendshipCode.BLOCKED);
             status.setName("name");//Для чего поле ??
@@ -175,19 +173,19 @@ public class ProfileServiceImpl implements ProfileService {
 
             friendshipRepository.save(relation);
             log.info("IN blockUser user: {} blocked user {}", authorizedUser.getEmail(), profileToBlock.get().getEmail());
-            return new BaseResponseDto(new MessageResponseDto("ok"));
+            return new BaseResponse(new MessageResponseDto("ok"));
         }
         log.info("IN blockUser user with id: {} not found", idOfABlockedUser);
         return null;
     }
 
     @Override
-    public BaseResponseDto unblockUser(int id, Person authorizedUser) {
+    public BaseResponse unblockUser(int id, Person authorizedUser) {
         Optional<Person> profileToBlock = personRepository.findById(id);
-        if(profileToBlock.isPresent()){
+        if (profileToBlock.isPresent()) {
             friendshipRepository.delete(friendshipRepository.findRelation(authorizedUser, profileToBlock.get(), FriendshipCode.BLOCKED));
             log.info("IN unblockUser user: {} unblocked user {}", authorizedUser.getEmail(), profileToBlock.get().getEmail());
-            return new BaseResponseDto(new MessageResponseDto("ok"));
+            return new BaseResponse(new MessageResponseDto("ok"));
         }
         log.info("IN unblockUser user with id: {} not found", id);
         return null;

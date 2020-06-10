@@ -1,11 +1,11 @@
 package com.skillbox.socialnetwork.main.dto.comment.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import lombok.Data;
 
 @Data
-public class CommentDto implements ResponseDto {
+public class CommentDto implements Dto {
     @JsonProperty("parent_id")
     private int parentId;
     @JsonProperty("comment_text")

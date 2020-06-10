@@ -19,7 +19,7 @@ public class EmailServiceImpl implements EmailService {
     private SimpleMailMessage template;
 
     @Autowired
-    public EmailServiceImpl(JavaMailSender emailSender, SimpleMailMessage template){
+    public EmailServiceImpl(JavaMailSender emailSender, SimpleMailMessage template) {
         this.emailSender = emailSender;
         this.template = template;
     }
