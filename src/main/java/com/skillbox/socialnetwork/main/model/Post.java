@@ -4,8 +4,6 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -30,8 +28,13 @@ public class Post {
 
     private Boolean isBlocked;
 
-    @OneToMany(mappedBy = "tag")
-    private List<Post2tag> tags;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "posts2tags",
+            joinColumns = {@JoinColumn(name = "post_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "tag_id", referencedColumnName = "id")}
+    )
+    private List<Tag> tags;
 
     @OneToMany(mappedBy = "post")
     private List<PostLike> likes;
@@ -46,7 +49,7 @@ public class Post {
     private List<BlockHistory> blockHistories;
 
     @Override
-    public String toString(){
+    public String toString() {
         return id + " " + title + " " + postText;
     }
 }

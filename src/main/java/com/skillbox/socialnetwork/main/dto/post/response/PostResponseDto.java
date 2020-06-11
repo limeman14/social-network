@@ -28,5 +28,5 @@ public class PostResponseDto implements Dto {
     private int likes;
     private List comments;
     private String type;
-    private List tags;
+    private List<String> tags;
 }

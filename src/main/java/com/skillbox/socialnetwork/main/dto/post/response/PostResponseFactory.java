@@ -5,6 +5,7 @@ import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Post;
+import com.skillbox.socialnetwork.main.model.Tag;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +50,7 @@ public class PostResponseFactory {
                 post.getTags() != null
                         ? post.getTags()
                             .stream()
-                            .map(p -> p.getTag().getTag())
+                            .map(Tag::getTag)
                             .collect(Collectors.toList())
                         : new ArrayList<>()
         );

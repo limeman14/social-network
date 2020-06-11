@@ -124,20 +124,20 @@ public class ProfileServiceImpl implements ProfileService {
 
             Post savedPost = postRepository.save(post);
             //tags
-            List<Post2tag> tags = new ArrayList<>();
-            if (request.getTags().size() == 0) {            //если тегов нет в запросе, блок пропускается
+            List<Tag> tags = new ArrayList<>();
+            if (request.getTags().size() != 0) {            //если тегов нет в запросе, блок пропускается
                 request.getTags().forEach(tag -> {
-                    Post2tag ttp = new Post2tag();
-                    ttp.setPost(savedPost);
-                    if (!tagRepository.existsByTagIgnoreCase(tag)) {
-                        Tag t = new Tag();
-                        t.setTag(tag);
-                        tagRepository.save(t);
+                    Tag postTag;
+                    if(tagRepository.existsByTagIgnoreCase(tag)){
+                        postTag = tagRepository.findFirstByTagIgnoreCase(tag);
                     }
-                    ttp.setTag(tagRepository.findFirstByTagIgnoreCase(tag));
-                    tags.add(ttp);
+                    else {
+                        postTag = new Tag();
+                        postTag.setTag(tag);
+                    }
+                    tags.add(postTag);
                 });
-                savedPost.setTags(p2TRepository.saveAll(tags));
+                savedPost.setTags(tags);
             }
             Post result = postRepository.save(savedPost);
             log.info("IN addPost post: {} added with tags: {} successfully", result, tags);

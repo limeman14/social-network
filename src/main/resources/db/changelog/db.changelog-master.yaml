@@ -701,6 +701,7 @@ databaseChangeLog:
             tableName: dialogs
             columns:
               - column:
+                  autoIncrement: true
                   constraints:
                     nullable: false
                     primaryKey: true
@@ -715,6 +716,7 @@ databaseChangeLog:
             tableName: dialog2person
             columns:
               - column:
+                  autoIncrement: true
                   constraints:
                     nullable: false
                     primaryKey: true
