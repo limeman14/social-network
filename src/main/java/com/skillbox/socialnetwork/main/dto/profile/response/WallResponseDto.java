@@ -24,4 +24,5 @@ public class WallResponseDto implements Dto {
     private Integer likes;
     private List comments;
     private String type;
+    private List tags;
 }

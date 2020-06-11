@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public BaseResponseList feeds(int offset, int limit) {
-        return PostResponseFactory.getPostsList(postRepository.limitQuery(offset, limit)); //тут было интересное решение с limitQuery
+        return PostResponseFactory.getPostsList(postRepository.limitQuery(offset, limit), offset, limit); //тут было интересное решение с limitQuery
     }
 
     @Override
@@ -61,16 +61,16 @@ public class PostServiceImpl implements PostService {
 
         //tags
         List<Post2tag> tags = new ArrayList<>();
-        if (request.getTags() != null) {            //если тегов новых не прислали, блок пропускается
+        if (request.getTags().size() == 0) {            //если тегов новых не прислали, блок пропускается
             request.getTags().forEach(tag -> {
                 Post2tag ttp = new Post2tag();
                 ttp.setPost(post);
-                if (!tagRepository.existsByTagIgnoreCase(tag.getTag())) {
+                if (!tagRepository.existsByTagIgnoreCase(tag)) {
                     Tag t = new Tag();
-                    t.setTag(tag.getTag());
+                    t.setTag(tag);
                     tagRepository.save(t);
                 }
-                ttp.setTag(tagRepository.findFirstByTagIgnoreCase(tag.getTag()));
+                ttp.setTag(tagRepository.findFirstByTagIgnoreCase(tag));
                 tags.add(ttp);
             });
             post.setTags(p2TRepository.saveAll(tags));

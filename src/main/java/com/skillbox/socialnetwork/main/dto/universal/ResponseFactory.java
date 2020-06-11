@@ -10,7 +10,7 @@ public class ResponseFactory {
     public static BaseResponseList getBaseResponseList(List<Dto> list, int offset, int limit){
         List<Dto> data = getElementsInRange(list, offset, limit);
         return new BaseResponseList(
-                data.size(),//здесь не data.size(), а list.size() должно быть
+                list.size(),//здесь не data.size(), а list.size() должно быть
                 offset,
                 limit,
                 data

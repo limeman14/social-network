@@ -17,5 +17,5 @@ public class UpdatePostRequestDto {
     @JsonProperty("post_text")
     private String postText;
 
-    private List<Tag> tags;
+    private List<String> tags;
 }

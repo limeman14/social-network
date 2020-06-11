@@ -125,7 +125,7 @@ public class ProfileServiceImpl implements ProfileService {
             Post savedPost = postRepository.save(post);
             //tags
             List<Post2tag> tags = new ArrayList<>();
-            if (request.getTags() != null) {            //если тегов нет в запросе, блок пропускается
+            if (request.getTags().size() == 0) {            //если тегов нет в запросе, блок пропускается
                 request.getTags().forEach(tag -> {
                     Post2tag ttp = new Post2tag();
                     ttp.setPost(savedPost);

@@ -9,6 +9,7 @@ import com.skillbox.socialnetwork.main.model.Post;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WallResponseFactory {
 
@@ -31,7 +32,13 @@ public class WallResponseFactory {
                                 post.getIsBlocked(),
                                 post.getLikes().size(),
                                 new ArrayList<>(), //@TODO Comments
-                                "POSTED"//@TODO ENUM postType
+                                "POSTED",//@TODO ENUM postType
+                                post.getTags() != null
+                                        ? post.getTags()
+                                        .stream()
+                                        .map(p -> p.getTag().getTag())
+                                        .collect(Collectors.toList())
+                                        : new ArrayList<>()
                         )
                 ));
         return data;
