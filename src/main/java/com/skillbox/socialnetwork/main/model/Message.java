@@ -31,4 +31,8 @@ public class Message {
 
     @Enumerated(value = EnumType.STRING)
     private ReadStatus readStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "dialog_id")
+    private Dialog dialog;
 }
