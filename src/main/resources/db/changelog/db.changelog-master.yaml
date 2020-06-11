@@ -693,6 +693,51 @@ databaseChangeLog:
               - column:
                   name: created_at
                   type: datetime
+  - changeSet: 
+      id: 1.1.4
+      author: devolek
+      changes:
+        - createTable:
+            tableName: dialogs
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                  name: id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: creation_date
+                  type: datetime
+        - createTable:
+            tableName: dialog2person
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                  name: id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: dialog_id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: person_id
+                  type: INT
+        - addColumn:
+            tableName: messages
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: dialog_id
+                  type: INT
   - include:
       file: db/changelog/db.changelog-insertPersons.yaml
   - include:

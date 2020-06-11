@@ -78,6 +78,7 @@ public class PersonServiceImpl implements PersonService {
         person.setIsApproved(true);
         person.setRoles(getBasePermission());
         person.setLastOnlineTime(new Date());
+        person.setPhoto("/static/img/user/default-avatar.png");
         repository.save(person);
 
         return new BaseResponse(new MessageResponseDto("ok"));
