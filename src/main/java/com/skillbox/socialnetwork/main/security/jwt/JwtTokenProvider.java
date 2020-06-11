@@ -24,6 +24,7 @@ public class JwtTokenProvider {
     @Value("${jwt.token.expired}")
     private long validityInMilliseconds;
 
+    public static final String HEADER = "Authorization";
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -82,7 +83,5 @@ public class JwtTokenProvider {
         }
         return null;
     }
-
-    public static final String HEADER = "Authorization";
 
 }
