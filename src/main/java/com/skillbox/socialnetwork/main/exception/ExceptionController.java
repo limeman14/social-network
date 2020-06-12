@@ -1,7 +1,10 @@
 package com.skillbox.socialnetwork.main.exception;
 
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
+import com.skillbox.socialnetwork.main.dto.universal.ErrorResponse;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.exception.not.found.NotFoundException;
+import com.skillbox.socialnetwork.main.exception.user.input.UserException;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -11,13 +14,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.security.core.AuthenticationException;
 
 @ControllerAdvice
 @Slf4j
 public class ExceptionController extends ResponseEntityExceptionHandler {
 
 
-    @ExceptionHandler(value = { ExpiredJwtException.class })
+    @ExceptionHandler(value = {ExpiredJwtException.class})
     protected ResponseEntity<Object> handleUncaughtException(
             ExpiredJwtException ex,
             WebRequest request
@@ -25,9 +29,54 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
         log.warn(ex.getMessage());
         return handleExceptionInternal(
                 ex,
-                ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(new MessageResponseDto("ok"))),
+                new BaseResponse(new MessageResponseDto("ok")),
                 new HttpHeaders(),
                 HttpStatus.OK,
+                request
+        );
+    }
+
+    @ExceptionHandler(value = {UserException.class})
+    protected ResponseEntity<?> handleUserException(
+            UserException ex,
+            WebRequest request
+    ) {
+        log.warn(ex.getMessage());
+        return handleExceptionInternal(
+                ex,
+                new ErrorResponse(ex.getErrorName(), ex.getMessage()),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    @ExceptionHandler(value = {AuthenticationException.class})
+    protected ResponseEntity<?> handleNotFoundException(
+            AuthenticationException ex,
+            WebRequest request
+    ) {
+        log.warn(ex.getMessage());
+        return handleExceptionInternal(
+                ex,
+                new ErrorResponse("invalid_request", ex.getMessage()),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    @ExceptionHandler(value = {NotFoundException.class})
+    protected ResponseEntity<?> handleNotFoundException(
+            NotFoundException ex,
+            WebRequest request
+    ) {
+        log.warn(ex.getMessage());
+        return handleExceptionInternal(
+                ex,
+                new ErrorResponse(ex.getErrorName(), ex.getMessage()),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
                 request
         );
     }

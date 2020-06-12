@@ -4,20 +4,17 @@ public interface EmailService {
 
     void sendSimpleMessage(
             String to,
-            String subject,
             String text
     );
 
     void sendPasswordRecovery(
             String to,
-            String subject,
             String name,
             String link
     );
 
     void sendSimpleMessageUsingTemplate(
             String to,
-            String subject,
             String... templateModel
     );
 

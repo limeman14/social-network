@@ -2,6 +2,7 @@ package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -17,19 +18,25 @@ public class EmailServiceImpl implements EmailService {
 
     private JavaMailSender emailSender;
     private SimpleMailMessage template;
+    private String projectName;
 
     @Autowired
-    public EmailServiceImpl(JavaMailSender emailSender, SimpleMailMessage template) {
+    public EmailServiceImpl(
+            JavaMailSender emailSender,
+            SimpleMailMessage template,
+            @Value("${project.name}") String projectName
+    ) {
         this.emailSender = emailSender;
         this.template = template;
+        this.projectName = projectName;
     }
 
     @Override
-    public void sendSimpleMessage(String to, String subject, String text) {
+    public void sendSimpleMessage(String to, String text) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(to);
-            message.setSubject(subject);
+            message.setSubject(projectName);
             message.setText(text);
 
             emailSender.send(message);
@@ -39,15 +46,15 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendSimpleMessageUsingTemplate(String to, String subject, String... templateModel) {
+    public void sendSimpleMessageUsingTemplate(String to, String... templateModel) {
         String text = String.format(template.getText(), templateModel);
-        sendSimpleMessage(to, subject, text);
+        sendSimpleMessage(to, text);
     }
 
     @Override
-    public void sendPasswordRecovery(String to, String subject, String name, String link) {
+    public void sendPasswordRecovery(String to, String name, String link) {
         String text = String.format(template.getText(), name, link);
-        sendSimpleMessage(to, subject, text);
+        sendSimpleMessage(to, text);
     }
 
     @Override

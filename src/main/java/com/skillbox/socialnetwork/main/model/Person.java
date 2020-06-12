@@ -85,5 +85,7 @@ public class Person {
     @OneToMany(mappedBy = "person")
     private List<Notification> notifications;
 
+    @OneToMany(mappedBy = "person")
+    private List<DialogToPerson> dialogToPeople;
 
 }

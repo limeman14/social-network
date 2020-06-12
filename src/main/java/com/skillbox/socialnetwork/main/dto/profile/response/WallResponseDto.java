@@ -13,6 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WallResponseDto implements Dto {
+    private int id;
+    private long time;
     private PersonResponseDto author;
     private String title;
     @JsonProperty("post_text")
@@ -22,4 +24,5 @@ public class WallResponseDto implements Dto {
     private Integer likes;
     private List comments;
     private String type;
+    private List tags;
 }

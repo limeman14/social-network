@@ -32,11 +32,7 @@ public class AuthenticationRestControllerV1 {
     @PostMapping("/api/v1/account/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDto requestDto){
         Response result = authService.register(requestDto);
-        return ResponseEntity
-                .status(
-                        result instanceof ErrorResponse ?
-                                HttpStatus.BAD_REQUEST : HttpStatus.OK)
-                .body(result);
+        return ResponseEntity.ok(result);
     }
 
 
@@ -50,11 +46,7 @@ public class AuthenticationRestControllerV1 {
     public ResponseEntity<?> passwordRecovery(HttpServletRequest request, @RequestBody EmailRequestDto dto){
         Response response = authService.passwordRecovery(dto.getEmail(),
                 request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort());
-        return ResponseEntity
-                .status(
-                        response instanceof ErrorResponse ?
-                                HttpStatus.BAD_REQUEST : HttpStatus.OK)
-                .body(response);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/api/v1/account/password/set")

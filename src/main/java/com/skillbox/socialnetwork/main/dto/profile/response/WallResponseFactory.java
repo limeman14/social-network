@@ -5,10 +5,12 @@ import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Post;
+import com.skillbox.socialnetwork.main.model.Tag;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WallResponseFactory {
 
@@ -23,13 +25,21 @@ public class WallResponseFactory {
                 .filter(post -> post.getTime().before(new Date()))//только текущие посты
                 .forEach(post -> data.add(
                         new WallResponseDto(
+                                post.getId(),
+                                post.getTime().getTime(),
                                 PersonResponseFactory.getPersonDto(post.getAuthor()),
                                 post.getTitle(),
                                 post.getPostText(),
                                 post.getIsBlocked(),
                                 post.getLikes().size(),
                                 new ArrayList<>(), //@TODO Comments
-                                "POSTED"//@TODO ENUM postType
+                                "POSTED",//@TODO ENUM postType
+                                post.getTags() != null
+                                        ? post.getTags()
+                                        .stream()
+                                        .map(Tag::getTag)
+                                        .collect(Collectors.toList())
+                                        : new ArrayList<>()
                         )
                 ));
         return data;
