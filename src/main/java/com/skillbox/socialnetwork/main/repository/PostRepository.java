@@ -5,12 +5,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
     Post findPostById(Integer id);
 
-    @Query(value = "select * from posts ORDER BY time desc limit ?1, ?2", nativeQuery = true)
-    List<Post> limitQuery(Integer offset, Integer limit);
+    @Query(value = "select * from posts where is_blocked = 0 order by time desc", nativeQuery = true)
+    List<Post> getFeeds();
+
+    @Query(value = "select p from Post p where " +
+            "(p.postText like %?1% or p.title like %?1%) and " +
+            "(p.time between ?2 and ?3) and " +
+            "(p.author.firstName like %?4% or p.author.lastName like %?4%) and " +
+            "p.isBlocked = false order by p.time desc")
+    List<Post> searchPosts(String text, Date dateFrom, Date dateTo, String author);
 }

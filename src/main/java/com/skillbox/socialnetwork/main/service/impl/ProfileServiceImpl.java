@@ -30,21 +30,18 @@ public class ProfileServiceImpl implements ProfileService {
     private final TagRepository tagRepository;
     private final FriendshipStatusRepo friendshipStatusRepo;
     private final FriendshipRepository friendshipRepository;
-    private final P2TRepository p2TRepository;
     private final FileRepository fileRepository;
 
 
     @Autowired
     public ProfileServiceImpl(PersonRepository personRepository, PostRepository postRepository,
                               TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo,
-                              FriendshipRepository friendshipRepository, P2TRepository p2TRepository,
-                              FileRepository fileRepository) {
+                              FriendshipRepository friendshipRepository, FileRepository fileRepository) {
         this.personRepository = personRepository;
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
         this.friendshipStatusRepo = friendshipStatusRepo;
         this.friendshipRepository = friendshipRepository;
-        this.p2TRepository = p2TRepository;
         this.fileRepository = fileRepository;
     }
 

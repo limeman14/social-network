@@ -23,16 +23,15 @@ public class PostRestController {
     @GetMapping("/api/v1/post")
     public ResponseEntity<?> getPosts(
             @RequestHeader(name = "Authorization") String token,
-//            @RequestParam(required = false) String text,
-//            @RequestParam(name = "date_from", required = false) Long dateFrom,
-//            @RequestParam(name = "date_to", required = false) Long dateTo,
-            @RequestParam(required = false) Integer offset,
+            @RequestParam(defaultValue = "") String text,
+            @RequestParam(name = "date_from", required = false, defaultValue = "946684800000") Long dateFrom,       //1 января 2000 года, если не указано иное
+            @RequestParam(name = "date_to", required = false, defaultValue = "4102444800000") Long dateTo,          //1 января 2100 года, если не указано иное
+            @RequestParam(required = false, defaultValue = "") String author,
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
             @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
     ) {
-
-        //@TODO: Реализовать работу поиска, лимита по дате
         return authService.isAuthorized(token)
-                ? ResponseEntity.ok(postService.feeds(offset, itemPerPage))
+                ? ResponseEntity.ok(postService.searchPosts(text, dateFrom, dateTo, author, offset, itemPerPage))
                 : ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
     }

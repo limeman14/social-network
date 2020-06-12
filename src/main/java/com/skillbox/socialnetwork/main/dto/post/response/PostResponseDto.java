@@ -1,9 +1,8 @@
 package com.skillbox.socialnetwork.main.dto.post.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.skillbox.socialnetwork.main.dto.comment.response.CommentDto;
-import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
+import com.skillbox.socialnetwork.main.model.enumerated.PostType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +26,6 @@ public class PostResponseDto implements Dto {
     private boolean blocked;
     private int likes;
     private List comments;
-    private String type;
+    private PostType type;
     private List<String> tags;
 }

@@ -40,7 +40,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public BaseResponseList feeds(int offset, int limit) {
-        return PostResponseFactory.getPostsList(postRepository.limitQuery(offset, limit), offset, limit); //тут было интересное решение с limitQuery
+        return PostResponseFactory.getPostsList(postRepository.getFeeds(), offset, limit);
     }
 
     @Override
@@ -78,5 +78,10 @@ public class PostServiceImpl implements PostService {
     public BaseResponse deletePost(int id) {
         postRepository.delete(postRepository.findPostById(id));
         return new BaseResponse(new MessageResponseDto("ok"));
+    }
+
+    @Override
+    public BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, int offset, int limit) {
+        return PostResponseFactory.getPostsList(postRepository.searchPosts(text, new Date(dateFrom), new Date(dateTo), author), offset, limit);
     }
 }

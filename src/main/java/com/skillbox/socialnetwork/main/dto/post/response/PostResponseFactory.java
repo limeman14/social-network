@@ -6,11 +6,11 @@ import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.model.Tag;
+import com.skillbox.socialnetwork.main.model.enumerated.PostType;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class PostResponseFactory {
@@ -27,14 +27,6 @@ public class PostResponseFactory {
                 offset, limit);
     }
 
-    public static BaseResponseList getPostsList(List<Post> posts) {
-        return new BaseResponseList(
-                posts.stream()
-                        .filter(post -> post.getTime().before(new Date()))
-                        .map(PostResponseFactory::postToDto)
-                        .collect(Collectors.toList()));
-    }
-
     private static PostResponseDto postToDto(Post post) {
         return new PostResponseDto(
                 post.getId(),
@@ -44,9 +36,8 @@ public class PostResponseFactory {
                 post.getPostText(),
                 post.getIsBlocked(),
                 post.getLikes().size(),
-                //@TODO: Возвращать тут комментарии
-                new ArrayList<>(),
-                "POSTED", //@TODO ENUM postType
+                new ArrayList<>(),  //@TODO: Возвращать тут комментарии
+                post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,
                 post.getTags() != null
                         ? post.getTags()
                             .stream()
