@@ -61,7 +61,9 @@ public class ProfileServiceImpl implements ProfileService {
         person.setLastName(request.getLastName());
         person.setBirthDate(request.getBirthDate());
         person.setPhone(request.getPhone());
-        person.setPhoto(fileRepository.findById(request.getPhotoId()).getRelativeFilePath());
+        if (request.getPhotoId() != null){
+            person.setPhoto(fileRepository.findById(request.getPhotoId()).getRelativeFilePath());
+        }
         person.setAbout(request.getAbout());
         person.setTown(null);// здесь нужно определить функциональность на счёт города
 
