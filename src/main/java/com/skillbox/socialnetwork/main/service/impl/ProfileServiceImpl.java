@@ -151,7 +151,7 @@ public class ProfileServiceImpl implements ProfileService {
         // превращаю из локалдейт в дату ибо spring jpa не может в query воспринимать LocalDate и принимает только Date
         Date dateTo = Date.from(LocalDate.now().minusYears(ageFrom).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//плюс день для верхней даты и минус день
         Date dateFrom = Date.from(LocalDate.now().minusYears(ageTo).minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//для нижней т.к. between строгое сравнение.(<>)
-        List<Person> result = personRepository.search(name, surname, dateFrom, dateTo, country, city);
+        List<Person> result = personRepository.search(name, surname, dateFrom, dateTo);
 
         log.info("IN searchPeople by parameters: name {}, surname {}, ageFrom {}, ageTo {}, country {}, city {} found {} result",
                 name, surname, ageFrom, ageTo, country, city, result.size());

@@ -18,8 +18,17 @@ public class PostResponseFactory {
         return ResponseFactory.getBaseResponse(postToDto(post));
     }
 
-    public static BaseResponseList getPostsList(List<Post> posts, int offset, int limit) {
+    public static BaseResponseList getPostsList(List<Post> posts, int total, int offset, int limit) {
         return ResponseFactory.getBaseResponseList(
+                posts.stream()
+                        .filter(post -> post.getTime().before(new Date()))
+                        .map(PostResponseFactory::postToDto)
+                        .collect(Collectors.toList()),
+                total, offset, limit);
+    }
+
+    public static BaseResponseList getPostsListWithLimit(List<Post> posts, int offset, int limit) {
+        return ResponseFactory.getBaseResponseListWithLimit(
                 posts.stream()
                         .filter(post -> post.getTime().before(new Date()))
                         .map(PostResponseFactory::postToDto)

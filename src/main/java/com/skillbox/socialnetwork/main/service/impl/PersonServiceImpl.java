@@ -2,7 +2,6 @@ package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
-import com.skillbox.socialnetwork.main.dto.universal.ErrorResponse;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;

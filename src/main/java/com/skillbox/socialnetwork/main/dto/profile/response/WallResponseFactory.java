@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class WallResponseFactory {
 
     public static BaseResponseList getWall(List<Post> posts, int offset, int limit) {
-        return ResponseFactory.getBaseResponseList(getListDto(posts), offset, limit);
+        return ResponseFactory.getBaseResponseListWithLimit(getListDto(posts), offset, limit);
     }
 
     private static List<Dto> getListDto(List<Post> posts) {

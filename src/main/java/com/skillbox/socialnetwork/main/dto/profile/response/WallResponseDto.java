@@ -3,6 +3,7 @@ package com.skillbox.socialnetwork.main.dto.profile.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
+import com.skillbox.socialnetwork.main.model.Tag;
 import com.skillbox.socialnetwork.main.model.enumerated.PostType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,5 +26,5 @@ public class WallResponseDto implements Dto {
     private Integer likes;
     private List comments;
     private PostType type;
-    private List tags;
+    private List<String> tags;
 }

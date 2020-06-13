@@ -15,7 +15,7 @@ public class PersonResponseFactory {
     }
 
     public static BaseResponseList getPersons(List<Person> people, int offset, int limit) {
-        return ResponseFactory.getBaseResponseList(people.stream()
+        return ResponseFactory.getBaseResponseListWithLimit(people.stream()
                         .map(PersonResponseFactory::getPersonDto)
                         .collect(Collectors.toList()),
                 offset, limit);

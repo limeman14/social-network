@@ -24,6 +24,7 @@ public class Person {
     @CreationTimestamp
     private Date regDate;
 
+    @Column(name = "birth_date")
     private Date birthDate;
 
     @Column(name = "e_mail", unique = true)

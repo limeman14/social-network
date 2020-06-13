@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.repository;
 
 import com.skillbox.socialnetwork.main.model.Post;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,8 +13,13 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     Post findPostById(Integer id);
 
-    @Query(value = "select * from posts where is_blocked = 0 order by time desc", nativeQuery = true)
-    List<Post> getFeeds();
+    @Query(value = "select p from Post p where " +
+            "p.isBlocked = false order by p.time desc")
+    List<Post> getFeeds(Pageable pageable);
+
+    @Query(value = "select count(p) from Post p where " +
+            "p.isBlocked = false order by p.time desc")
+    int getCountNotBlockedPost();
 
     @Query(value = "select p from Post p where " +
             "(p.postText like %?1% or p.title like %?1%) and " +

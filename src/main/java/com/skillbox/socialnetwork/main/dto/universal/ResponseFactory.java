@@ -7,7 +7,16 @@ public class ResponseFactory {
     public static BaseResponse getBaseResponse(Dto dto){
         return new BaseResponse(dto);
     }
-    public static BaseResponseList getBaseResponseList(List<Dto> list, int offset, int limit){
+    public static BaseResponseList getBaseResponseList(List<Dto> list, int total, int offset, int limit){
+        return new BaseResponseList(
+                total,
+                offset,
+                limit,
+                list
+        );
+    }
+
+    public static BaseResponseList getBaseResponseListWithLimit(List<Dto> list, int offset, int limit){
         List<Dto> data = getElementsInRange(list, offset, limit);
         return new BaseResponseList(
                 list.size(),
