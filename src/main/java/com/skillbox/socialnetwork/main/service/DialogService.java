@@ -9,16 +9,16 @@ import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.model.Person;
 
 public interface DialogService {
-    BaseResponseList getAllMessages(String query, int offset, int limit, Person person);
-    BaseResponse addDialog(DialogAddRequest request);
+    BaseResponseList getDialogs(String query, int offset, int limit, Person person);
+    BaseResponse addDialog(DialogAddRequest request, Person currentUser);
     BaseResponse getUnreadMessages(Person person);
     BaseResponse deleteDialog(int dialogId);
     BaseResponse addUsersToDialog(DialogAddRequest request);
-    BaseResponse deleteUsersFromDialog(DialogAddRequest request);
+    BaseResponse deleteUsersFromDialog(int dialogId, DialogAddRequest request);
     BaseResponse inviteUserToDialog(int id);
     BaseResponse joinDialog(int id, LinkDto linkDto);
     BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit);
-    BaseResponse addMessage(int dialogId, MessageTextDto message);
+    BaseResponse addMessage(int dialogId, MessageTextDto message, Person user);
     BaseResponse deleteMessage(int dialogId, int messageId);
     BaseResponse editMessage(int dialogId, int messageId, MessageTextDto messageText);
     BaseResponse recoverMessage(int dialogId, int messageId);

@@ -8,7 +8,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class MessageIdDto implements Dto {
-    @JsonProperty("message_id")
-    private int messageId;
+@NoArgsConstructor
+public class DialogDto implements Dto {
+    private int id;
+    @JsonProperty("unread_count")
+    private int unreadCount;
+    @JsonProperty("last_message")
+    private Dto lastMessage;
 }

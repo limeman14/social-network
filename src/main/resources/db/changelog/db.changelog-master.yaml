@@ -693,7 +693,7 @@ databaseChangeLog:
               - column:
                   name: created_at
                   type: datetime
-  - changeSet: 
+  - changeSet:
       id: 1.1.4
       author: devolek
       changes:
