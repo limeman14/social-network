@@ -740,6 +740,25 @@ databaseChangeLog:
                     nullable: false
                   name: dialog_id
                   type: INT
+  - changeSet:
+      id: 1.1.5
+      author: devolek
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: city
+                  type: varchar(255)
+            tableName: persons
+        - addColumn:
+            columns:
+              - column:
+                  name: country
+                  type: varchar(255)
+            tableName: persons
+        - dropColumn:
+            columnName: town_id
+            tableName: persons
   - include:
       file: db/changelog/db.changelog-insertPersons.yaml
   - include:

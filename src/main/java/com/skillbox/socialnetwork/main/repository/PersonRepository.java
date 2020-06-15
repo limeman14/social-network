@@ -14,10 +14,13 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     Person findPersonById(Integer id);
 
     @Query("select p from Person p where " +
-            "(:firstName is null or p.firstName = :firstName) and " +
-            "(:lastName is null or p.lastName = :lastName) and " +
+            "(:firstName is null or p.firstName like %:firstName%) and " +
+            "(:lastName is null or p.lastName like %:lastName%) and " +
+            "(:cityName is null or p.city like %:cityName%) and " +
+            "(:countryName is null or p.country like %:countryName%) and " +
             "(p.birthDate between :dateFrom and :dateTo)")
     List<Person> search(@Param("firstName")String name, @Param("lastName")String surname,
-                        @Param("dateFrom")Date dateFrom, @Param("dateTo")Date dateTo);
+                        @Param("dateFrom")Date dateFrom, @Param("dateTo")Date dateTo,
+                        @Param("cityName")String cityName, @Param("countryName")String countryName);
 
 }

@@ -2,7 +2,6 @@ package com.skillbox.socialnetwork.main.security.jwt;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.skillbox.socialnetwork.main.model.Town;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +26,8 @@ public class JwtUser implements UserDetails {
     private String password;
     private String photo;
     private String about;
-    private Town town;
+    private String city;
+    private String country;
     private String confirmationCode;
     private boolean isApproved;
     private Permission messagePermission;

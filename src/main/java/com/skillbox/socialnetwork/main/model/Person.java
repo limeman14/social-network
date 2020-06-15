@@ -39,8 +39,9 @@ public class Person {
 
     private String about;
 
-    @ManyToOne
-    private Town town;
+    private String city;
+
+    private String country;
 
     private String confirmationCode;
 
