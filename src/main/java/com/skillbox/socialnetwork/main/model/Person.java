@@ -53,39 +53,50 @@ public class Person {
     private Boolean isBlocked;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles;
 
     @OneToMany(mappedBy = "person")
+    @JsonIgnore
     private List<BlockHistory> blockHistories;
 
     @OneToMany(mappedBy = "srcPerson")
+    @JsonIgnore
     private List<Friendship> friendshipsSrc;
 
     @OneToMany(mappedBy = "dstPerson")
+    @JsonIgnore
     private List<Friendship> friendshipsDst;
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnore
     private List<Message> sentMessages;
 
     @OneToMany(mappedBy = "recipient")
+    @JsonIgnore
     private List<Message> recipientMessages;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Post> posts;
 
     @OneToMany(mappedBy = "person")
+    @JsonIgnore
     private List<PostLike> likes;
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnore
     private List<PostComment> comments;
 
     @OneToMany(mappedBy = "person")
+    @JsonIgnore
     private List<Notification> notifications;
 
     @OneToMany(mappedBy = "person")
+    @JsonIgnore
     private List<DialogToPerson> dialogToPeople;
 
 }
