@@ -101,4 +101,8 @@ public class Person {
     @JsonIgnore
     private List<DialogToPerson> dialogToPeople;
 
+    @Override
+    public String toString() {
+        return id + " " + firstName + " " + lastName;
+    }
 }

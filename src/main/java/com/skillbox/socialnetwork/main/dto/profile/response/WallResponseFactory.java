@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.dto.profile.response;
 
+import com.skillbox.socialnetwork.main.dto.comment.response.CommentResponseFactory;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
@@ -23,24 +24,23 @@ public class WallResponseFactory {
         List<Dto> data = new ArrayList<>();
 
         posts.forEach(post -> data.add(
-                        new WallResponseDto(
-                                post.getId(),
-                                post.getTime().getTime(),
-                                PersonResponseFactory.getPersonDto(post.getAuthor()),
-                                post.getTitle(),
-                                post.getPostText(),
-                                post.getIsBlocked(),
-                                post.getLikes().size(),
-                                new ArrayList<>(), //@TODO Comments
-                                post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,           //фильтрация между опубликованными и отложенными постами
-                                post.getTags() != null
-                                        ? post.getTags()
-                                        .stream()
-                                        .map(Tag::getTag)
-                                        .collect(Collectors.toList())
-                                        : new ArrayList<>()
-                        )
-                ));
+                new WallResponseDto(
+                        post.getId(),
+                        post.getTime().getTime(),
+                        PersonResponseFactory.getPersonDto(post.getAuthor()),
+                        post.getTitle(),
+                        post.getPostText(),
+                        post.getIsBlocked(),
+                        post.getLikes().size(),
+                        post.getComments().stream().map(CommentResponseFactory::getCommentDto).collect(Collectors.toList()), post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,           //фильтрация между опубликованными и отложенными постами
+                        post.getTags() != null
+                                ? post.getTags()
+                                .stream()
+                                .map(Tag::getTag)
+                                .collect(Collectors.toList())
+                                : new ArrayList<>()
+                )
+        ));
         return data;
     }
 }

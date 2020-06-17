@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.dto.post.response;
 
+import com.skillbox.socialnetwork.main.dto.comment.response.CommentResponseFactory;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
@@ -45,7 +46,8 @@ public class PostResponseFactory {
                 post.getPostText(),
                 post.getIsBlocked(),
                 post.getLikes().size(),
-                new ArrayList<>(),  //@TODO: Возвращать тут комментарии
+                //@TODO: Возвращать тут комментарии
+                CommentResponseFactory.getCommentList(post.getComments()),
                 post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,
                 post.getTags() != null
                         ? post.getTags()
