@@ -11,6 +11,8 @@ import com.skillbox.socialnetwork.main.repository.PostRepository;
 import com.skillbox.socialnetwork.main.repository.TagRepository;
 import com.skillbox.socialnetwork.main.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,7 +42,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public BaseResponseList feeds(int offset, int limit) {
-        return PostResponseFactory.getPostsList(postRepository.limitQuery(offset, limit), offset, limit); //тут было интересное решение с limitQuery
+        return PostResponseFactory.getPostsList(
+                postRepository.getFeeds(PageRequest.of(offset, limit)),
+                postRepository.getCountNotBlockedPost(),
+                offset,
+                limit);
     }
 
     @Override
@@ -78,5 +84,12 @@ public class PostServiceImpl implements PostService {
     public BaseResponse deletePost(int id) {
         postRepository.delete(postRepository.findPostById(id));
         return new BaseResponse(new MessageResponseDto("ok"));
+    }
+
+    @Override
+    public BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, int offset, int limit) {
+        return PostResponseFactory.getPostsListWithLimit(
+                postRepository.searchPosts(text, new Date(dateFrom), new Date(dateTo), author),
+                offset, limit);
     }
 }

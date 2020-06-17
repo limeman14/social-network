@@ -15,7 +15,7 @@ public class PersonResponseFactory {
     }
 
     public static BaseResponseList getPersons(List<Person> people, int offset, int limit) {
-        return ResponseFactory.getBaseResponseList(people.stream()
+        return ResponseFactory.getBaseResponseListWithLimit(people.stream()
                         .map(PersonResponseFactory::getPersonDto)
                         .collect(Collectors.toList()),
                 offset, limit);
@@ -32,8 +32,8 @@ public class PersonResponseFactory {
                 person.getPhone(),
                 person.getPhoto(),
                 person.getAbout(),
-                person.getTown() != null ? person.getTown().getCity().getTitle() : null,
-                person.getTown() != null ? person.getTown().getCountry().getTitle() : null,
+                person.getCity(),
+                person.getCountry(),
                 person.getIsBlocked(),
                 person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null,
                 person.getMessagesPermission().toString()

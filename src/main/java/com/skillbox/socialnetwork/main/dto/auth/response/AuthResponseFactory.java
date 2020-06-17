@@ -20,10 +20,8 @@ public class AuthResponseFactory {
                         person.getPhone(),
                         person.getPhoto(),
                         person.getAbout(),
-                        person.getTown() != null ?
-                                person.getTown().getCity().getTitle() : null,
-                        person.getTown() != null ?
-                                person.getTown().getCountry().getTitle() : null,
+                        person.getCity(),
+                        person.getCountry(),
                         person.getIsBlocked(),
                         person.getLastOnlineTime().getTime(),
                         person.getMessagesPermission().toString(),

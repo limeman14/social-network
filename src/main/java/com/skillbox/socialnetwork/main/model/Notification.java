@@ -19,7 +19,6 @@ public class Notification {
     @JoinColumn(name = "type_id")
     private NotificationType type;
 
-    //@TODO: При сериализации возвращать long
     @NotNull
     private Date sentTime;
 

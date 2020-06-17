@@ -30,21 +30,18 @@ public class ProfileServiceImpl implements ProfileService {
     private final TagRepository tagRepository;
     private final FriendshipStatusRepo friendshipStatusRepo;
     private final FriendshipRepository friendshipRepository;
-    private final P2TRepository p2TRepository;
     private final FileRepository fileRepository;
 
 
     @Autowired
     public ProfileServiceImpl(PersonRepository personRepository, PostRepository postRepository,
                               TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo,
-                              FriendshipRepository friendshipRepository, P2TRepository p2TRepository,
-                              FileRepository fileRepository) {
+                              FriendshipRepository friendshipRepository, FileRepository fileRepository) {
         this.personRepository = personRepository;
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
         this.friendshipStatusRepo = friendshipStatusRepo;
         this.friendshipRepository = friendshipRepository;
-        this.p2TRepository = p2TRepository;
         this.fileRepository = fileRepository;
     }
 
@@ -61,9 +58,12 @@ public class ProfileServiceImpl implements ProfileService {
         person.setLastName(request.getLastName());
         person.setBirthDate(request.getBirthDate());
         person.setPhone(request.getPhone());
-        person.setPhoto(fileRepository.findById(request.getPhotoId()).getRelativeFilePath());
+        if (request.getPhotoId() != null){
+            person.setPhoto(fileRepository.findById(request.getPhotoId()).getRelativeFilePath());
+        }
         person.setAbout(request.getAbout());
-        person.setTown(null);// здесь нужно определить функциональность на счёт города
+        person.setCity(request.getCity());
+        person.setCountry(request.getCountry());
 
         log.info("IN editMyProfile person: {} edited with request: {} and saved to a database", person, request);
         return PersonResponseFactory.getPerson(personRepository.save(person));
@@ -152,7 +152,7 @@ public class ProfileServiceImpl implements ProfileService {
         // превращаю из локалдейт в дату ибо spring jpa не может в query воспринимать LocalDate и принимает только Date
         Date dateTo = Date.from(LocalDate.now().minusYears(ageFrom).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//плюс день для верхней даты и минус день
         Date dateFrom = Date.from(LocalDate.now().minusYears(ageTo).minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//для нижней т.к. between строгое сравнение.(<>)
-        List<Person> result = personRepository.search(name, surname, dateFrom, dateTo, country, city);
+        List<Person> result = personRepository.search(name, surname, dateFrom, dateTo, city, country);
 
         log.info("IN searchPeople by parameters: name {}, surname {}, ageFrom {}, ageTo {}, country {}, city {} found {} result",
                 name, surname, ageFrom, ageTo, country, city, result.size());

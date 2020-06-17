@@ -1,8 +1,11 @@
 package com.skillbox.socialnetwork.main.dto.profile.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.skillbox.socialnetwork.main.dto.comment.response.CommentDto;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
+import com.skillbox.socialnetwork.main.model.Tag;
+import com.skillbox.socialnetwork.main.model.enumerated.PostType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +25,7 @@ public class WallResponseDto implements Dto {
     @JsonProperty("is_blocked")
     private Boolean blocked;
     private Integer likes;
-    private List comments;
-    private String type;
-    private List tags;
+    private List<CommentDto> comments;
+    private PostType type;
+    private List<String> tags;
 }

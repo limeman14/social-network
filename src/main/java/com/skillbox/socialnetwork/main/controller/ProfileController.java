@@ -93,12 +93,12 @@ public class ProfileController {
     @GetMapping("/api/v1/users/search")
     public ResponseEntity<?> searchProfile(
             @RequestHeader(name = "Authorization") String token,
-            @RequestParam(name = "first_name", defaultValue = "", required = false) String name,
-            @RequestParam(name = "last_name", defaultValue = "", required = false) String surname,
+            @RequestParam(name = "first_name", required = false) String name,
+            @RequestParam(name = "last_name", required = false) String surname,
             @RequestParam(name = "age_from", defaultValue = "18", required = false) Integer ageFrom,
             @RequestParam(name = "age_to", defaultValue = "200", required = false) Integer ageTo,
-            @RequestParam(name = "country", defaultValue = "", required = false) String country,
-            @RequestParam(name = "city", defaultValue = "", required = false) String city,
+            @RequestParam(name = "country", required = false) String country,
+            @RequestParam(name = "city", required = false) String city,
             @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
             @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit
     ) {

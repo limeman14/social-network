@@ -16,7 +16,6 @@ public class PostComment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //@TODO: При сериализации возвращать long
     @NotNull
     private Date time;
 
@@ -26,7 +25,6 @@ public class PostComment {
     private Post post;
 
     @ManyToOne
-    //может быть null, так как нет родительского коммента
     @JoinColumn(name = "parent_id")
     private PostComment parentComment;
 

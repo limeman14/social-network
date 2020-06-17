@@ -19,4 +19,6 @@ public interface PostService {
     BaseResponse editPost(int id, Long publishDate, UpdatePostRequestDto request);
 
     BaseResponse deletePost(int id);
+
+    BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, int offset, int limit);
 }
