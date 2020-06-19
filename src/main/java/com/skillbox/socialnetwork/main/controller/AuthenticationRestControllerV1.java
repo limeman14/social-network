@@ -39,7 +39,7 @@ public class AuthenticationRestControllerV1 {
     @PostMapping("/api/v1/auth/logout")
     public ResponseEntity<?> logout(@RequestHeader(name = "Authorization") String token) {
         authService.logout(token);
-        return ResponseEntity.ok(ResponseFactory.getBaseResponse(new MessageResponseDto("ok")));
+        return ResponseEntity.ok(ResponseFactory.responseOk());
     }
 
     @PutMapping("/api/v1/account/password/recovery")

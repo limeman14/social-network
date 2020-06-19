@@ -73,7 +73,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             String email = jwtTokenProvider.getUsername(token);
             personService.logout(personService.findByEmail(email));
-        }catch (JwtAuthenticationException ignored){
+        }catch (Exception ignored){
             log.warn("User not found.");
         }
     }
