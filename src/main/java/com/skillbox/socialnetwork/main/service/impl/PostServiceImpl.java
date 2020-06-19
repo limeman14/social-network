@@ -4,7 +4,7 @@ import com.skillbox.socialnetwork.main.dto.post.request.UpdatePostRequestDto;
 import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
-import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.model.Tag;
 import com.skillbox.socialnetwork.main.repository.PostRepository;
@@ -12,7 +12,6 @@ import com.skillbox.socialnetwork.main.repository.TagRepository;
 import com.skillbox.socialnetwork.main.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -83,7 +82,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public BaseResponse deletePost(int id) {
         postRepository.delete(postRepository.findPostById(id));
-        return new BaseResponse(new MessageResponseDto("ok"));
+        return ResponseFactory.responseOk();
     }
 
     @Override

@@ -27,8 +27,7 @@ public interface ProfileService {
                                   String country,
                                   String city,
                                   Integer offset,
-                                  Integer limit,
-                                  Person auhtorizedUser);
+                                  Integer limit);
 
     BaseResponse blockUser(int idOfABlockedUser, Person authorizedUser);
 

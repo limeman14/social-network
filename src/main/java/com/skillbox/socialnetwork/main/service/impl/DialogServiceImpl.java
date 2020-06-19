@@ -7,6 +7,7 @@ import com.skillbox.socialnetwork.main.dto.dialog.response.*;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Dialog;
 import com.skillbox.socialnetwork.main.model.DialogToPerson;
 import com.skillbox.socialnetwork.main.model.Message;
@@ -189,7 +190,7 @@ public class DialogServiceImpl implements DialogService {
             throw new NullPointerException("Message with id: "+messageId+" not found");
         message.setReadStatus(ReadStatus.READ);
         messageRepository.save(message);
-        return new BaseResponse(new MessageResponseDto("ok"));
+        return ResponseFactory.responseOk();
     }
 
     @Override
