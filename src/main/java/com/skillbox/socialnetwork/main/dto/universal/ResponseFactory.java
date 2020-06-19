@@ -7,6 +7,11 @@ public class ResponseFactory {
     public static BaseResponse getBaseResponse(Dto dto){
         return new BaseResponse(dto);
     }
+
+    public static BaseResponse responseOk(){
+        return new BaseResponse(new MessageResponseDto("ok"));
+    }
+
     public static BaseResponseList getBaseResponseList(List<Dto> list, int total, int offset, int limit){
         return new BaseResponseList(
                 total,

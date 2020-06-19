@@ -8,6 +8,7 @@ import com.skillbox.socialnetwork.main.dto.profile.response.WallResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
 import com.skillbox.socialnetwork.main.repository.*;
@@ -73,7 +74,7 @@ public class ProfileServiceImpl implements ProfileService {
     public BaseResponse deleteMyProfile(Person person) {
         personRepository.delete(person);
         log.info("IN deleteMyProfile user: {} deleted successfully", person);
-        return new BaseResponse(new MessageResponseDto("ok"));
+        return ResponseFactory.responseOk();
     }
 
     @Override
@@ -148,7 +149,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public BaseResponseList searchPeople(String name, String surname, Integer ageFrom, Integer ageTo, String country,
-                                         String city, Integer offset, Integer limit, Person authorizedUser) {
+                                         String city, Integer offset, Integer limit) {
         // превращаю из локалдейт в дату ибо spring jpa не может в query воспринимать LocalDate и принимает только Date
         Date dateTo = Date.from(LocalDate.now().minusYears(ageFrom).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//плюс день для верхней даты и минус день
         Date dateFrom = Date.from(LocalDate.now().minusYears(ageTo).minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//для нижней т.к. between строгое сравнение.(<>)

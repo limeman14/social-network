@@ -4,6 +4,8 @@ import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
+import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
 import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.exception.user.input.UserInputException;
 import com.skillbox.socialnetwork.main.model.Person;
@@ -46,14 +48,18 @@ public class PersonServiceImpl implements PersonService {
     public Person findByEmail(String email) {
         Person person = repository.findByEmail(email);
         if(person == null){
-            throw new PersonNotFoundException("Данный email не найден", "invalid_request");
+            throw new PersonNotFoundException(email);
         }
         return person;
     }
 
     @Override
     public Person findById(Integer id) {
-        return repository.findPersonById(id);
+        Person person = repository.findPersonById(id);
+        if(person == null){
+            throw new PersonNotFoundException(id);
+        }
+        return person;
     }
 
     @Override
@@ -80,18 +86,18 @@ public class PersonServiceImpl implements PersonService {
         person.setPhoto("/static/img/user/default-avatar.png");
         repository.save(person);
 
-        return new BaseResponse(new MessageResponseDto("ok"));
+        return ResponseFactory.responseOk();
     }
 
     private void checkUserRegisterPassword(String password1, String password2) throws RuntimeException{
         if(!password1.equals(password2)){
-            throw new UserInputException("invalid_request", "Пароль указан некорректно");
+            throw new InvalidRequestException("Пароль указан некорректно");
         }
     }
 
     private void checkUserLogin(String email) throws RuntimeException{
         if(repository.findByEmail(email) != null){
-            throw new PersonNotFoundException("invalid_request", "Данный email уже зарегистрирован");
+            throw new InvalidRequestException("Данный email уже зарегистрирован");
         }
     }
 
