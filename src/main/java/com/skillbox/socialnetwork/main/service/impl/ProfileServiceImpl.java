@@ -59,7 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
         person.setLastName(request.getLastName());
         person.setBirthDate(request.getBirthDate());
         person.setPhone(request.getPhone());
-        if (request.getPhotoId() != null){
+        if (request.getPhotoId() != null) {
             person.setPhoto(fileRepository.findById(request.getPhotoId()).getRelativeFilePath());
         }
         person.setAbout(request.getAbout());
@@ -104,7 +104,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public BaseResponse addPost(int id, long publishDate, AddPostRequestDto request) {
+    public BaseResponse addPost(int id, long publishDate, AddPostRequestDto request, Person authPerson) {
         Optional<Person> person = personRepository.findById(id);
         if (person.isPresent()) {
             Post post = new Post();
@@ -129,10 +129,9 @@ public class ProfileServiceImpl implements ProfileService {
             if (request.getTags().size() != 0) {            //если тегов нет в запросе, блок пропускается
                 request.getTags().forEach(tag -> {
                     Tag postTag;
-                    if(tagRepository.existsByTagIgnoreCase(tag)){
+                    if (tagRepository.existsByTagIgnoreCase(tag)) {
                         postTag = tagRepository.findFirstByTagIgnoreCase(tag);
-                    }
-                    else {
+                    } else {
                         postTag = new Tag();
                         postTag.setTag(tag);
                     }
@@ -142,7 +141,7 @@ public class ProfileServiceImpl implements ProfileService {
             }
             Post result = postRepository.save(savedPost);
             log.info("IN addPost post: {} added with tags: {} successfully", result, tags);
-            return PostResponseFactory.getSinglePost(result);
+            return PostResponseFactory.getSinglePost(result, authPerson);
         }
         return null;
     }

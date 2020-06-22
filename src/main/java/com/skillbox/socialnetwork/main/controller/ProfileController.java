@@ -59,11 +59,12 @@ public class ProfileController {
 
     @PostMapping("/api/v1/users/{id}/wall")
     public ResponseEntity<?> addPost(
+            @RequestHeader(name = "Authorization") String token,
             @PathVariable int id,
             @RequestParam(name = "publish_date", defaultValue = "0") Long publishDate,
             @RequestBody AddPostRequestDto request
     ) {
-        Response result = profileService.addPost(id, publishDate, request);
+        Response result = profileService.addPost(id, publishDate, request, authService.getAuthorizedUser(token));
         return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
     }
 
