@@ -5,10 +5,10 @@ import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.*;
+import com.skillbox.socialnetwork.main.dto.universal.Response;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +54,7 @@ public class AuthenticationRestControllerV1 {
             @RequestHeader(name = "Referer") String referer,
             @RequestBody PasswordSetRequestDto dto
     ){
-        return ResponseEntity.status(HttpStatus.OK).body(authService.passwordSet(dto, referer));
+        return ResponseEntity.ok(authService.passwordSet(dto, referer));
     }
 
 }

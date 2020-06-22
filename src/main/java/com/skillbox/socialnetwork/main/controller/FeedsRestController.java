@@ -25,7 +25,7 @@ public class FeedsRestController {
             @RequestParam(name = "itemPerPage", required = false, defaultValue = "20") Integer limit
 
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(postService.feeds(offset, limit));
+        return ResponseEntity.ok(postService.feeds(offset, limit));
     }
 
 }

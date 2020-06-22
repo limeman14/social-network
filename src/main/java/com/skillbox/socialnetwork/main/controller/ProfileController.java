@@ -78,9 +78,7 @@ public class ProfileController {
             @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
             @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit
     ) {
-        return ResponseEntity.ok(
-                profileService.searchPeople(name, surname, ageFrom, ageTo, country, city, offset, limit)
-        );
+        return ResponseEntity.ok(profileService.searchPeople(name, surname, ageFrom, ageTo, country, city, offset, limit));
 
     }
 
