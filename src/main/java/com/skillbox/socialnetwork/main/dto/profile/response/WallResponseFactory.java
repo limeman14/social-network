@@ -32,7 +32,8 @@ public class WallResponseFactory {
                         post.getPostText(),
                         post.getIsBlocked(),
                         post.getLikes().size(),
-                        post.getComments().stream().map(CommentResponseFactory::getCommentDto).collect(Collectors.toList()), post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,           //фильтрация между опубликованными и отложенными постами
+                        CommentResponseFactory.getCommentList(post.getComments(), null),
+                        post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,           //фильтрация между опубликованными и отложенными постами
                         post.getTags() != null
                                 ? post.getTags()
                                 .stream()

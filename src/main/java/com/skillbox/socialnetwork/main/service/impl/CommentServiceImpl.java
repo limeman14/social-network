@@ -46,7 +46,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setAuthor(author);
         comment.setIsBlocked(false);
         commentRepository.save(comment);
-        return CommentResponseFactory.getCommentDto(comment);
+        return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setCommentText(request.getText());
         comment.setParentComment(commentRepository.findPostCommentById(request.getParentId()));
         commentRepository.save(comment);
-        return CommentResponseFactory.getCommentDto(comment);
+        return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment));
     }
 
     @Override

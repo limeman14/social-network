@@ -47,7 +47,7 @@ public class PostResponseFactory {
                 post.getIsBlocked(),
                 post.getLikes().size(),
                 //@TODO: Возвращать тут комментарии
-                CommentResponseFactory.getCommentList(post.getComments()),
+                CommentResponseFactory.getCommentList(post.getComments(), null),
                 post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,
                 post.getTags() != null
                         ? post.getTags()

@@ -4,8 +4,10 @@ import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.*;
-import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
+import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.Response;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
@@ -13,13 +15,12 @@ import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.EmailService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.util.CodeGenerator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 @Service
+@Slf4j
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
@@ -68,7 +70,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(String token) {
         String email = jwtTokenProvider.getUsername(token);
-        personService.logout(personService.findByEmail(email));
+        Person person = null;
+        try {
+            person = personService.findByEmail(email);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        if (person != null) {
+            personService.logout(person);
+        }
     }
 
     @Override
@@ -81,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             jwtTokenProvider.getUsername(token);
             return true;
-        } catch (JwtAuthenticationException e){
+        } catch (JwtAuthenticationException e) {
             return false;
         }
     }
@@ -104,9 +115,9 @@ public class AuthServiceImpl implements AuthService {
             dto.setToken(ub.getQuery());
             String token = dto.getToken().replaceAll("token=", "");
             String[] strings = jwtTokenProvider.getUsername(token).split(":");
-            if(strings.length == 2){
+            if (strings.length == 2) {
                 Person person = personService.findByEmail(strings[0]);
-                if(person.getConfirmationCode().equals(strings[1])){
+                if (person.getConfirmationCode().equals(strings[1])) {
                     person.setPassword(passwordEncoder.encode(dto.getPassword()));
                     person.setConfirmationCode("");
                     personService.save(person);
@@ -120,7 +131,6 @@ public class AuthServiceImpl implements AuthService {
         }
         return response;
     }
-
 
 
 }

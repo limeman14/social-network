@@ -41,8 +41,6 @@ public class ProfileController {
 
     @DeleteMapping("/api/v1/users/me")
     public ResponseEntity<?> deleteProfile(@RequestHeader(name = "Authorization") String token) {
-        //нужен логаут вместе с удалением хедера авторизации
-        authService.logout(token);
         return authService.isAuthorized(token)
                 ? ResponseEntity.ok(profileService.deleteMyProfile(authService.getAuthorizedUser(token)))
                 : ResponseEntity.status(HttpStatus.UNAUTHORIZED)
