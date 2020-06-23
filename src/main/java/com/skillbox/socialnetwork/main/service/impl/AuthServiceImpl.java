@@ -5,6 +5,7 @@ import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.*;
+import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
 import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
@@ -15,10 +16,12 @@ import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.util.CodeGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -67,16 +70,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String token) {
-        String email = jwtTokenProvider.getUsername(token);
-        Person person = null;
         try {
-            person = personService.findByEmail(email);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        if (person != null) {
-            personService.logout(person);
+            String email = jwtTokenProvider.getUsername(token);
+            personService.logout(personService.findByEmail(email));
+        }catch (Exception ignored){
+            log.warn("User not found.");
         }
     }
 
@@ -87,12 +85,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean isAuthorized(String token) {
-        try {
-            jwtTokenProvider.getUsername(token);
-            return true;
-        } catch (JwtAuthenticationException e) {
-            return false;
-        }
+        jwtTokenProvider.getUsername(token);
+        return true;
     }
 
     @Override
@@ -102,33 +96,31 @@ public class AuthServiceImpl implements AuthService {
         personService.save(person);
         String token = jwtTokenProvider.createToken(person.getEmail() + ":" + person.getConfirmationCode());
         emailService.sendPasswordRecovery(email, person.getFirstName(), url + "/change-password?token=" + token);
-        return ResponseFactory.getBaseResponse(new MessageResponseDto("ok"));
+        return ResponseFactory.responseOk();
     }
 
     @Override
     public Response passwordSet(PasswordSetRequestDto dto, String referer) {
-        Response response;
         try {
             URL ub = new URL(referer);
             dto.setToken(ub.getQuery());
             String token = dto.getToken().replaceAll("token=", "");
             String[] strings = jwtTokenProvider.getUsername(token).split(":");
-            if (strings.length == 2) {
+            if(strings.length == 2){
                 Person person = personService.findByEmail(strings[0]);
-                if (person.getConfirmationCode().equals(strings[1])) {
+                if(person.getConfirmationCode().equals(strings[1])){
                     person.setPassword(passwordEncoder.encode(dto.getPassword()));
                     person.setConfirmationCode("");
                     personService.save(person);
-                    return ResponseFactory.getBaseResponse(new MessageResponseDto("ok"));
+                    return ResponseFactory.responseOk();
                 }
             }
-            return ResponseFactory.getErrorResponse("invalid_request", "token error");
-
+            throw new InvalidRequestException("token_error");
         } catch (MalformedURLException e) {
-            response = ResponseFactory.getErrorResponse("invalid_request", "token not found");
+            throw new InvalidRequestException("token not found");
         }
-        return response;
     }
+
 
 
 }

@@ -66,7 +66,7 @@ public class PostResponseFactory {
                 post.getIsBlocked(),
                 post.getLikes().stream().map(PostLike::getPerson).collect(Collectors.toList()).contains(person),
                 post.getLikes().size(),
-                CommentResponseFactory.getCommentList(post.getComments()),
+                CommentResponseFactory.getCommentList(post.getComments(), null),
                 post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,
                 post.getTags() != null
                         ? post.getTags()

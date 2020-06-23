@@ -100,13 +100,12 @@ public class DialogFactory {
                         .getTime()
                         .getTime(),
                 message
-                        .getAuthor()
-                        .getId(),
+                        .getAuthor(),
                 message
-                        .getRecipient()
-                        .getId(),
+                        .getRecipient(),
                 message.getMessageText(),
-                message.getReadStatus());
+                message.getReadStatus(),
+                true);
     }
 
     private static Dto formatDialog(Dialog dialog)
