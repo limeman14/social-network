@@ -41,7 +41,8 @@ public class PostRestController {
             @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
     ) {
         return authService.isAuthorized(token)
-                ? ResponseEntity.ok(postService.searchPosts(text, dateFrom, dateTo, author, offset, itemPerPage))
+                ? ResponseEntity.ok(postService.searchPosts(text, dateFrom, dateTo, author, offset, itemPerPage,
+                authService.getAuthorizedUser(token)))
                 : ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
     }
@@ -63,7 +64,7 @@ public class PostRestController {
             @PathVariable int id
     ) {
         if (authService.isAuthorized(token)) {
-            return ResponseEntity.status(HttpStatus.OK).body(postService.getPost(id));
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getPost(id, authService.getAuthorizedUser(token)));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
@@ -77,7 +78,8 @@ public class PostRestController {
             @RequestBody UpdatePostRequestDto request
     ) {
         if (authService.isAuthorized(token)) {
-            return ResponseEntity.status(HttpStatus.OK).body(postService.editPost(id, publishDate, request));
+            return ResponseEntity.status(HttpStatus.OK).body(postService.editPost(id, publishDate, request,
+                    authService.getAuthorizedUser(token)));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));

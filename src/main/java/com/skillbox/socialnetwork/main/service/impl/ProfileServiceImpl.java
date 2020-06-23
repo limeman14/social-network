@@ -8,6 +8,7 @@ import com.skillbox.socialnetwork.main.dto.profile.response.WallResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
 import com.skillbox.socialnetwork.main.repository.*;
@@ -58,7 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
         person.setLastName(request.getLastName());
         person.setBirthDate(request.getBirthDate());
         person.setPhone(request.getPhone());
-        if (request.getPhotoId() != null){
+        if (request.getPhotoId() != null) {
             person.setPhoto(fileRepository.findById(request.getPhotoId()).getRelativeFilePath());
         }
         person.setAbout(request.getAbout());
@@ -73,7 +74,7 @@ public class ProfileServiceImpl implements ProfileService {
     public BaseResponse deleteMyProfile(Person person) {
         personRepository.delete(person);
         log.info("IN deleteMyProfile user: {} deleted successfully", person);
-        return new BaseResponse(new MessageResponseDto("ok"));
+        return ResponseFactory.responseOk();
     }
 
     @Override
@@ -103,7 +104,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public BaseResponse addPost(int id, long publishDate, AddPostRequestDto request) {
+    public BaseResponse addPost(int id, long publishDate, AddPostRequestDto request, Person authPerson) {
         Optional<Person> person = personRepository.findById(id);
         if (person.isPresent()) {
             Post post = new Post();
@@ -128,10 +129,9 @@ public class ProfileServiceImpl implements ProfileService {
             if (request.getTags().size() != 0) {            //если тегов нет в запросе, блок пропускается
                 request.getTags().forEach(tag -> {
                     Tag postTag;
-                    if(tagRepository.existsByTagIgnoreCase(tag)){
+                    if (tagRepository.existsByTagIgnoreCase(tag)) {
                         postTag = tagRepository.findFirstByTagIgnoreCase(tag);
-                    }
-                    else {
+                    } else {
                         postTag = new Tag();
                         postTag.setTag(tag);
                     }
@@ -141,14 +141,14 @@ public class ProfileServiceImpl implements ProfileService {
             }
             Post result = postRepository.save(savedPost);
             log.info("IN addPost post: {} added with tags: {} successfully", result, tags);
-            return PostResponseFactory.getSinglePost(result);
+            return PostResponseFactory.getSinglePost(result, authPerson);
         }
         return null;
     }
 
     @Override
     public BaseResponseList searchPeople(String name, String surname, Integer ageFrom, Integer ageTo, String country,
-                                         String city, Integer offset, Integer limit, Person authorizedUser) {
+                                         String city, Integer offset, Integer limit) {
         // превращаю из локалдейт в дату ибо spring jpa не может в query воспринимать LocalDate и принимает только Date
         Date dateTo = Date.from(LocalDate.now().minusYears(ageFrom).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//плюс день для верхней даты и минус день
         Date dateFrom = Date.from(LocalDate.now().minusYears(ageTo).minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//для нижней т.к. between строгое сравнение.(<>)

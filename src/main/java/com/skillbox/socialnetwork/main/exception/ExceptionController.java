@@ -1,8 +1,7 @@
 package com.skillbox.socialnetwork.main.exception;
 
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.ErrorResponse;
-import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.exception.not.found.NotFoundException;
 import com.skillbox.socialnetwork.main.exception.user.input.UserException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -10,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.springframework.security.core.AuthenticationException;
 
 @ControllerAdvice
 @Slf4j
@@ -29,9 +28,9 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
         log.warn(ex.getMessage());
         return handleExceptionInternal(
                 ex,
-                new BaseResponse(new MessageResponseDto("ok")),
+                ResponseFactory.getErrorResponse("TokenException", ex.getMessage()),
                 new HttpHeaders(),
-                HttpStatus.OK,
+                HttpStatus.BAD_REQUEST,
                 request
         );
     }
@@ -80,5 +79,4 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
                 request
         );
     }
-
 }

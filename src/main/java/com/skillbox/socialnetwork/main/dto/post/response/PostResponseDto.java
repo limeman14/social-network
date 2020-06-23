@@ -24,6 +24,8 @@ public class PostResponseDto implements Dto {
     private String text;
     @JsonProperty("is_blocked")
     private boolean blocked;
+    @JsonProperty("my_like")
+    private boolean myLike;
     private int likes;
     private List comments;
     private PostType type;

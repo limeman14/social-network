@@ -18,7 +18,7 @@ public interface ProfileService {
 
     BaseResponseList getWallPosts(int id, int offset, int limit);
 
-    BaseResponse addPost(int id, long publishDate, AddPostRequestDto request);
+    BaseResponse addPost(int id, long publishDate, AddPostRequestDto request, Person authPerson);
 
     BaseResponseList searchPeople(String name,
                                   String surname,
@@ -27,8 +27,7 @@ public interface ProfileService {
                                   String country,
                                   String city,
                                   Integer offset,
-                                  Integer limit,
-                                  Person auhtorizedUser);
+                                  Integer limit);
 
     BaseResponse blockUser(int idOfABlockedUser, Person authorizedUser);
 
