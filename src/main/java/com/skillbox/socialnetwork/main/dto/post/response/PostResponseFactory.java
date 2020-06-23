@@ -24,18 +24,11 @@ public class PostResponseFactory {
     }
 
     public static BaseResponseList getPostsList(List<Post> posts, int total, int offset, int limit, Person person) {
-        List<Dto> postsDto = new ArrayList<>();
-        for (Post post : posts) {
-            if (post.getTime().before(new Date()))
-                postsDto.add(PostResponseFactory.postToDto(post, person));
-        }
-        //@TODO: Попытаться переисать на лямбде
         return ResponseFactory.getBaseResponseList(
-                postsDto,
-//                posts.stream()
-//                        .filter(post -> post.getTime().before(new Date()))
-//                        .map(PostResponseFactory::postToDto)
-//                        .collect(Collectors.toList()),
+                posts.stream()
+                        .filter(post -> post.getTime().before(new Date()))
+                        .map(post -> PostResponseFactory.postToDto(post, person))
+                        .collect(Collectors.toList()),
                 total, offset, limit);
     }
 
@@ -45,14 +38,12 @@ public class PostResponseFactory {
             if (post.getTime().before(new Date()))
                 postsDto.add(PostResponseFactory.postToDto(post, person));
         }
-        //@TODO: Попытаться переисать на лямбде
 
         return ResponseFactory.getBaseResponseListWithLimit(
-                postsDto,
-//                posts.stream()
-//                        .filter(post -> post.getTime().before(new Date()))
-//                        .map(PostResponseFactory::postToDto)
-//                        .collect(Collectors.toList()),
+                posts.stream()
+                        .filter(post -> post.getTime().before(new Date()))
+                        .map(post -> PostResponseFactory.postToDto(post, person))
+                        .collect(Collectors.toList()),
                 offset, limit);
     }
 
