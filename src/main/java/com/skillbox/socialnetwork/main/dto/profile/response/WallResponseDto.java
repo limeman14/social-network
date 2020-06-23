@@ -25,7 +25,7 @@ public class WallResponseDto implements Dto {
     @JsonProperty("is_blocked")
     private Boolean blocked;
     private Integer likes;
-    private List<CommentDto> comments;
+    private List<Dto> comments;
     private PostType type;
     private List<String> tags;
 }
