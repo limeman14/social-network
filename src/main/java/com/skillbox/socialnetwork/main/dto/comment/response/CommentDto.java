@@ -2,7 +2,6 @@ package com.skillbox.socialnetwork.main.dto.comment.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
-import com.skillbox.socialnetwork.main.model.Person;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

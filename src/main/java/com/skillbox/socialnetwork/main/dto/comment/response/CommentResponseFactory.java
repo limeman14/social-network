@@ -6,12 +6,8 @@ import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.PostComment;
 
-import javax.xml.stream.events.Comment;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 public class CommentResponseFactory {
     public static CommentDto getCommentDto(PostComment comment, List<Dto> subList) {
@@ -34,11 +30,11 @@ public class CommentResponseFactory {
 
     public static List<Dto> getCommentList(List<PostComment> commentList, PostComment parentComment) {
         List<Dto> list = new ArrayList<>();
-        if (commentList == null){
+        if (commentList == null) {
             return list;
         }
-        for (PostComment comment : commentList){
-            if((parentComment == null && comment.getParentComment() == null) ||
+        for (PostComment comment : commentList) {
+            if ((parentComment == null && comment.getParentComment() == null) ||
                     (parentComment != null &&
                             comment.getParentComment().getId().equals(parentComment.getId()))) {
                 list.add(CommentResponseFactory.getCommentDto(comment,

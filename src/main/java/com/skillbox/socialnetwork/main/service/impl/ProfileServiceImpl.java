@@ -97,7 +97,7 @@ public class ProfileServiceImpl implements ProfileService {
         if (person.isPresent()) {
             List<Post> posts = person.get().getPosts();
             posts.sort(Comparator.comparing(Post::getTime).reversed());//сортирую по дате чтобы на стенке выводились сначала новые
-            result = WallResponseFactory.getWall(posts, offset, limit);
+            result = WallResponseFactory.getWall(posts, offset, limit, person.get());
         }
         log.info("IN getWallPosts posts" + (result != null ? ": (" + result.getData().size() + ") have found" : "not found"));
         return result;
