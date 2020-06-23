@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,35 +49,61 @@ public class DialogServiceImpl implements DialogService {
     @Override
     public BaseResponseList getDialogs(String query, int offset, int limit, Person person)
     {
-        return DialogFactory.getDialogs(dialogRepository.getDialogs(person, query), offset, limit);
+        return DialogFactory.getDialogs(dialogRepository.getDialogs(person, query), person, offset, limit);
     }
 
     @Override
     public BaseResponse addDialog(DialogAddRequest request, Person currentUser)
     {
-        Dialog d = new Dialog();
-        d.setDialogToPersonList(new ArrayList<>());
-        d.setMessages(new ArrayList<>());
-        Dialog dialog = dialogRepository.save(d);
-        List<Person> result = request
-                .getUserIds()
-                .stream()
-                .map(personService::findById)
-                .collect(Collectors.toList());
-        if (currentUser != null) result.add(currentUser);
-        List<DialogToPerson> dtps = d2pRepository.saveAll(result
-                .stream()
-                .map(person -> {
-                    DialogToPerson dtp = new DialogToPerson();
-                    dtp.setDialog(dialog);
-                    dtp.setPerson(person);
-                    return dtp;
-                })
-                .collect(Collectors.toList()));
-        dialog.setDialogToPersonList(dtps);
-        Dialog saved = dialogRepository.save(dialog);
-        log.info("IN addDialog Dialog: {} added", saved.getId());
-        return new BaseResponse(new IdDto(saved.getId()));
+        AtomicBoolean dialogAlreadyExists = new AtomicBoolean(false);
+        AtomicInteger dialogId = new AtomicInteger();
+        currentUser.getDialogToPeople().stream().map(DialogToPerson::getDialog).map(Dialog::getDialogToPersonList).forEach(dialogToPeople -> dialogAlreadyExists
+                .set(dialogToPeople.stream().anyMatch(dialogToPerson -> {
+                    dialogId.set(dialogToPerson.getDialog().getId());
+                    return dialogToPerson.getPerson().getId()
+                        .equals(request.getUserIds().get(0));})));
+        if(dialogAlreadyExists.get()){
+            return new BaseResponse(new IdDto(dialogId.get()));
+        } else
+        {//if not exists
+            Dialog d = new Dialog();
+            d.setDialogToPersonList(new ArrayList<>());
+            d.setMessages(new ArrayList<>());
+            Dialog dialog = dialogRepository.save(d);
+            List<Person> result = request
+                    .getUserIds()
+                    .stream()
+                    .map(personService::findById)
+                    .collect(Collectors.toList());
+            result.add(currentUser);
+            List<DialogToPerson> dtps = d2pRepository.saveAll(result
+                    .stream()
+                    .map(person -> {
+                        DialogToPerson dtp = new DialogToPerson();
+                        dtp.setDialog(dialog);
+                        dtp.setPerson(person);
+                        return dtp;
+                    })
+                    .collect(Collectors.toList()));
+            dialog.setDialogToPersonList(dtps);
+            Dialog saved = dialogRepository.save(dialog);
+
+            //dialog initializer
+            Message message = new Message();
+            message.setMessageText("Пользователь "+currentUser.getFirstName() +" "+currentUser.getLastName() + " начал чат.");
+            message.setAuthor(currentUser);
+            message.setRecipient(personService.findById(request.getUserIds().get(0)));
+            message.setReadStatus(ReadStatus.SENT);
+            message.setTime(new Date());
+            message.setDialog(saved);
+            messageRepository.save(message);
+            saved.getMessages().add(message);
+            saved = dialogRepository.save(saved);
+
+
+            log.info("IN addDialog Dialog: {} added", saved.getId());
+            return new BaseResponse(new IdDto(saved.getId()));
+        }
     }
 
     @Override
@@ -126,13 +154,15 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
-    public BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit)
+    public BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit, Person currentUser)
     {
         Dialog dialog = dialogRepository.findById(id).orElse(null);
         if (dialog != null)
+
+        {
             return DialogFactory.getMessages(messageRepository
-                    .getAllByMessageTextContainingAndDialog(query, dialog), offset, limit);
-        else
+                    .getAllByMessageTextContainingAndDialog(query, dialog), currentUser, offset, limit);
+        } else
         {
             return null;
         }
@@ -154,7 +184,7 @@ public class DialogServiceImpl implements DialogService {
         message.setReadStatus(ReadStatus.SENT);
         message.setDialog(dialog);
 
-        return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message)));
+        return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message), user));
     }
 
     @Override
@@ -165,14 +195,14 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
-    public BaseResponse editMessage(int dialogId, int messageId, MessageTextDto messageText)
+    public BaseResponse editMessage(int dialogId, int messageId, MessageTextDto messageText, Person user)
     {
         Message message = messageRepository.findById(messageId).orElse(null);
         if(message == null)
             throw new NullPointerException("Message not with id:"+messageId+" found");
         message.setMessageText(messageText.getText());
 
-        return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message)));
+        return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message), user));
     }
 
     @Override
@@ -182,7 +212,7 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
-    public BaseResponse markMessageAsRead(int dialogId, int messageId)
+    public BaseResponse markMessageAsRead(int dialogId, int messageId, Person person)
     {
         Message message = messageRepository.findById(messageId).orElse(null);
         if (message==null)
