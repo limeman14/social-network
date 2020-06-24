@@ -44,8 +44,7 @@ public class ProfileController {
 
     @GetMapping("/api/v1/users/{id}")
     public ResponseEntity<?> findUserById(@RequestHeader(name = "Authorization") String token, @PathVariable int id) {
-        Response result = profileService.getUserById(id, authService.getAuthorizedUser(token));
-        return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(profileService.getUserById(id, authService.getAuthorizedUser(token)));
     }
 
     @GetMapping("/api/v1/users/{id}/wall")
@@ -54,18 +53,17 @@ public class ProfileController {
             @RequestParam(name = "offset", defaultValue = "0") Integer offset,
             @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit) {
         BaseResponseList result = profileService.getWallPosts(id, offset, limit);
-        return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/api/v1/users/{id}/wall")
     public ResponseEntity<?> addPost(
-            @RequestHeader(name = "Authorization") String token,
             @PathVariable int id,
             @RequestParam(name = "publish_date", defaultValue = "0") Long publishDate,
             @RequestBody AddPostRequestDto request
     ) {
-        Response result = profileService.addPost(id, publishDate, request, authService.getAuthorizedUser(token));
-        return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
+        Response result = profileService.addPost(id, publishDate, request);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/api/v1/users/search")
@@ -79,22 +77,20 @@ public class ProfileController {
             @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
             @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit
     ) {
-        return ResponseEntity.ok(
-                profileService.searchPeople(name, surname, ageFrom, ageTo, country, city, offset, limit)
-        );
+        return ResponseEntity.ok(profileService.searchPeople(name, surname, ageFrom, ageTo, country, city, offset, limit));
 
     }
 
     @PutMapping("/api/v1/users/block/{id}")
     public ResponseEntity<?> blockProfile(@RequestHeader(name = "Authorization") String token, @PathVariable int id) {
         BaseResponse result = profileService.blockUser(id, authService.getAuthorizedUser(token));
-        return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(result);
 
     }
 
     @DeleteMapping("/api/v1/users/block/{id}")
     public ResponseEntity<?> unblockProfile(@RequestHeader(name = "Authorization") String token, @PathVariable int id) {
         BaseResponse result = profileService.unblockUser(id, authService.getAuthorizedUser(token));
-        return result != null ? ResponseEntity.ok(result) : new ResponseEntity("User with id: " + id + " not found", HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(result);
     }
 }

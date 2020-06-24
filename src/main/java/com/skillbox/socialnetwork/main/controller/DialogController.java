@@ -31,8 +31,7 @@ public class DialogController {
             @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
             @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit,
             @RequestHeader(name = "Authorization") String token
-                                                          )
-    {
+    ) {
         return ResponseEntity.ok(dialogService.getDialogs(query, offset, limit, authService.getAuthorizedUser(token)));
     }
 
