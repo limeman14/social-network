@@ -5,7 +5,9 @@ import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
+import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Post;
+import com.skillbox.socialnetwork.main.model.PostLike;
 import com.skillbox.socialnetwork.main.model.Tag;
 import com.skillbox.socialnetwork.main.model.enumerated.PostType;
 
@@ -16,11 +18,11 @@ import java.util.stream.Collectors;
 
 public class WallResponseFactory {
 
-    public static BaseResponseList getWall(List<Post> posts, int offset, int limit) {
-        return ResponseFactory.getBaseResponseListWithLimit(getListDto(posts), offset, limit);
+    public static BaseResponseList getWall(List<Post> posts, int offset, int limit, Person person) {
+        return ResponseFactory.getBaseResponseListWithLimit(getListDto(posts, person), offset, limit);
     }
 
-    private static List<Dto> getListDto(List<Post> posts) {
+    private static List<Dto> getListDto(List<Post> posts, Person person) {
         List<Dto> data = new ArrayList<>();
 
         posts.forEach(post -> data.add(
@@ -31,8 +33,10 @@ public class WallResponseFactory {
                         post.getTitle(),
                         post.getPostText(),
                         post.getIsBlocked(),
+                        post.getLikes().stream().map(PostLike::getPerson).collect(Collectors.toList()).contains(person),
                         post.getLikes().size(),
-                        post.getComments().stream().map(CommentResponseFactory::getCommentDto).collect(Collectors.toList()), post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,           //фильтрация между опубликованными и отложенными постами
+                        CommentResponseFactory.getCommentList(post.getComments(), null),
+                        post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,           //фильтрация между опубликованными и отложенными постами
                         post.getTags() != null
                                 ? post.getTags()
                                 .stream()

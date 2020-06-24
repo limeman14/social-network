@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -10,10 +11,10 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "posts")
-public class Post {
+public class Post{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
     private Date time;
 
@@ -50,6 +51,6 @@ public class Post {
 
     @Override
     public String toString() {
-        return id + " " + title + " " + postText;
+        return getId() + " " + title + " " + postText;
     }
 }

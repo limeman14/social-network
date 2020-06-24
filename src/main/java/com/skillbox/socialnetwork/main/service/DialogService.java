@@ -17,12 +17,12 @@ public interface DialogService {
     BaseResponse deleteUsersFromDialog(int dialogId, DialogAddRequest request);
     BaseResponse inviteUserToDialog(int id);
     BaseResponse joinDialog(int id, LinkDto linkDto);
-    BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit);
+    BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit, Person currentUser);
     BaseResponse addMessage(int dialogId, MessageTextDto message, Person user);
     BaseResponse deleteMessage(int dialogId, int messageId);
-    BaseResponse editMessage(int dialogId, int messageId, MessageTextDto messageText);
+    BaseResponse editMessage(int dialogId, int messageId, MessageTextDto messageText, Person user);
     BaseResponse recoverMessage(int dialogId, int messageId);
-    BaseResponse markMessageAsRead(int dialogId, int messageId);
+    BaseResponse markMessageAsRead(int dialogId, int messageId, Person person);
     BaseResponse getUserActivityStatus(int dialogId, int userId);
     BaseResponse changeUserActivityStatus(int dialogId, int userId);
     BaseResponse getLongPollCredentials();

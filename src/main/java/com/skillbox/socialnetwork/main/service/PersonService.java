@@ -4,6 +4,7 @@ import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.model.Person;
 
+import java.util.Date;
 import java.util.List;
 
 public interface PersonService {
@@ -14,6 +15,10 @@ public interface PersonService {
 
     Person findById(Integer id);
 
+    List<Person> search(String name, String surname,
+                        Date dateFrom, Date dateTo,
+                        String cityName, String countryName);
+
     void delete(Integer id);
 
     Response registration(RegisterRequestDto dto);
@@ -21,4 +26,6 @@ public interface PersonService {
     void logout(Person person);
 
     Person save(Person person);
+
+    void delete(Person person);
 }

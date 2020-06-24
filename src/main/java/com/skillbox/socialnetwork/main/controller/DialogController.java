@@ -5,7 +5,6 @@ import com.skillbox.socialnetwork.main.dto.dialog.LongpollHistoryRequest;
 import com.skillbox.socialnetwork.main.dto.dialog.response.MessageTextDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
-import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.DialogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,7 @@ public class DialogController {
             @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
             @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit,
             @RequestHeader(name = "Authorization") String token
-                                                          )
-    {
+    ) {
         return ResponseEntity.ok(dialogService.getDialogs(query, offset, limit, authService.getAuthorizedUser(token)));
     }
 
@@ -75,10 +73,10 @@ public class DialogController {
             @PathVariable int id,
             @RequestParam(name = "query", defaultValue = "", required = false) String query,
             @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
-            @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit
-                                                             )
+            @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit,
+            @RequestHeader(name = "Authorization") String token)
     {
-        return ResponseEntity.ok(dialogService.getMessagesFromDialog(id, query, offset, limit));
+        return ResponseEntity.ok(dialogService.getMessagesFromDialog(id, query, offset, limit, authService.getAuthorizedUser(token)));
     }
 
     @PostMapping("{id}/messages")
@@ -102,9 +100,10 @@ public class DialogController {
     public ResponseEntity<BaseResponse> editMessage(
             @PathVariable int dialogId,
             @PathVariable int messageId,
-            @RequestBody MessageTextDto request)
+            @RequestBody MessageTextDto request,
+            @RequestHeader(name = "Authorization") String token)
     {
-        return ResponseEntity.ok(dialogService.editMessage(dialogId, messageId, request));
+        return ResponseEntity.ok(dialogService.editMessage(dialogId, messageId, request, authService.getAuthorizedUser(token)));
     }
 
     @PutMapping("{dialogId}/messages/{messageId}/recover")
@@ -118,9 +117,10 @@ public class DialogController {
     @PutMapping("{dialogId}/messages/{messageId}/read")
     public ResponseEntity<BaseResponse> readMessage(
             @PathVariable int dialogId,
-            @PathVariable int messageId)
+            @PathVariable int messageId,
+            @RequestHeader(name = "Authorization") String token)
     {
-        return ResponseEntity.ok(dialogService.markMessageAsRead(dialogId, messageId));
+        return ResponseEntity.ok(dialogService.markMessageAsRead(dialogId, messageId, authService.getAuthorizedUser(token)));
     }
 
     @GetMapping("{dialogId}/activity/{userId}")

@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.security.jwt;
 
+import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,7 +34,7 @@ public class JwtTokenFilter extends GenericFilterBean {
                 }
             }
             filterChain.doFilter(servletRequest, servletResponse);
-        } catch (JwtAuthenticationException ex) {
+        } catch (JwtAuthenticationException | PersonNotFoundException ex) {
             log.warn(ex.getMessage());
         }
 

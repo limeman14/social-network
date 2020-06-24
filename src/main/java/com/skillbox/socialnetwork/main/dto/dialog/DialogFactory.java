@@ -6,6 +6,7 @@ import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.model.Dialog;
 import com.skillbox.socialnetwork.main.model.Message;
+import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.enumerated.ReadStatus;
 
 import java.util.ArrayList;
@@ -17,17 +18,17 @@ import static java.util.stream.Collectors.toList;
 
 public class DialogFactory {
 
-    public static BaseResponseList getDialogs(List<Dialog> dialogs, int offset, int limit)
+    public static BaseResponseList getDialogs(List<Dialog> dialogs, Person user, int offset, int limit)
     {
         return new BaseResponseList(
                 dialogs.size(),
                 offset,
                 limit,
-                formatDialogs(dialogs, limit, offset)
+                formatDialogs(dialogs, user, limit, offset)
         );
     }
 
-    private static List<Dto> formatDialogs(List<Dialog> dialogs, int offset, int limit)
+    private static List<Dto> formatDialogs(List<Dialog> dialogs, Person user, int offset, int limit)
     {
         return dialogs
                 .stream()
@@ -43,27 +44,27 @@ public class DialogFactory {
                                 .getMessages()
                                 .stream()
                                 .max(Comparator.comparing(Message::getTime))
-                                .get()) : null))
+                                .get(), user) : null))
                 .collect(Collectors.toList());
     }
 
-    public static BaseResponseList getMessages(List<Message> messageList, int offset, int limit)
+    public static BaseResponseList getMessages(List<Message> messageList, Person user, int offset, int limit)
     {
         return new BaseResponseList(
                 messageList.size(),
                 offset,
                 limit,
-                messageList.size() > 0 ? formatMessages(messageList, offset, limit) : null
+                messageList.size() > 0 ? formatMessages(messageList, user, offset, limit) : null
         );
     }
 
-    private static List<Dto> formatMessages(List<Message> messages, int offset, int limit)
+    private static List<Dto> formatMessages(List<Message> messages, Person user, int offset, int limit)
     {
         try
         {
             return getElementsInRange(messages
                             .stream()
-                            .map(message -> message != null ? formatMessage(message) : null)
+                            .map(message -> message != null ? formatMessage(message, user) : null)
                             .collect(toList()),
                     offset, limit);
         } catch (NullPointerException e)
@@ -92,7 +93,7 @@ public class DialogFactory {
         }
     }
 
-    public static Dto formatMessage(Message message)
+    public static Dto formatMessage(Message message, Person user)
     {
         return new MessageDto(
                 message.getId(),
@@ -100,13 +101,12 @@ public class DialogFactory {
                         .getTime()
                         .getTime(),
                 message
-                        .getAuthor()
-                        .getId(),
+                        .getAuthor(),
                 message
-                        .getRecipient()
-                        .getId(),
+                        .getRecipient(),
                 message.getMessageText(),
-                message.getReadStatus());
+                message.getReadStatus(),
+                message.getAuthor().getId().equals(user.getId()));
     }
 
     private static Dto formatDialog(Dialog dialog)

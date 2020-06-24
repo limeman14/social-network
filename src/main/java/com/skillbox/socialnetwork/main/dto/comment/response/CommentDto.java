@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,10 +18,13 @@ public class CommentDto implements Dto {
     private String text;
     private int id;
     @JsonProperty("post_id")
-    private String postId;
+    private int postId;
     private long time;
-    @JsonProperty("author_id")
-    private int authorId;
+    @JsonProperty("author")
+    private Dto author;
     @JsonProperty("is_blocked")
     private boolean blocked;
+
+    @JsonProperty("sub_comments")
+    private List<Dto> subComments;
 }
