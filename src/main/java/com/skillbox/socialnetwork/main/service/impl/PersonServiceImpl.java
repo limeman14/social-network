@@ -63,8 +63,13 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public void delete(Integer id) {
+    public List<Person> search(String name, String surname, Date dateFrom, Date dateTo, String cityName, String countryName) {
+        return repository.search(name, surname, dateFrom, dateTo, cityName, countryName);
+    }
 
+    @Override
+    public void delete(Integer id) {
+        repository.deleteById(id);
     }
 
     @Override
@@ -116,6 +121,11 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Person save(Person person) {
         return repository.save(person);
+    }
+
+    @Override
+    public void delete(Person person) {
+        repository.delete(person);
     }
 
 
