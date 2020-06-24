@@ -10,6 +10,7 @@ import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.model.Tag;
 import com.skillbox.socialnetwork.main.repository.PostRepository;
 import com.skillbox.socialnetwork.main.repository.TagRepository;
+import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -23,11 +24,13 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
+    private final PersonService personService;
 
     @Autowired
-    public PostServiceImpl(PostRepository repository, TagRepository tagRepository) {
+    public PostServiceImpl(PostRepository repository, TagRepository tagRepository, PersonService personService) {
         this.postRepository = repository;
         this.tagRepository = tagRepository;
+        this.personService = personService;
     }
 
     @Override
@@ -51,12 +54,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public BaseResponse getPost(int id, Person person) {
-        return PostResponseFactory.getSinglePost(findById(id), person);
+    public BaseResponse getPost(int id, int personId) {
+        return PostResponseFactory.getSinglePost(findById(id), personService.findById(personId));
     }
 
     @Override
-    public BaseResponse editPost(int id, Long publishDate, UpdatePostRequestDto request, Person person) {
+    public BaseResponse editPost(int id, Long publishDate, UpdatePostRequestDto request, int personId) {
         Post post = postRepository.findPostById(id);
         post.setPostText(request.getPostText());
         post.setTitle(request.getTitle());
@@ -78,7 +81,7 @@ public class PostServiceImpl implements PostService {
             post.setTags(tags);
         }
         Post result = postRepository.save(post);
-        return PostResponseFactory.getSinglePost(result, person);
+        return PostResponseFactory.getSinglePost(result, personService.findById(personId));
     }
 
     @Override
@@ -88,9 +91,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, int offset, int limit, Person person) {
+    public BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, int offset, int limit, int personId) {
         return PostResponseFactory.getPostsListWithLimit(
                 postRepository.searchPosts(text, new Date(dateFrom), new Date(dateTo), author),
-                offset, limit, person);
+                offset, limit, personService.findById(personId));
     }
 }

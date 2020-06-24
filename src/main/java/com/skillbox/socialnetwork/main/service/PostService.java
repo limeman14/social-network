@@ -13,11 +13,11 @@ public interface PostService {
 
     BaseResponseList feeds(int offset, int limit, Person person);
 
-    BaseResponse getPost(int id, Person person);
+    BaseResponse getPost(int id, int personId);
 
-    BaseResponse editPost(int id, Long publishDate, UpdatePostRequestDto request, Person person);
+    BaseResponse editPost(int id, Long publishDate, UpdatePostRequestDto request, int personId);
 
     BaseResponse deletePost(int id);
 
-    BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, int offset, int limit, Person person);
+    BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, int offset, int limit, int personId);
 }
