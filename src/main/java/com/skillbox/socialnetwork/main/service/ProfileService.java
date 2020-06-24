@@ -18,7 +18,7 @@ public interface ProfileService {
 
     BaseResponseList getWallPosts(int id, int offset, int limit);
 
-    BaseResponse addPost(int id, long publishDate, AddPostRequestDto request, Person authPerson);
+    BaseResponse addPost(int id, long publishDate, AddPostRequestDto request);
 
     BaseResponseList searchPeople(String name,
                                   String surname,

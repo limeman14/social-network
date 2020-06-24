@@ -10,7 +10,7 @@ public interface CommentService {
 
     PostComment save(PostComment comment);
 
-    Dto addComment(int postId, CommentRequest request, Person author);
+    Dto addComment(int postId, CommentRequest request, int authorId);
 
     Dto updateComment(int commentId, CommentRequest request);
 

@@ -12,6 +12,7 @@ import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
 import com.skillbox.socialnetwork.main.repository.*;
+import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.service.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,10 +124,9 @@ public class ProfileServiceImpl implements ProfileService {
         if (request.getTags().size() != 0) {            //если тегов нет в запросе, блок пропускается
             request.getTags().forEach(tag -> {
                 Tag postTag;
-                if(tagRepository.existsByTagIgnoreCase(tag)){
+                if (tagRepository.existsByTagIgnoreCase(tag)) {
                     postTag = tagRepository.findFirstByTagIgnoreCase(tag);
-                }
-                else {
+                } else {
                     postTag = new Tag();
                     postTag.setTag(tag);
                 }
@@ -136,7 +136,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
         Post result = postRepository.save(savedPost);
         log.info("IN addPost post: {} added with tags: {} successfully", result, tags);
-        return PostResponseFactory.getSinglePost(result);
+        return PostResponseFactory.getSinglePost(result, person);
     }
 
     @Override

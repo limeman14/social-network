@@ -47,7 +47,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Person findByEmail(String email) {
         Person person = repository.findByEmail(email);
-        if(person == null){
+        if (person == null) {
             throw new PersonNotFoundException(email);
         }
         return person;
@@ -56,7 +56,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Person findById(Integer id) {
         Person person = repository.findPersonById(id);
-        if(person == null){
+        if (person == null) {
             throw new PersonNotFoundException(id);
         }
         return person;
@@ -73,7 +73,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Response registration(RegisterRequestDto dto) throws RuntimeException{
+    public Response registration(RegisterRequestDto dto) throws RuntimeException {
         checkUserLogin(dto.getEmail());
         checkUserRegisterPassword(dto.getPassword1(), dto.getPassword2());
 
@@ -94,14 +94,14 @@ public class PersonServiceImpl implements PersonService {
         return ResponseFactory.responseOk();
     }
 
-    private void checkUserRegisterPassword(String password1, String password2) throws RuntimeException{
-        if(!password1.equals(password2)){
+    private void checkUserRegisterPassword(String password1, String password2) throws RuntimeException {
+        if (!password1.equals(password2)) {
             throw new InvalidRequestException("Пароль указан некорректно");
         }
     }
 
-    private void checkUserLogin(String email) throws RuntimeException{
-        if(repository.findByEmail(email) != null){
+    private void checkUserLogin(String email) throws RuntimeException {
+        if (repository.findByEmail(email) != null) {
             throw new InvalidRequestException("Данный email уже зарегистрирован");
         }
     }
