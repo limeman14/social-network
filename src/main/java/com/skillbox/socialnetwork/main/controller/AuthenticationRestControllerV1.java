@@ -60,10 +60,20 @@ public class AuthenticationRestControllerV1 {
         return ResponseEntity.ok(authService.passwordSet(dto, referer));
     }
 
+
     @GetMapping("/GeoIPTest")
-    public GeoIP getLocation(@RequestParam(value="ipAddress", required=true) String ipAddress
+    public GeoIP getLocation(
+            @RequestParam(value="ipAddress", required=false) String ipAddress,
+            HttpServletRequest request
     ) throws Exception {
-        return geoService.getLocation(ipAddress);
+        String remoteAddress = "";
+        if (request != null) {
+            remoteAddress = request.getHeader("X-FORWARDED-FOR");
+            if (remoteAddress == null || "".equals(remoteAddress)) {
+                remoteAddress = request.getRemoteAddr();
+            }
+        }
+        return geoService.getLocation(ipAddress != null ? ipAddress : remoteAddress);
     }
 
 }
