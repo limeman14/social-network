@@ -15,13 +15,16 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Dialog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @OneToMany(mappedBy = "dialog")
+    @ToString.Exclude
     private List<DialogToPerson> dialogToPersonList;
     @OneToMany(mappedBy = "dialog")
+    @ToString.Exclude
     private List<Message> messages;
     @CreationTimestamp
     private Date creationDate;

@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
 import lombok.ToString;
@@ -18,8 +19,10 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonProperty("first_name")
     private String firstName;
 
+    @JsonProperty("last_name")
     private String lastName;
 
     @CreationTimestamp
