@@ -67,27 +67,27 @@ public class Person {
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     @JsonIgnore
     @ToString.Exclude
     private List<BlockHistory> blockHistories;
 
-    @OneToMany(mappedBy = "srcPerson")
+    @OneToMany(mappedBy = "srcPerson", cascade = CascadeType.ALL)
     @JsonIgnore
     @ToString.Exclude
     private List<Friendship> friendshipsSrc;
 
-    @OneToMany(mappedBy = "dstPerson")
+    @OneToMany(mappedBy = "dstPerson", cascade = CascadeType.ALL)
     @JsonIgnore
     @ToString.Exclude
     private List<Friendship> friendshipsDst;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @JsonIgnore
     @ToString.Exclude
     private List<Message> sentMessages;
 
-    @OneToMany(mappedBy = "recipient")
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
     @JsonIgnore
     @ToString.Exclude
     private List<Message> recipientMessages;
@@ -97,22 +97,22 @@ public class Person {
     @ToString.Exclude
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     @JsonIgnore
     @ToString.Exclude
     private List<PostLike> likes;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @JsonIgnore
     @ToString.Exclude
     private List<PostComment> comments;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     @JsonIgnore
     @ToString.Exclude
     private List<Notification> notifications;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     @JsonIgnore
     @ToString.Exclude
     private List<DialogToPerson> dialogToPeople;
