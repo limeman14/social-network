@@ -1,7 +1,6 @@
 package com.skillbox.socialnetwork.main.controller;
 
 
-import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
@@ -9,7 +8,6 @@ import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.service.AuthService;
-import com.skillbox.socialnetwork.main.service.GeoIPLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +21,8 @@ public class AuthenticationRestControllerV1 {
 //    private final GeoIPLocationService geoService;
 
     @Autowired
-    public AuthenticationRestControllerV1(AuthService authService,
-//                                          GeoIPLocationService geoService
+    public AuthenticationRestControllerV1(AuthService authService
+//                                          ,GeoIPLocationService geoService
     ) {
         this.authService = authService;
 //        this.geoService = geoService;
