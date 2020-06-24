@@ -27,7 +27,7 @@ hostname: localhost:8080
 
 project.name: Социальная сеть разработчиков
 
-path.to.dblocation.city: 'GeoLite2-City_20200616_2/GeoLite2-City.mmdb'
+path.to.dblocation.city: 'classpath:static/GeoLite2-City_20200616_2/GeoLite2-City.mmdb'
 
 spring.mail:
   # Логин и пароль пользователя от почты на gmail
