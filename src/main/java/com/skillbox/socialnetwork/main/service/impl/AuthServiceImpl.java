@@ -1,12 +1,12 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.*;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
-import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
@@ -16,15 +16,14 @@ import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.util.CodeGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -62,8 +61,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Response register(RegisterRequestDto request) {
-        Response registration = personService.registration(request);
+    public Response register(RegisterRequestDto request, String remoteAddress) throws IOException, GeoIp2Exception {
+        Response registration = personService.registration(request, remoteAddress);
         emailService.sendSimpleMessageUsingTemplate(request.getEmail(), request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
         return registration;
     }
