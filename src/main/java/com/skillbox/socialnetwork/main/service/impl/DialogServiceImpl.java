@@ -6,7 +6,6 @@ import com.skillbox.socialnetwork.main.dto.dialog.LongpollHistoryRequest;
 import com.skillbox.socialnetwork.main.dto.dialog.response.*;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
-import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Dialog;
 import com.skillbox.socialnetwork.main.model.DialogToPerson;
@@ -39,8 +38,7 @@ public class DialogServiceImpl implements DialogService {
     private final D2PRepository d2pRepository;
 
     @Autowired
-    public DialogServiceImpl(MessageRepository messageRepository, PersonService personService, DialogRepository dialogRepository, D2PRepository d2pRepository)
-    {
+    public DialogServiceImpl(MessageRepository messageRepository, PersonService personService, DialogRepository dialogRepository, D2PRepository d2pRepository) {
         this.messageRepository = messageRepository;
         this.personService = personService;
         this.dialogRepository = dialogRepository;
@@ -48,25 +46,23 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
-    public BaseResponseList getDialogs(String query, int offset, int limit, Person person)
-    {
+    public BaseResponseList getDialogs(String query, int offset, int limit, Person person) {
         return DialogFactory.getDialogs(dialogRepository.getDialogs(person, query), person, offset, limit);
     }
 
     @Override
-    public BaseResponse addDialog(DialogAddRequest request, Person currentUser)
-    {
+    public BaseResponse addDialog(DialogAddRequest request, Person currentUser) {
         AtomicBoolean dialogAlreadyExists = new AtomicBoolean(false);
         AtomicInteger dialogId = new AtomicInteger();
         currentUser.getDialogToPeople().stream().map(DialogToPerson::getDialog).map(Dialog::getDialogToPersonList).forEach(dialogToPeople -> dialogAlreadyExists
                 .set(dialogToPeople.stream().anyMatch(dialogToPerson -> {
                     dialogId.set(dialogToPerson.getDialog().getId());
                     return dialogToPerson.getPerson().getId()
-                        .equals(request.getUserIds().get(0));})));
-        if(dialogAlreadyExists.get()){
+                            .equals(request.getUserIds().get(0));
+                })));
+        if (dialogAlreadyExists.get()) {
             return new BaseResponse(new IdDto(dialogId.get()));
-        } else
-        {//if not exists
+        } else {//if not exists
             Dialog d = new Dialog();
             d.setDialogToPersonList(new ArrayList<>());
             d.setMessages(new ArrayList<>());
@@ -91,7 +87,7 @@ public class DialogServiceImpl implements DialogService {
 
             //dialog initializer
             Message message = new Message();
-            message.setMessageText("Пользователь "+currentUser.getFirstName() +" "+currentUser.getLastName() + " начал чат.");
+            message.setMessageText("Пользователь " + currentUser.getFirstName() + " " + currentUser.getLastName() + " начал чат.");
             message.setAuthor(currentUser);
             message.setRecipient(personService.findById(request.getUserIds().get(0)));
             message.setReadStatus(ReadStatus.SENT);
@@ -108,27 +104,23 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
-    public BaseResponse getUnreadMessages(Person person)
-    {
+    public BaseResponse getUnreadMessages(Person person) {
         return new BaseResponse(new CountDto(dialogRepository.countUnreadMessages(person)));
     }
 
     @Override
-    public BaseResponse deleteDialog(int dialogId)
-    {
+    public BaseResponse deleteDialog(int dialogId) {
         dialogRepository.deleteById(dialogId);
         return new BaseResponse(new IdDto(dialogId));
     }
 
     @Override
-    public BaseResponse addUsersToDialog(DialogAddRequest request)
-    {
+    public BaseResponse addUsersToDialog(DialogAddRequest request) {
         return addDialog(request, null);
     }
 
     @Override
-    public BaseResponse deleteUsersFromDialog(int dialogId, DialogAddRequest request)
-    {
+    public BaseResponse deleteUsersFromDialog(int dialogId, DialogAddRequest request) {
         Dialog dialog = dialogRepository
                 .findById(dialogId)
                 .orElse(null);
@@ -143,35 +135,28 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
-    public BaseResponse inviteUserToDialog(int id)
-    {//Как линк сгенерировать??
+    public BaseResponse inviteUserToDialog(int id) {//Как линк сгенерировать??
         return null;
     }
 
     @Override
-    public BaseResponse joinDialog(int id, LinkDto linkDto)
-    {//аналогично
+    public BaseResponse joinDialog(int id, LinkDto linkDto) {//аналогично
         return null;
     }
 
     @Override
-    public BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit, Person currentUser)
-    {
+    public BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit, Person currentUser) {
         Dialog dialog = dialogRepository.findById(id).orElse(null);
-        if (dialog != null)
-
-        {
+        if (dialog != null) {
             return DialogFactory.getMessages(messageRepository
                     .getAllByMessageTextContainingAndDialog(query, dialog), currentUser, offset, limit);
-        } else
-        {
+        } else {
             return null;
         }
     }
 
     @Override
-    public BaseResponse addMessage(int dialogId, MessageTextDto request, Person user)
-    {
+    public BaseResponse addMessage(int dialogId, MessageTextDto request, Person user) {
         Dialog dialog = dialogRepository.findById(dialogId).orElse(null);
         if (dialog == null)
             throw new NullPointerException("Dialog cannot be null");
@@ -189,61 +174,53 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
-    public BaseResponse deleteMessage(int dialogId, int messageId)
-    {
+    public BaseResponse deleteMessage(int dialogId, int messageId) {
         messageRepository.deleteById(messageId);
         return new BaseResponse(new MessageIdDto(messageId));
     }
 
     @Override
-    public BaseResponse editMessage(int dialogId, int messageId, MessageTextDto messageText, Person user)
-    {
+    public BaseResponse editMessage(int dialogId, int messageId, MessageTextDto messageText, Person user) {
         Message message = messageRepository.findById(messageId).orElse(null);
-        if(message == null)
-            throw new NullPointerException("Message not with id:"+messageId+" found");
+        if (message == null)
+            throw new NullPointerException("Message not with id:" + messageId + " found");
         message.setMessageText(messageText.getText());
 
         return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message), user));
     }
 
     @Override
-    public BaseResponse recoverMessage(int dialogId, int messageId)
-    {
+    public BaseResponse recoverMessage(int dialogId, int messageId) {
         return null;//Как?
     }
 
     @Override
-    public BaseResponse markMessageAsRead(int dialogId, int messageId, Person person)
-    {
+    public BaseResponse markMessageAsRead(int dialogId, int messageId, Person person) {
         Message message = messageRepository.findById(messageId).orElse(null);
-        if (message==null)
-            throw new NullPointerException("Message with id: "+messageId+" not found");
+        if (message == null)
+            throw new NullPointerException("Message with id: " + messageId + " not found");
         message.setReadStatus(ReadStatus.READ);
         messageRepository.save(message);
         return ResponseFactory.responseOk();
     }
 
     @Override
-    public BaseResponse getUserActivityStatus(int dialogId, int userId)
-    {
+    public BaseResponse getUserActivityStatus(int dialogId, int userId) {
         return null;
     }
 
     @Override
-    public BaseResponse changeUserActivityStatus(int dialogId, int userId)
-    {
+    public BaseResponse changeUserActivityStatus(int dialogId, int userId) {
         return null;
     }
 
     @Override
-    public BaseResponse getLongPollCredentials()
-    {
+    public BaseResponse getLongPollCredentials() {
         return null;
     }
 
     @Override
-    public BaseResponse getLongPollHistory(LongpollHistoryRequest request)
-    {
+    public BaseResponse getLongPollHistory(LongpollHistoryRequest request) {
         return null;
     }
 }
