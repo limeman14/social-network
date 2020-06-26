@@ -55,8 +55,10 @@ public class AuthServiceImpl implements AuthService {
             Person user = personService.findByEmail(email);
 
             String token = jwtTokenProvider.createToken(email);
+            log.info("User {} logged in", email);
             return AuthResponseFactory.getAuthResponse(user, token);
         } catch (AuthenticationException e) {
+            log.error("Invalid username or password for user {}", email);
             throw new BadCredentialsException("Invalid username or password for user " + email);
         }
     }
@@ -65,6 +67,7 @@ public class AuthServiceImpl implements AuthService {
     public Response register(RegisterRequestDto request) {
         Response registration = personService.registration(request);
         emailService.sendSimpleMessageUsingTemplate(request.getEmail(), request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
+        log.info("User {} registered successfully", request.getEmail());
         return registration;
     }
 
@@ -96,6 +99,7 @@ public class AuthServiceImpl implements AuthService {
         personService.save(person);
         String token = jwtTokenProvider.createToken(person.getEmail() + ":" + person.getConfirmationCode());
         emailService.sendPasswordRecovery(email, person.getFirstName(), url + "/change-password?token=" + token);
+        log.info("User {} requested password recovery, confirmation email was sent", email);
         return ResponseFactory.responseOk();
     }
 
@@ -112,11 +116,14 @@ public class AuthServiceImpl implements AuthService {
                     person.setPassword(passwordEncoder.encode(dto.getPassword()));
                     person.setConfirmationCode("");
                     personService.save(person);
+                    log.info("New password set for user {}", person.getEmail());
                     return ResponseFactory.responseOk();
                 }
             }
+            log.error("Password change failed: token error");
             throw new InvalidRequestException("token_error");
         } catch (MalformedURLException e) {
+            log.error("Password change failed: token not found");
             throw new InvalidRequestException("token not found");
         }
     }

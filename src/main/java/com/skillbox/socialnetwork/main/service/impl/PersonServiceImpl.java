@@ -96,12 +96,14 @@ public class PersonServiceImpl implements PersonService {
 
     private void checkUserRegisterPassword(String password1, String password2) throws RuntimeException {
         if (!password1.equals(password2)) {
-            throw new InvalidRequestException("Пароль указан некорректно");
+            log.error("Registration failed, passwords don't match");
+            throw new InvalidRequestException("Пароли не совпадают");
         }
     }
 
     private void checkUserLogin(String email) throws RuntimeException {
         if (repository.findByEmail(email) != null) {
+            log.error("Registration failed, user {} is already registered", email);
             throw new InvalidRequestException("Данный email уже зарегистрирован");
         }
     }
