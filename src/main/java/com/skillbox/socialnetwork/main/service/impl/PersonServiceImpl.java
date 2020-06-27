@@ -1,26 +1,25 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
+import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
 import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
+import com.skillbox.socialnetwork.main.exception.user.input.UserInputException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import com.skillbox.socialnetwork.main.repository.RoleRepository;
-import com.skillbox.socialnetwork.main.service.GeoIPLocationService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,14 +31,12 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository repository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    private final GeoIPLocationService geoService;
 
     @Autowired
-    public PersonServiceImpl(PersonRepository repository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository, GeoIPLocationService geoService) {
+    public PersonServiceImpl(PersonRepository repository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-        this.geoService = geoService;
     }
 
     @Override
@@ -76,11 +73,9 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Response registration(RegisterRequestDto dto, String remoteAddress) throws RuntimeException, IOException, GeoIp2Exception {
+    public Response registration(RegisterRequestDto dto) throws RuntimeException {
         checkUserLogin(dto.getEmail());
         checkUserRegisterPassword(dto.getPassword1(), dto.getPassword2());
-
-        final GeoIP location = geoService.getLocation(remoteAddress);
 
         Person person = new Person();
         person.setEmail(dto.getEmail());
@@ -88,8 +83,6 @@ public class PersonServiceImpl implements PersonService {
         person.setFirstName(dto.getFirstName());
         person.setLastName(dto.getLastName());
         person.setConfirmationCode(dto.getCode());
-        person.setCity(location.getCity());
-        person.setCountry(location.getCountry());
         person.setIsBlocked(false);
         person.setMessagesPermission(Permission.ALL);
         person.setIsApproved(true);
@@ -103,12 +96,14 @@ public class PersonServiceImpl implements PersonService {
 
     private void checkUserRegisterPassword(String password1, String password2) throws RuntimeException {
         if (!password1.equals(password2)) {
-            throw new InvalidRequestException("Пароль указан некорректно");
+            log.error("Registration failed, passwords don't match");
+            throw new InvalidRequestException("Пароли не совпадают");
         }
     }
 
     private void checkUserLogin(String email) throws RuntimeException {
         if (repository.findByEmail(email) != null) {
+            log.error("Registration failed, user {} is already registered", email);
             throw new InvalidRequestException("Данный email уже зарегистрирован");
         }
     }
