@@ -14,9 +14,9 @@ public class BaseResponseList implements Response{
     private Integer total;
     private Integer offset;
     private Integer perPage;
-    private List<Dto> data;
+    private List<? extends Dto> data;
 
-    public BaseResponseList(List<Dto> data) {
+    public BaseResponseList(List<? extends Dto> data) {
         error = "string";
         timestamp = new Date().getTime();
         this.data = data;

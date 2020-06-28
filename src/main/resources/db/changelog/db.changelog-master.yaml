@@ -759,6 +759,87 @@ databaseChangeLog:
         - dropColumn:
             columnName: town_id
             tableName: persons
+  - changeSet:
+      id: 1.1.6
+      author: vlad
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: info
+                  type: varchar(255)
+            tableName: notifications
+  - changeSet:
+      id: 1.1.7
+      author: vlad
+      changes:
+        - dropColumn:
+            tableName: notification_types
+            columnName: name
+        - insert:
+            tableName: notification_types
+            columns:
+              - column:
+                  name: code
+                  value: "POST"
+        - insert:
+            tableName: notification_types
+            columns:
+              - column:
+                  name: code
+                  value: "POST_COMMENT"
+        - insert:
+            tableName: notification_types
+            columns:
+              - column:
+                  name: code
+                  value: "COMMENT_COMMENT"
+        - insert:
+            tableName: notification_types
+            columns:
+              - column:
+                  name: code
+                  value: "FRIEND_REQUEST"
+        - insert:
+            tableName: notification_types
+            columns:
+              - column:
+                  name: code
+                  value: "MESSAGE"
+  - changeSet:
+      id: 1.1.8
+      author: vlad
+      changes:
+        - createTable:
+            tableName: notification_settings
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                  name: id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: person_id
+                  type: INT
+              - column:
+                  name: POST
+                  type: BIT(1)
+              - column:
+                  name: POST_COMMENT
+                  type: BIT(1)
+              - column:
+                  name: COMMENT_COMMENT
+                  type: BIT(1)
+              - column:
+                  name: FRIEND_REQUEST
+                  type: BIT(1)
+              - column:
+                  name: MESSAGE
+                  type: BIT(1)
   - include:
       file: db/changelog/db.changelog-insertPersons.yaml
   - include:

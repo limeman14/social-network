@@ -29,9 +29,10 @@ public class Notification {
 
     //@TODO: добавить entity_id!
 
-    //@NotNull
-    //private MainEntity entityId;
+    private Integer entityId;
 
-    @NotNull
+
     private String contact;
+
+    private String info;
 }

@@ -7,14 +7,13 @@ import com.skillbox.socialnetwork.main.dto.dialog.response.*;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
-import com.skillbox.socialnetwork.main.model.Dialog;
-import com.skillbox.socialnetwork.main.model.DialogToPerson;
-import com.skillbox.socialnetwork.main.model.Message;
-import com.skillbox.socialnetwork.main.model.Person;
+import com.skillbox.socialnetwork.main.model.*;
+import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import com.skillbox.socialnetwork.main.model.enumerated.ReadStatus;
 import com.skillbox.socialnetwork.main.repository.D2PRepository;
 import com.skillbox.socialnetwork.main.repository.DialogRepository;
 import com.skillbox.socialnetwork.main.repository.MessageRepository;
+import com.skillbox.socialnetwork.main.repository.NotificationRepository;
 import com.skillbox.socialnetwork.main.service.DialogService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
@@ -36,13 +35,15 @@ public class DialogServiceImpl implements DialogService {
     private final PersonService personService;
     private final DialogRepository dialogRepository;
     private final D2PRepository d2pRepository;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
-    public DialogServiceImpl(MessageRepository messageRepository, PersonService personService, DialogRepository dialogRepository, D2PRepository d2pRepository) {
+    public DialogServiceImpl(MessageRepository messageRepository, PersonService personService, DialogRepository dialogRepository, D2PRepository d2pRepository, NotificationRepository notificationRepository) {
         this.messageRepository = messageRepository;
         this.personService = personService;
         this.dialogRepository = dialogRepository;
         this.d2pRepository = d2pRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -169,6 +170,16 @@ public class DialogServiceImpl implements DialogService {
         message.setMessageText(request.getText());
         message.setReadStatus(ReadStatus.SENT);
         message.setDialog(dialog);
+
+        //уведомление о сообщении
+/*        Notification messageNotification = new Notification();
+        messageNotification.setPerson(dstPerson);
+        messageNotification.setEntityId(dialogId);
+        messageNotification.setType(new NotificationType(5));   //костыль: в табличке notification_types этот вариант пятый
+        messageNotification.setContact(dstPerson.getEmail());
+        messageNotification.setInfo("Пользователь " + user.getFirstName() + " " + user.getLastName() + " отправил вам сообщение.");
+        messageNotification.setSentTime(message.getTime());
+        notificationRepository.save(messageNotification);*/
 
         return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message), user));
     }

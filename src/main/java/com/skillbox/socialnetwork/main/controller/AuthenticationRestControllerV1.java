@@ -5,14 +5,18 @@ import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
+import com.skillbox.socialnetwork.main.dto.notifications.request.NotificationSettingDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
+import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
 import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.GeoIPLocationService;
+import com.skillbox.socialnetwork.main.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +27,15 @@ public class AuthenticationRestControllerV1 {
 
     private final AuthService authService;
     private final GeoIPLocationService geoService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public AuthenticationRestControllerV1(AuthService authService
-                                          , GeoIPLocationService geoService
-    ) {
+    public AuthenticationRestControllerV1(AuthService authService,
+                                          GeoIPLocationService geoService,
+                                          NotificationService notificationService) {
         this.authService = authService;
         this.geoService = geoService;
+        this.notificationService = notificationService;
     }
 
     @PostMapping("/api/v1/auth/login")
@@ -64,6 +70,19 @@ public class AuthenticationRestControllerV1 {
             @RequestBody PasswordSetRequestDto dto
     ) {
         return ResponseEntity.ok(authService.passwordSet(dto, referer));
+    }
+
+    @GetMapping("/api/v1/account/notifications")
+    public ResponseEntity<?> getNotificationSettings(@AuthenticationPrincipal JwtUser user) {
+        return ResponseEntity.ok(notificationService.getNotificationSettings(user.getId()));
+    }
+
+    @PutMapping("/api/v1/account/notifications")
+    public ResponseEntity<?> changeNotificationSetting(
+            @AuthenticationPrincipal JwtUser user,
+            @RequestBody NotificationSettingDto dto
+    ) {
+        return ResponseEntity.ok(notificationService.changeNotificationSetting(user.getId(), dto));
     }
 
 

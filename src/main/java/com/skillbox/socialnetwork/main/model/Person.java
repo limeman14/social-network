@@ -117,6 +117,11 @@ public class Person {
     @ToString.Exclude
     private List<DialogToPerson> dialogToPeople;
 
+    @OneToOne(mappedBy = "person")
+    @JsonIgnore
+    @ToString.Exclude
+    private NotificationSettings notificationSettings;
+
     @Override
     public String toString() {
         return id + " " + firstName + " " + lastName;
