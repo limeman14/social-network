@@ -172,14 +172,13 @@ public class DialogServiceImpl implements DialogService {
         message.setDialog(dialog);
 
         //уведомление о сообщении
-/*        Notification messageNotification = new Notification();
+        Notification messageNotification = new Notification();
         messageNotification.setPerson(dstPerson);
-        messageNotification.setEntityId(dialogId);
-        messageNotification.setType(new NotificationType(5));   //костыль: в табличке notification_types этот вариант пятый
-        messageNotification.setContact(dstPerson.getEmail());
+        messageNotification.setEntityAuthor(user);
+        messageNotification.setType(NotificationCode.MESSAGE);
         messageNotification.setInfo("Пользователь " + user.getFirstName() + " " + user.getLastName() + " отправил вам сообщение.");
         messageNotification.setSentTime(message.getTime());
-        notificationRepository.save(messageNotification);*/
+        notificationRepository.save(messageNotification);
 
         return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message), user));
     }

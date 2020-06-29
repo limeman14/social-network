@@ -42,6 +42,7 @@ public class NotificationServiceImpl implements NotificationService {
             settingsList.add(new NotificationSettingDto(NotificationCode.POST_COMMENT, personSettings.isPostCommentNotification()));
             settingsList.add(new NotificationSettingDto(NotificationCode.COMMENT_COMMENT, personSettings.isCommentCommentNotification()));
             settingsList.add(new NotificationSettingDto(NotificationCode.FRIEND_REQUEST, personSettings.isFriendRequestNotification()));
+            settingsList.add(new NotificationSettingDto(NotificationCode.FRIEND_BIRTHDAY, personSettings.isFriendBirthdayNotification()));
             settingsList.add(new NotificationSettingDto(NotificationCode.MESSAGE, personSettings.isMessageNotification()));
         }
         else {
@@ -49,6 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
             settingsList.add(new NotificationSettingDto(NotificationCode.POST_COMMENT, false));
             settingsList.add(new NotificationSettingDto(NotificationCode.COMMENT_COMMENT, false));
             settingsList.add(new NotificationSettingDto(NotificationCode.FRIEND_REQUEST, false));
+            settingsList.add(new NotificationSettingDto(NotificationCode.FRIEND_BIRTHDAY, false));
             settingsList.add(new NotificationSettingDto(NotificationCode.MESSAGE, false));
         }
         return new BaseResponseList(settingsList);
@@ -67,6 +69,7 @@ public class NotificationServiceImpl implements NotificationService {
             case "POST_COMMENT" : notificationSettings.setPostCommentNotification(flag); break;
             case "COMMENT_COMMENT" : notificationSettings.setCommentCommentNotification(flag); break;
             case "FRIEND_REQUEST" : notificationSettings.setFriendRequestNotification(flag); break;
+            case "FRIEND_BIRTHDAY" : notificationSettings.setFriendBirthdayNotification(flag); break;
             case "MESSAGE" : notificationSettings.setMessageNotification(flag); break;
         }
         notificationSettingsRepository.save(notificationSettings);

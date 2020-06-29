@@ -763,51 +763,31 @@ databaseChangeLog:
       id: 1.1.6
       author: vlad
       changes:
+        - dropTable:
+            tableName: notification_types
+        - dropColumn:
+            columnName: type_id
+            tableName: notifications
+        - dropColumn:
+            columnName: contact
+            tableName: notifications
+        - dropColumn:
+            columnName: entity_id
+            tableName: notifications
         - addColumn:
             columns:
               - column:
                   name: info
                   type: varchar(255)
+              - column:
+                  name: entity_author
+                  type: int
+              - column:
+                  name: type
+                  type: ENUM("POST", "POST_COMMENT", "COMMENT_COMMENT", "FRIEND_REQUEST", "FRIEND_BIRTHDAY", "MESSAGE")
             tableName: notifications
   - changeSet:
       id: 1.1.7
-      author: vlad
-      changes:
-        - dropColumn:
-            tableName: notification_types
-            columnName: name
-        - insert:
-            tableName: notification_types
-            columns:
-              - column:
-                  name: code
-                  value: "POST"
-        - insert:
-            tableName: notification_types
-            columns:
-              - column:
-                  name: code
-                  value: "POST_COMMENT"
-        - insert:
-            tableName: notification_types
-            columns:
-              - column:
-                  name: code
-                  value: "COMMENT_COMMENT"
-        - insert:
-            tableName: notification_types
-            columns:
-              - column:
-                  name: code
-                  value: "FRIEND_REQUEST"
-        - insert:
-            tableName: notification_types
-            columns:
-              - column:
-                  name: code
-                  value: "MESSAGE"
-  - changeSet:
-      id: 1.1.8
       author: vlad
       changes:
         - createTable:
@@ -836,6 +816,9 @@ databaseChangeLog:
                   type: BIT(1)
               - column:
                   name: FRIEND_REQUEST
+                  type: BIT(1)
+              - column:
+                  name: FRIEND_BIRTHDAY
                   type: BIT(1)
               - column:
                   name: MESSAGE

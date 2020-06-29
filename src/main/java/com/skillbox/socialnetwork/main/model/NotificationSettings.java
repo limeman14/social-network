@@ -13,7 +13,7 @@ public class NotificationSettings {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
 
@@ -28,6 +28,9 @@ public class NotificationSettings {
 
     @Column(name = "FRIEND_REQUEST")
     private boolean friendRequestNotification;
+
+    @Column(name = "FRIEND_BIRTHDAY")
+    private boolean friendBirthdayNotification;
 
     @Column(name = "MESSAGE")
     private boolean messageNotification;

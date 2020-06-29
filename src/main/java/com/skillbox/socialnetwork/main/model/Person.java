@@ -122,6 +122,11 @@ public class Person {
     @ToString.Exclude
     private NotificationSettings notificationSettings;
 
+    @OneToMany(mappedBy = "entityAuthor")
+    @JsonIgnore
+    @ToString.Exclude
+    private List<Notification> sentNotifications;
+
     @Override
     public String toString() {
         return id + " " + firstName + " " + lastName;

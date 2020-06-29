@@ -2,8 +2,8 @@ package com.skillbox.socialnetwork.main.dto.notifications.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
-import com.skillbox.socialnetwork.main.dto.universal.Response;
-import com.skillbox.socialnetwork.main.model.NotificationType;
+import com.skillbox.socialnetwork.main.model.Person;
+import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,11 +18,11 @@ public class NotificationResponseDto implements Dto {
     @JsonProperty("sent_time")
     private long sentTime;
 
-    @JsonProperty("type_id")
-    private NotificationType type;
+    @JsonProperty("type")
+    private NotificationCode type;
 
-    @JsonProperty("entity_id")
-    private int entityId;
+    @JsonProperty("entity_author")
+    private Person entityAuthor;
 
     private String info;
 }
