@@ -1,8 +1,10 @@
 package com.skillbox.socialnetwork.main.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -17,8 +19,10 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonProperty("first_name")
     private String firstName;
 
+    @JsonProperty("last_name")
     private String lastName;
 
     @CreationTimestamp
@@ -32,6 +36,7 @@ public class Person {
 
     private String phone;
 
+    @ToString.Exclude
     @JsonIgnore
     private String password;
 
@@ -56,49 +61,64 @@ public class Person {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore
+    @ToString.Exclude
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<BlockHistory> blockHistories;
 
-    @OneToMany(mappedBy = "srcPerson")
+    @OneToMany(mappedBy = "srcPerson", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Friendship> friendshipsSrc;
 
-    @OneToMany(mappedBy = "dstPerson")
+    @OneToMany(mappedBy = "dstPerson", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Friendship> friendshipsDst;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Message> sentMessages;
 
-    @OneToMany(mappedBy = "recipient")
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Message> recipientMessages;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<PostLike> likes;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<PostComment> comments;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Notification> notifications;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<DialogToPerson> dialogToPeople;
 
+    @Override
+    public String toString() {
+        return id + " " + firstName + " " + lastName;
+    }
 }

@@ -9,8 +9,6 @@ import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
-import com.skillbox.socialnetwork.main.exception.not.found.NotFoundException;
-import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
 import com.skillbox.socialnetwork.main.repository.*;
@@ -61,7 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
         person.setLastName(request.getLastName());
         person.setBirthDate(request.getBirthDate());
         person.setPhone(request.getPhone());
-        if (request.getPhotoId() != null){
+        if (request.getPhotoId() != null) {
             person.setPhoto(fileRepository.findById(request.getPhotoId()).getRelativeFilePath());
         }
         person.setAbout(request.getAbout());
@@ -95,7 +93,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         List<Post> posts = person.getPosts();
         posts.sort(Comparator.comparing(Post::getTime).reversed());//сортирую по дате чтобы на стенке выводились сначала новые
-        BaseResponseList result = WallResponseFactory.getWall(posts, offset, limit);
+        BaseResponseList result = WallResponseFactory.getWall(posts, offset, limit, person);
 
         log.info("IN getWallPosts posts {} have found", result);
         return result;
@@ -126,10 +124,9 @@ public class ProfileServiceImpl implements ProfileService {
         if (request.getTags().size() != 0) {            //если тегов нет в запросе, блок пропускается
             request.getTags().forEach(tag -> {
                 Tag postTag;
-                if(tagRepository.existsByTagIgnoreCase(tag)){
+                if (tagRepository.existsByTagIgnoreCase(tag)) {
                     postTag = tagRepository.findFirstByTagIgnoreCase(tag);
-                }
-                else {
+                } else {
                     postTag = new Tag();
                     postTag.setTag(tag);
                 }
@@ -139,7 +136,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
         Post result = postRepository.save(savedPost);
         log.info("IN addPost post: {} added with tags: {} successfully", result, tags);
-        return PostResponseFactory.getSinglePost(result);
+        return PostResponseFactory.getSinglePost(result, person);
     }
 
     @Override

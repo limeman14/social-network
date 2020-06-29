@@ -25,7 +25,6 @@ public class PostComment {
     private Post post;
 
     @ManyToOne
-    //может быть null, так как нет родительского коммента
     @JoinColumn(name = "parent_id")
     private PostComment parentComment;
 
