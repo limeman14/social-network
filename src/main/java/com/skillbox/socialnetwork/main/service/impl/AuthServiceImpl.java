@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
 import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
@@ -61,8 +62,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Response register(RegisterRequestDto request, String remoteAddress) throws IOException, GeoIp2Exception {
-        Response registration = personService.registration(request, remoteAddress);
+    public Response register(RegisterRequestDto request, GeoIP location) throws IOException, GeoIp2Exception {
+        Response registration = personService.registration(request,location);
         emailService.sendSimpleMessageUsingTemplate(request.getEmail(), request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
         return registration;
     }

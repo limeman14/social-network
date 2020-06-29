@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.service;
 
 import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.model.Person;
@@ -23,7 +24,7 @@ public interface PersonService {
 
     void delete(Integer id);
 
-    Response registration(RegisterRequestDto dto, String remoteAddress) throws IOException, GeoIp2Exception;
+    Response registration(RegisterRequestDto dto, GeoIP location) throws IOException, GeoIp2Exception;
 
     void logout(Person person);
 

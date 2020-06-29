@@ -1,13 +1,14 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.skillbox.socialnetwork.main.dto.notifications.request.NotificationSettingDto;
+
+import com.skillbox.socialnetwork.main.dto.notifications.request.NotificationSettingRequestDto;
 import com.skillbox.socialnetwork.main.dto.notifications.response.NotificationResponseFactory;
+import com.skillbox.socialnetwork.main.dto.notifications.response.NotificationSettingResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.model.Notification;
 import com.skillbox.socialnetwork.main.model.NotificationSettings;
-import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import com.skillbox.socialnetwork.main.repository.NotificationRepository;
 import com.skillbox.socialnetwork.main.repository.NotificationSettingsRepository;
@@ -33,31 +34,36 @@ public class NotificationServiceImpl implements NotificationService {
         this.notificationSettingsRepository = notificationSettingsRepository;
     }
 
+    /*
+    По умолчанию данных в БД по поводу настроек оповещений нет, поэтому используем дефолтные значения false
+    Иначе надо прописать чтобы при регистрации настройки оповещений выставлялись на true
+     */
+
     @Override
     public BaseResponseList getNotificationSettings(int userId) {
-        List<NotificationSettingDto> settingsList = new ArrayList<>();
+        List<NotificationSettingResponseDto> settingsList = new ArrayList<>();
         NotificationSettings personSettings = notificationSettingsRepository.findByPersonId(userId);
         if (personSettings != null) {
-            settingsList.add(new NotificationSettingDto(NotificationCode.POST, personSettings.isPostNotification()));
-            settingsList.add(new NotificationSettingDto(NotificationCode.POST_COMMENT, personSettings.isPostCommentNotification()));
-            settingsList.add(new NotificationSettingDto(NotificationCode.COMMENT_COMMENT, personSettings.isCommentCommentNotification()));
-            settingsList.add(new NotificationSettingDto(NotificationCode.FRIEND_REQUEST, personSettings.isFriendRequestNotification()));
-            settingsList.add(new NotificationSettingDto(NotificationCode.FRIEND_BIRTHDAY, personSettings.isFriendBirthdayNotification()));
-            settingsList.add(new NotificationSettingDto(NotificationCode.MESSAGE, personSettings.isMessageNotification()));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.POST, personSettings.isPostNotification()));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.POST_COMMENT, personSettings.isPostCommentNotification()));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.COMMENT_COMMENT, personSettings.isCommentCommentNotification()));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.FRIEND_REQUEST, personSettings.isFriendRequestNotification()));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.FRIEND_BIRTHDAY, personSettings.isFriendBirthdayNotification()));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.MESSAGE, personSettings.isMessageNotification()));
         }
         else {
-            settingsList.add(new NotificationSettingDto(NotificationCode.POST, false));
-            settingsList.add(new NotificationSettingDto(NotificationCode.POST_COMMENT, false));
-            settingsList.add(new NotificationSettingDto(NotificationCode.COMMENT_COMMENT, false));
-            settingsList.add(new NotificationSettingDto(NotificationCode.FRIEND_REQUEST, false));
-            settingsList.add(new NotificationSettingDto(NotificationCode.FRIEND_BIRTHDAY, false));
-            settingsList.add(new NotificationSettingDto(NotificationCode.MESSAGE, false));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.POST, false));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.POST_COMMENT, false));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.COMMENT_COMMENT, false));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.FRIEND_REQUEST, false));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.FRIEND_BIRTHDAY, false));
+            settingsList.add(new NotificationSettingResponseDto(NotificationCode.MESSAGE, false));
         }
         return new BaseResponseList(settingsList);
     }
 
     @Override
-    public BaseResponse changeNotificationSetting(int userId, NotificationSettingDto settingDto) {
+    public BaseResponse changeNotificationSetting(int userId, NotificationSettingRequestDto settingDto) {
         NotificationSettings notificationSettings = notificationSettingsRepository.findByPersonId(userId);
         if (notificationSettings == null) {
             notificationSettings = new NotificationSettings();

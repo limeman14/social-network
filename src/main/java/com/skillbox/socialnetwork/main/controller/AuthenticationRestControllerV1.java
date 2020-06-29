@@ -1,11 +1,10 @@
 package com.skillbox.socialnetwork.main.controller;
 
 
-import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
-import com.skillbox.socialnetwork.main.dto.notifications.request.NotificationSettingDto;
+import com.skillbox.socialnetwork.main.dto.notifications.request.NotificationSettingRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
@@ -20,7 +19,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 @RestController
 public class AuthenticationRestControllerV1 {
@@ -44,9 +42,9 @@ public class AuthenticationRestControllerV1 {
     }
 
     @PostMapping("/api/v1/account/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDto requestDto, HttpServletRequest request) throws IOException, GeoIp2Exception {
-        String remoteAddress = request.getHeader("X-FORWARDED-FOR");
-        Response result = authService.register(requestDto, remoteAddress);
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDto requestDto, HttpServletRequest request) throws Exception {
+        GeoIP location = getLocation(null, request);
+        Response result = authService.register(requestDto, location);
         return ResponseEntity.ok(result);
     }
 
@@ -80,7 +78,7 @@ public class AuthenticationRestControllerV1 {
     @PutMapping("/api/v1/account/notifications")
     public ResponseEntity<?> changeNotificationSetting(
             @AuthenticationPrincipal JwtUser user,
-            @RequestBody NotificationSettingDto dto
+            @RequestBody NotificationSettingRequestDto dto
     ) {
         return ResponseEntity.ok(notificationService.changeNotificationSetting(user.getId(), dto));
     }

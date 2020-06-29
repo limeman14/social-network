@@ -32,14 +32,12 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository repository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    private final GeoIPLocationService geoService;
 
     @Autowired
-    public PersonServiceImpl(PersonRepository repository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository, GeoIPLocationService geoService) {
+    public PersonServiceImpl(PersonRepository repository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-        this.geoService = geoService;
     }
 
     @Override
@@ -76,11 +74,9 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Response registration(RegisterRequestDto dto, String remoteAddress) throws RuntimeException, IOException, GeoIp2Exception {
+    public Response registration(RegisterRequestDto dto, GeoIP location) throws RuntimeException, IOException, GeoIp2Exception {
         checkUserLogin(dto.getEmail());
         checkUserRegisterPassword(dto.getPassword1(), dto.getPassword2());
-
-        final GeoIP location = geoService.getLocation(remoteAddress);
 
         Person person = new Person();
         person.setEmail(dto.getEmail());
