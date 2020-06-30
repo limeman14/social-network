@@ -9,6 +9,7 @@ import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Notification;
 import com.skillbox.socialnetwork.main.model.NotificationSettings;
+import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import com.skillbox.socialnetwork.main.model.enumerated.ReadStatus;
 import com.skillbox.socialnetwork.main.repository.NotificationRepository;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+    private final long ONE_DAY_MILLIS = 86400000;
     private final PersonRepository personRepository;
     private final NotificationRepository notificationRepository;
     private final NotificationSettingsRepository notificationSettingsRepository;
@@ -89,13 +93,28 @@ public class NotificationServiceImpl implements NotificationService {
     public BaseResponseList getUserNotifications(int userId, int offset, int limit) {
         List<Notification> notifications = personRepository.findPersonById(userId)
                 .getNotifications();
-        notifications.sort((n1, n2) -> n2.getSentTime().compareTo(n1.getSentTime()));
+        notifications.sort(Comparator.comparing(Notification::getSentTime).reversed());
         return NotificationResponseFactory.getNotifications(notifications, offset, limit);
     }
 
     @Override
     public BaseResponse markNotificationsAsRead(int userId, Integer notificationId, Boolean all) {
-        List<Notification> notifications = personRepository.findPersonById(userId).getNotifications()
+        Person person = personRepository.findPersonById(userId);
+
+        //удаляем прочитанные уведомления старше одного дня
+        Date now = new Date();
+        Date oneDayBefore = new Date(now.getTime() - ONE_DAY_MILLIS);
+        List<Notification> notificationsToDelete = person.getNotifications()
+                .stream()
+                .filter(n -> n.getReadStatus().equals(ReadStatus.READ))
+                .filter(n -> n.getSentTime().before(oneDayBefore))
+                .collect(Collectors.toList());
+        for (Notification n : notificationsToDelete) {
+            notificationRepository.deleteNotification(n);
+        }
+
+        //помечаем уведомления прочитанными
+        List<Notification> notifications = person.getNotifications()
                 .stream()
                 .filter(n -> n.getReadStatus().equals(ReadStatus.SENT))
                 .peek(n -> n.setReadStatus(ReadStatus.READ))
