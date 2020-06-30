@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.controller;
 
 
+import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
@@ -8,6 +9,7 @@ import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.service.AuthService;
+import com.skillbox.socialnetwork.main.service.GeoIPLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthenticationRestControllerV1 {
 
     private final AuthService authService;
-//    private final GeoIPLocationService geoService;
+    private final GeoIPLocationService geoService;
 
     @Autowired
-    public AuthenticationRestControllerV1(AuthService authService
-//                                          ,GeoIPLocationService geoService
-    ) {
+    public AuthenticationRestControllerV1(AuthService authService,GeoIPLocationService geoService) {
         this.authService = authService;
-//        this.geoService = geoService;
+        this.geoService = geoService;
     }
 
     @PostMapping("/api/v1/auth/login")
@@ -62,18 +62,18 @@ public class AuthenticationRestControllerV1 {
     }
 
 
-//    @GetMapping("/GeoIPTest")
-//    public GeoIP getLocation(
-//            @RequestParam(value = "ipAddress", required = false) String ipAddress,
-//            HttpServletRequest request
-//    ) throws Exception {
-//        String remoteAddress = "";
-//        if (request != null) {
-//            remoteAddress = request.getHeader("X-FORWARDED-FOR");
-//            if (remoteAddress == null || "".equals(remoteAddress)) {
-//                remoteAddress = request.getRemoteAddr();
-//            }
-//        }
-//        return geoService.getLocation(ipAddress != null ? ipAddress : remoteAddress);
-//    }
+    @GetMapping("/GeoIPTest")
+    public GeoIP getLocation(
+            @RequestParam(value = "ipAddress", required = false) String ipAddress,
+            HttpServletRequest request
+    ) throws Exception {
+        String remoteAddress = "";
+        if (request != null) {
+            remoteAddress = request.getHeader("X-FORWARDED-FOR");
+            if (remoteAddress == null || "".equals(remoteAddress)) {
+                remoteAddress = request.getRemoteAddr();
+            }
+        }
+        return geoService.getLocation(ipAddress != null ? ipAddress : remoteAddress);
+    }
 }

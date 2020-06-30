@@ -7,6 +7,7 @@ import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.service.GeoIPLocationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +17,14 @@ import java.net.InetAddress;
 public class GeoIPLocationServiceImpl implements GeoIPLocationService {
     private DatabaseReader dbReader;
 
+//    public GeoIPLocationServiceImpl(@Value("${path.to.dblocation.city}") String pathToDb)
+//            throws IOException {
+//        File database = new File(pathToDb);
+//        dbReader = new DatabaseReader.Builder(database).build();
+//    }
     public GeoIPLocationServiceImpl(@Value("${path.to.dblocation.city}") String pathToDb)
             throws IOException {
-        File database = new File(pathToDb);
+        File database = ResourceUtils.getFile(pathToDb);
         dbReader = new DatabaseReader.Builder(database).build();
     }
 
