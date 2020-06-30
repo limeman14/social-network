@@ -4,6 +4,7 @@ import com.skillbox.socialnetwork.main.dto.comment.request.CommentRequest;
 import com.skillbox.socialnetwork.main.dto.comment.response.CommentDto;
 import com.skillbox.socialnetwork.main.dto.comment.response.CommentResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
+import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.model.Notification;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Post;
@@ -97,5 +98,11 @@ public class CommentServiceImpl implements CommentService {
         CommentDto dto = new CommentDto();
         dto.setId(commentId);
         return dto;
+    }
+
+    @Override
+    public Response getComments(int postId) {
+        Post postById = postRepository.findPostById(postId);
+        return CommentResponseFactory.getComments(postById.getComments(), 10, 10);
     }
 }
