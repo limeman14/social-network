@@ -10,4 +10,5 @@ public interface FriendsService {
     List<Person> getFriendRequest(Person person, String name);
 
     String addFriend(Person srcPerson, Person dstPerson);
+
 }

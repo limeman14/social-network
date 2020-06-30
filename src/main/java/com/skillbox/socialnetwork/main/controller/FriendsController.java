@@ -28,7 +28,7 @@ public class FriendsController {
     @GetMapping
     public ResponseEntity<?> getFriends(
             @AuthenticationPrincipal JwtUser user,
-            @RequestParam(required = false) String name,
+            @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "0") Integer offset,
             @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
     ) {
@@ -58,9 +58,9 @@ public class FriendsController {
         ));
     }
 
-
+//
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<?> deleteFriend(@AuthenticationPrincipal JwtUser user, @PathVariable Integer id) {
-//
+//        return ResponseEntity.ok().body();
 //    }
 }

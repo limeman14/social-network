@@ -26,18 +26,11 @@ public class FriendsServiceImpl implements FriendsService {
 
     @Override
     public List<Person> getFriends(Person person, String name) {
-        Set<Person> friendSet = new HashSet<>();
-        friendSet.addAll(person.getFriendshipsDst().stream()
-                .filter(f -> f.getStatus().getCode().equals(FriendshipCode.FRIEND))
-                .map(f -> f.getSrcPerson())
-                .collect(Collectors.toSet()));
-        friendSet.addAll(person.getFriendshipsSrc().stream()
-                .filter(f -> f.getStatus().getCode().equals(FriendshipCode.FRIEND))
+        return friendshipRepository.findAllFriends(person).stream()
                 .map(f -> f.getDstPerson())
-                .collect(Collectors.toSet()));
-        List<Person> resultList = new ArrayList<>();
-        resultList.addAll(friendSet);
-        return resultList;
+                .filter(f -> f.getFirstName().contains(name)
+                        || f.getLastName().contains(name))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -60,27 +53,68 @@ public class FriendsServiceImpl implements FriendsService {
 
     @Override
     public String addFriend(Person srcPerson, Person dstPerson) {
-        FriendshipStatus friendshipStatus = new FriendshipStatus();
-        friendshipStatus.setName("name");
-        friendshipStatus.setTime(new Date());
-        Friendship friendship = new Friendship();
-        friendship.setSrcPerson(srcPerson);
-        friendship.setDstPerson(dstPerson);
-        //@TODO: Сделать проверку на isBlocked
-        if (srcPerson.getFriendshipsDst().contains(dstPerson)) {
-            friendshipStatus.setCode(FriendshipCode.FRIEND);
+        FriendshipStatus friendshipStatusSrc = new FriendshipStatus(new Date(), FriendshipCode.REQUEST);
+        Friendship friendshipSrc = friendshipRepository.findBySrcPersonAndDstPerson(srcPerson, dstPerson) == null
+                ? new Friendship(friendshipStatusSrc, srcPerson, dstPerson)
+                : friendshipRepository.findBySrcPersonAndDstPerson(srcPerson, dstPerson);
+        Friendship friendshipDst = friendshipRepository.findBySrcPersonAndDstPerson(dstPerson, srcPerson) == null
+                ? new Friendship(new FriendshipStatus(), dstPerson, srcPerson)
+                : friendshipRepository.findBySrcPersonAndDstPerson(dstPerson, srcPerson);
+        if (friendshipDst.getStatus().getCode() != null) {
+            if (friendshipDst.getStatus().getCode().equals(FriendshipCode.FRIEND))
+                return "ok";
+            if (friendshipDst.getStatus().getCode().equals(FriendshipCode.REQUEST)) {
+                FriendshipStatus friendshipStatusDst = new FriendshipStatus(new Date(), FriendshipCode.FRIEND);
+                friendshipStatusSrc.setCode(FriendshipCode.FRIEND);
+                friendshipSrc.setStatus(friendshipStatusSrc);
+                friendshipDst.setStatus(friendshipStatusDst);
+                friendshipStatusRepo.save(friendshipStatusSrc);
+                friendshipStatusRepo.save(friendshipStatusDst);
+                friendshipRepository.save(friendshipDst);
+                friendshipRepository.save(friendshipSrc);
+            }
         } else {
-            friendshipStatus.setCode(FriendshipCode.REQUEST);
+            friendshipStatusRepo.save(friendshipStatusSrc);
+            friendshipRepository.save(friendshipSrc);
         }
-        friendship.setStatus(friendshipStatus);
-        friendshipStatusRepo.save(friendshipStatus);
-        friendshipRepository.save(friendship);
+//        if (friendshipDst != null || friendshipSrc != null) {
+//            if (friendshipDst.getStatus().getCode().equals(FriendshipCode.REQUEST)) {
+//                friendshipDst.getStatus().setCode(FriendshipCode.FRIEND);
+//                friendshipSrc.getStatus().setCode(FriendshipCode.FRIEND);
+//                friendshipDst.getStatus().setTime(new Date());
+//                friendshipSrc.getStatus().setTime(new Date());
+//            }
+//        } else {
+//            FriendshipStatus friendshipStatus = new FriendshipStatus();
+//            friendshipStatus.setCode(FriendshipCode.REQUEST);
+//            friendshipStatus.setTime(new Date());
+//            friendshipSrc.setStatus(friendshipStatus);
+//
+//            friendshipStatusRepo.save(friendshipStatus);
+//            friendshipRepository.save(friendshipSrc);
+//        }
+//        FriendshipStatus friendshipStatusSrc = new FriendshipStatus();
+//        FriendshipStatus friendshipStatusDst = new FriendshipStatus();
+//        friendshipStatusSrc.setTime(new Date());
+//        friendshipStatusDst.setTime(new Date());
+//        Friendship friendship = new Friendship();
+//        friendship.setSrcPerson(srcPerson);
+//        friendship.setDstPerson(dstPerson);
+//        //@TODO: Сделать проверку на isBlocked
+//        if (srcPerson.getFriendshipsDst().contains(dstPerson)) {
+//            friendshipStatus.setCode(FriendshipCode.FRIEND);
+//        } else {
+//            friendshipStatus.setCode(FriendshipCode.REQUEST);
+//        }
+//        friendship.setStatus(friendshipStatus);
+//        friendshipStatusRepo.save(friendshipStatus);
+//        friendshipRepository.save(friendship);
 
         return "ok";
     }
-
+//
 //    public String deleteFriend(Person owner, Person deletedFriend) {
 //        FriendshipStatus status = friendshipStatusRepo.
-//        friendshipStatusRepo.
+//                friendshipStatusRepo.
 //    }
 }

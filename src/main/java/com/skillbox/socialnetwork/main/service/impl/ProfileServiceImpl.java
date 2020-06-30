@@ -7,7 +7,6 @@ import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.response.WallResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
-import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
@@ -20,7 +19,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -157,7 +159,6 @@ public class ProfileServiceImpl implements ProfileService {
         Person profileToBlock = personService.findById(idOfABlockedUser);
         FriendshipStatus status = new FriendshipStatus();
         status.setCode(FriendshipCode.BLOCKED);
-        status.setName("name");//Для чего поле ??
         status.setTime(new Date());
         Friendship relation = new Friendship();
         relation.setSrcPerson(authorizedUser);
