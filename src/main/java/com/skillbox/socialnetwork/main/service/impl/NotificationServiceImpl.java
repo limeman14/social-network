@@ -88,10 +88,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public BaseResponseList getUserNotifications(int userId, int offset, int limit) {
         List<Notification> notifications = personRepository.findPersonById(userId)
-                .getNotifications()
-                .stream()
-                .filter(n -> n.getReadStatus().equals(ReadStatus.SENT))
-                .collect(Collectors.toList());
+                .getNotifications();
+        notifications.sort((n1, n2) -> n2.getSentTime().compareTo(n1.getSentTime()));
         return NotificationResponseFactory.getNotifications(notifications, offset, limit);
     }
 
