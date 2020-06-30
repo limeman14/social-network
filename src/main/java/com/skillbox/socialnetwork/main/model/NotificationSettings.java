@@ -1,13 +1,38 @@
 package com.skillbox.socialnetwork.main.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name = "notification_settings")
+@EqualsAndHashCode
 public class NotificationSettings {
+
+    public NotificationSettings() {
+
+    }
+
+    public NotificationSettings(
+            Person person,
+            boolean postNotification,
+            boolean postCommentNotification,
+            boolean commentCommentNotification,
+            boolean friendRequestNotification,
+            boolean friendBirthdayNotification,
+            boolean messageNotification) {
+        this.person = person;
+        this.postNotification = postNotification;
+        this.postCommentNotification = postCommentNotification;
+        this.commentCommentNotification = commentCommentNotification;
+        this.friendRequestNotification = friendRequestNotification;
+        this.friendBirthdayNotification = friendBirthdayNotification;
+        this.messageNotification = messageNotification;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

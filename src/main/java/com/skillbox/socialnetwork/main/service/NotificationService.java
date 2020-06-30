@@ -11,6 +11,6 @@ public interface NotificationService {
 
     BaseResponseList getUserNotifications(int userId, int offset, int limit);
 
-
+    BaseResponse markNotificationsAsRead(int userId, Integer notificationId, Boolean all);
 
 }

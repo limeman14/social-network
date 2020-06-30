@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -120,6 +121,7 @@ public class Person {
     @OneToOne(mappedBy = "person")
     @JsonIgnore
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private NotificationSettings notificationSettings;
 
     @OneToMany(mappedBy = "entityAuthor")

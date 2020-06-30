@@ -34,5 +34,6 @@ public class NotificationsController {
             @RequestParam(required = false) Boolean all
     ){
         return ResponseEntity.ok().build();
+        //return ResponseEntity.ok(notificationService.markNotificationsAsRead(user.getId(), null, all));
     }
 }

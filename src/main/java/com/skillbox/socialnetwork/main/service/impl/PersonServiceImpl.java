@@ -7,10 +7,13 @@ import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
 import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
+import com.skillbox.socialnetwork.main.model.NotificationSettings;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
+import com.skillbox.socialnetwork.main.repository.NotificationRepository;
+import com.skillbox.socialnetwork.main.repository.NotificationSettingsRepository;
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import com.skillbox.socialnetwork.main.repository.RoleRepository;
 import com.skillbox.socialnetwork.main.service.GeoIPLocationService;
@@ -32,12 +35,14 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository repository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final NotificationSettingsRepository notificationSettingsRepository;
 
     @Autowired
-    public PersonServiceImpl(PersonRepository repository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public PersonServiceImpl(PersonRepository repository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository, NotificationSettingsRepository notificationSettingsRepository) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.notificationSettingsRepository = notificationSettingsRepository;
     }
 
     @Override
@@ -93,6 +98,10 @@ public class PersonServiceImpl implements PersonService {
         person.setLastOnlineTime(new Date());
         person.setPhoto("/static/img/user/default-avatar.png");
         repository.save(person);
+
+        //установка настроек оповещений
+        NotificationSettings settings = new NotificationSettings(person, true, true, true, true, true, true);
+        notificationSettingsRepository.save(settings);
 
         return ResponseFactory.responseOk();
     }

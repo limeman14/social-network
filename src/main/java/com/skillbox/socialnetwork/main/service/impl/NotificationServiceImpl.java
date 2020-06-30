@@ -6,20 +6,24 @@ import com.skillbox.socialnetwork.main.dto.notifications.response.NotificationRe
 import com.skillbox.socialnetwork.main.dto.notifications.response.NotificationSettingResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
-import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Notification;
 import com.skillbox.socialnetwork.main.model.NotificationSettings;
 import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
+import com.skillbox.socialnetwork.main.model.enumerated.ReadStatus;
 import com.skillbox.socialnetwork.main.repository.NotificationRepository;
 import com.skillbox.socialnetwork.main.repository.NotificationSettingsRepository;
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import com.skillbox.socialnetwork.main.service.NotificationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
@@ -34,10 +38,7 @@ public class NotificationServiceImpl implements NotificationService {
         this.notificationSettingsRepository = notificationSettingsRepository;
     }
 
-    /*
-    По умолчанию данных в БД по поводу настроек оповещений нет, поэтому используем дефолтные значения false
-    Иначе надо прописать чтобы при регистрации настройки оповещений выставлялись на true
-     */
+    //По умолчанию данных в БД по поводу настроек оповещений нет, поэтому используем дефолтные значения false
 
     @Override
     public BaseResponseList getNotificationSettings(int userId) {
@@ -79,12 +80,31 @@ public class NotificationServiceImpl implements NotificationService {
             case "MESSAGE" : notificationSettings.setMessageNotification(flag); break;
         }
         notificationSettingsRepository.save(notificationSettings);
-        return new BaseResponse(new MessageResponseDto("ok"));
+        log.info("Changed notification " + settingDto.getNotificationType()
+                + " setting of user " + notificationSettings.getPerson().getFirstName() + " " + notificationSettings.getPerson().getLastName());
+        return ResponseFactory.responseOk();
     }
 
     @Override
     public BaseResponseList getUserNotifications(int userId, int offset, int limit) {
-        List<Notification> notifications = personRepository.findPersonById(userId).getNotifications();
+        List<Notification> notifications = personRepository.findPersonById(userId)
+                .getNotifications()
+                .stream()
+                .filter(n -> n.getReadStatus().equals(ReadStatus.SENT))
+                .collect(Collectors.toList());
         return NotificationResponseFactory.getNotifications(notifications, offset, limit);
     }
+
+    @Override
+    public BaseResponse markNotificationsAsRead(int userId, Integer notificationId, Boolean all) {
+        List<Notification> notifications = personRepository.findPersonById(userId).getNotifications()
+                .stream()
+                .filter(n -> n.getReadStatus().equals(ReadStatus.SENT))
+                .peek(n -> n.setReadStatus(ReadStatus.READ))
+                .collect(Collectors.toList());
+        notificationRepository.saveAll(notifications);
+        return ResponseFactory.responseOk();
+    }
+
+
 }

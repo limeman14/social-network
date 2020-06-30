@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.model;
 
 import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
+import com.skillbox.socialnetwork.main.model.enumerated.ReadStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -31,4 +32,7 @@ public class Notification {
     private Person entityAuthor;
 
     private String info;
+
+    @Enumerated(EnumType.STRING)
+    private ReadStatus readStatus;
 }

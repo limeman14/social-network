@@ -777,6 +777,9 @@ databaseChangeLog:
         - addColumn:
             columns:
               - column:
+                  name: read_status
+                  type: ENUM("READ", "SENT")
+              - column:
                   name: info
                   type: varchar(255)
               - column:

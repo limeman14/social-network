@@ -21,8 +21,9 @@ public class NotificationResponseFactory {
                 notification.getId(),
                 notification.getSentTime().getTime(),
                 notification.getType(),
-                notification.getPerson(),
-                notification.getInfo()
+                notification.getEntityAuthor(),
+                notification.getInfo(),
+                notification.getReadStatus()
         );
     }
 }
