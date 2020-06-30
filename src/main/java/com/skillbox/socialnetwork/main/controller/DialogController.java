@@ -72,11 +72,12 @@ public class DialogController {
     public ResponseEntity<BaseResponseList> getDialogMessages(
             @PathVariable int id,
             @RequestParam(name = "query", defaultValue = "", required = false) String query,
+            @RequestParam(name = "fromMessageId", defaultValue = "0", required = false) Integer fromMessageId,
             @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
             @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit,
             @RequestHeader(name = "Authorization") String token)
     {
-        return ResponseEntity.ok(dialogService.getMessagesFromDialog(id, query, offset, limit, authService.getAuthorizedUser(token)));
+        return ResponseEntity.ok(dialogService.getMessagesFromDialog(id, query, offset, limit, fromMessageId, authService.getAuthorizedUser(token)));
     }
 
     @PostMapping("{id}/messages")
