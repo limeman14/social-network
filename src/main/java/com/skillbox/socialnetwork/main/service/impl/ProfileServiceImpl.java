@@ -83,7 +83,7 @@ public class ProfileServiceImpl implements ProfileService {
         //эта строчка проверяет, заблокировал ли текущий авторизованный юзер юзера, которого ищем по id
         profile.setIsBlocked(friendshipRepository.isBlocked(authorizedUser, profile));
         BaseResponse result = PersonResponseFactory.getPerson(profile);
-        log.info("IN getUserById user with id: {} {}  found.", id, result);
+        log.info("IN getUserById user with id: {} {}  found.", id, profile);
         return result;
     }
 
@@ -95,7 +95,7 @@ public class ProfileServiceImpl implements ProfileService {
         posts.sort(Comparator.comparing(Post::getTime).reversed());//сортирую по дате чтобы на стенке выводились сначала новые
         BaseResponseList result = WallResponseFactory.getWall(posts, offset, limit, person);
 
-        log.info("IN getWallPosts posts {} have found", result);
+        log.info("IN getWallPosts posts {} have found", result.getData().size());
         return result;
     }
 
@@ -135,7 +135,7 @@ public class ProfileServiceImpl implements ProfileService {
             savedPost.setTags(tags);
         }
         Post result = postRepository.save(savedPost);
-        log.info("IN addPost post: {} added with tags: {} successfully", result, tags);
+        log.info("IN addPost post: {} added with tags: {} successfully", post.getId(), tags);
         return PostResponseFactory.getSinglePost(result, person);
     }
 
@@ -174,7 +174,7 @@ public class ProfileServiceImpl implements ProfileService {
     public BaseResponse unblockUser(int id, Person authorizedUser) {
         Person profileToBlock = personService.findById(id);
         friendshipRepository.delete(friendshipRepository.findRelation(authorizedUser, profileToBlock, FriendshipCode.BLOCKED));
-        log.info("IN unblockUser user: {} unblocked user {}", authorizedUser.getEmail(), profileToBlock.getEmail());
+        log.info("IN unblockUser user: {} unblocked user {}", authorizedUser, profileToBlock);
         return ResponseFactory.responseOk();
     }
 
