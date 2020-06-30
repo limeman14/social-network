@@ -1,12 +1,14 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.*;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
+import com.skillbox.socialnetwork.main.dto.universal.Response;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
-import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
@@ -16,12 +18,10 @@ import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.util.CodeGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,26 +48,24 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @MethodLogWithTime
     public BaseResponse login(AuthenticationRequestDto request) {
         String email = request.getEmail();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             Person user = personService.findByEmail(email);
-
             String token = jwtTokenProvider.createToken(email);
-            log.info("User {} logged in", email);
             return AuthResponseFactory.getAuthResponse(user, token);
         } catch (AuthenticationException e) {
-            log.error("Invalid username or password for user {}", email);
             throw new BadCredentialsException("Invalid username or password for user " + email);
         }
     }
 
     @Override
+    @MethodLogWithTime
     public Response register(RegisterRequestDto request) {
         Response registration = personService.registration(request);
         emailService.sendSimpleMessageUsingTemplate(request.getEmail(), request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
-        log.info("User {} registered successfully", request.getEmail());
         return registration;
     }
 

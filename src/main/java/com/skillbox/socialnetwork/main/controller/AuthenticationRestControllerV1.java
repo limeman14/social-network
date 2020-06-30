@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.controller;
 
 
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
@@ -38,7 +39,6 @@ public class AuthenticationRestControllerV1 {
         Response result = authService.register(requestDto);
         return ResponseEntity.ok(result);
     }
-
 
     @PostMapping("/api/v1/auth/logout")
     public ResponseEntity<?> logout(@RequestHeader(name = "Authorization") String token) {
