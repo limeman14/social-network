@@ -1,5 +1,7 @@
 package com.skillbox.socialnetwork.main.model;
 
+import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
+import com.skillbox.socialnetwork.main.model.enumerated.ReadStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,10 +16,8 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "type_id")
-    private NotificationType type;
+    @Enumerated(EnumType.STRING)
+    private NotificationCode type;
 
     @NotNull
     private Date sentTime;
@@ -27,11 +27,12 @@ public class Notification {
     @JoinColumn(name = "person_id")
     private Person person;
 
-    //@TODO: добавить entity_id!
+    @ManyToOne
+    @JoinColumn(name = "entity_author")
+    private Person entityAuthor;
 
-    //@NotNull
-    //private MainEntity entityId;
+    private String info;
 
-    @NotNull
-    private String contact;
+    @Enumerated(EnumType.STRING)
+    private ReadStatus readStatus;
 }

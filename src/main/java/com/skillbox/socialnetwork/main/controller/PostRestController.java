@@ -3,6 +3,7 @@ package com.skillbox.socialnetwork.main.controller;
 import com.skillbox.socialnetwork.main.dto.comment.request.CommentRequest;
 import com.skillbox.socialnetwork.main.dto.post.request.UpdatePostRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
+import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
 import com.skillbox.socialnetwork.main.service.CommentService;
@@ -67,6 +68,15 @@ public class PostRestController {
             return result != null ? ResponseEntity.status(HttpStatus.OK)
                     .body(ResponseFactory.getBaseResponse(result))
                     : new ResponseEntity("Bad request", HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("api/v1/post/{id}/comments")
+    public ResponseEntity<?> getComments(
+            @PathVariable int id) {
+        Response result = commentService.getComments(id);
+        return result != null ? ResponseEntity.status(HttpStatus.OK)
+                .body(result)
+                : new ResponseEntity("Bad request", HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("api/v1/post/{id}/comments/{comment_id}")

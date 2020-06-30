@@ -27,7 +27,7 @@ public class PostResponseDto implements Dto {
     @JsonProperty("my_like")
     private boolean myLike;
     private int likes;
-    private List comments;
+    private List<Dto> comments;
     private PostType type;
     private List<String> tags;
 }

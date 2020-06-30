@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.repository;
 
+import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.model.PostComment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,4 +12,5 @@ public interface CommentRepository extends JpaRepository<PostComment, Integer> {
 
     @Query(value = "select * from post_comments ORDER BY time desc limit ?1, ?2", nativeQuery = true)
     List<PostComment> limitQuery(Integer offset, Integer limit);
+
 }
