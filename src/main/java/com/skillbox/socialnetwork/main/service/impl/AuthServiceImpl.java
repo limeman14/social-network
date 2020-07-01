@@ -65,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Response register(RegisterRequestDto request, GeoIP location) throws GeoIp2Exception {
+    public Response register(RegisterRequestDto request, GeoIP location) throws GeoIp2Exception, IOException {
         Response registration = personService.registration(request,location);
         emailService.sendSimpleMessageUsingTemplate(request.getEmail(), request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
         log.info("User {} registered successfully", request.getEmail());
