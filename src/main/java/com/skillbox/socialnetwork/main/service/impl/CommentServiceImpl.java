@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
-@Slf4j
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
@@ -80,6 +79,7 @@ public class CommentServiceImpl implements CommentService {
             notificationRepository.save(notification);
             log.info("SENT COMMENT notification to " + notification.getPerson().getFirstName() + " " + notification.getPerson().getLastName());
         }
+        log.info("New comment added from user with id = {}", authorId);
         return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment));
     }
 
@@ -89,6 +89,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setCommentText(request.getText());
         comment.setParentComment(commentRepository.findPostCommentById(request.getParentId()));
         commentRepository.save(comment);
+        log.info("Comment with id {} successfully updated", commentId);
         return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment));
     }
 
@@ -97,6 +98,7 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.deleteById(commentId);
         CommentDto dto = new CommentDto();
         dto.setId(commentId);
+        log.info("Comment with id {} is deleted", commentId);
         return dto;
     }
 

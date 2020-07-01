@@ -199,11 +199,11 @@ databaseChangeLog:
                     nullable: false
                   name: code
                   type: ENUM("REQUEST", "FRIEND", "BLOCKED", "DECLINED", "SUBSCRIBED")
-              - column:
-                  constraints:
-                    nullable: false
-                  name: name
-                  type: VARCHAR(255)
+#              - column:
+#                  constraints:
+#                    nullable: false
+#                  name: name
+#                  type: VARCHAR(255)
               - column:
                   constraints:
                     nullable: false

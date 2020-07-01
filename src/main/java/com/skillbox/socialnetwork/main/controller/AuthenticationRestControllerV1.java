@@ -1,6 +1,5 @@
 package com.skillbox.socialnetwork.main.controller;
 
-
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
@@ -51,7 +50,7 @@ public class AuthenticationRestControllerV1 {
         try {
             location = getLocation(null, request);
         } catch (GeoIp2Exception e) {
-            log.warn("Registration from localhost");
+            log.warn("Registration from localhost", e);
             location = new GeoIP(null, "localhost", "localhost", "0.00", "0.00");
         }
         Response result = authService.register(requestDto, location);

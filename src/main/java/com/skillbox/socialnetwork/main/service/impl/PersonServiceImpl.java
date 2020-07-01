@@ -3,11 +3,14 @@ package com.skillbox.socialnetwork.main.service.impl;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
+import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
 import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.NotificationSettings;
+import com.skillbox.socialnetwork.main.exception.user.input.UserInputException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
@@ -16,7 +19,6 @@ import com.skillbox.socialnetwork.main.repository.NotificationRepository;
 import com.skillbox.socialnetwork.main.repository.NotificationSettingsRepository;
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import com.skillbox.socialnetwork.main.repository.RoleRepository;
-import com.skillbox.socialnetwork.main.service.GeoIPLocationService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +110,8 @@ public class PersonServiceImpl implements PersonService {
 
     private void checkUserRegisterPassword(String password1, String password2) throws RuntimeException {
         if (!password1.equals(password2)) {
-            throw new InvalidRequestException("Пароль указан некорректно");
+            log.error("Registration failed, passwords don't match");
+            throw new InvalidRequestException("Пароли не совпадают");
         }
     }
 

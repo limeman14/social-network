@@ -114,6 +114,7 @@ public class DialogServiceImpl implements DialogService {
     @Override
     public BaseResponse deleteDialog(int dialogId) {
         dialogRepository.deleteById(dialogId);
+        log.info("Dialog with id {} is deleted", dialogId);
         return new BaseResponse(new IdDto(dialogId));
     }
 
@@ -181,8 +182,10 @@ public class DialogServiceImpl implements DialogService {
     @Override
     public BaseResponse addMessage(int dialogId, MessageTextDto request, Person user) {
         Dialog dialog = dialogRepository.findById(dialogId).orElse(null);
-        if (dialog == null)
+        if (dialog == null) {
+            log.error("Adding message failed, dialog {} is null", dialogId);
             throw new NullPointerException("Dialog cannot be null");
+        }
         Message message = new Message();
         Person dstPerson = dialog.getDialogToPersonList().stream().filter(dtp -> !dtp.getPerson().equals(user))
                 .findFirst().get().getPerson();
@@ -210,14 +213,17 @@ public class DialogServiceImpl implements DialogService {
     @Override
     public BaseResponse deleteMessage(int dialogId, int messageId) {
         messageRepository.deleteById(messageId);
+        log.info("Message with id {} is deleted", messageId);
         return new BaseResponse(new MessageIdDto(messageId));
     }
 
     @Override
     public BaseResponse editMessage(int dialogId, int messageId, MessageTextDto messageText, Person user) {
         Message message = messageRepository.findById(messageId).orElse(null);
-        if (message == null)
+        if (message == null) {
+            log.error("Message with id {} not found", messageId);
             throw new NullPointerException("Message not with id:" + messageId + " found");
+        }
         message.setMessageText(messageText.getText());
 
         return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message), user));
@@ -235,6 +241,7 @@ public class DialogServiceImpl implements DialogService {
             throw new NullPointerException("Message with id: " + messageId + " not found");
         message.setReadStatus(ReadStatus.READ);
         messageRepository.save(message);
+        log.info("Message {} marked as READ", message.getMessageText());
         return ResponseFactory.responseOk();
     }
 
