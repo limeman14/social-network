@@ -58,9 +58,12 @@ public class FriendsController {
         ));
     }
 
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteFriend(@AuthenticationPrincipal JwtUser user, @PathVariable Integer id) {
-//        return ResponseEntity.ok().body();
-//    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteFriend(@AuthenticationPrincipal JwtUser user, @PathVariable Integer id) {
+        return ResponseEntity.ok().body(friendsService.deleteFriend(
+                personService.findById(user.getId()),
+                personService.findById(id)
+        ));
+    }
 }

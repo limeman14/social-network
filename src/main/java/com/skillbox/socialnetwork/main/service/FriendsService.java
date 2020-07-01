@@ -11,4 +11,5 @@ public interface FriendsService {
 
     String addFriend(Person srcPerson, Person dstPerson);
 
+    String deleteFriend(Person owner, Person deletedFriend);
 }

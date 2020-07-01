@@ -16,6 +16,9 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Integer>
     @Query("select f from Friendship f where f.srcPerson=?1 and f.status.code='FRIEND'")
     List<Friendship> findAllFriends(Person person);
 
+    @Query("select f from Friendship f where f.dstPerson=?1 and f.status.code='REQUEST'")
+    List<Friendship> findAllRequests(Person person);
+
     @Query("select case when count(f)>0 then true else false end from Friendship f " +
             "where f.srcPerson=?1 and f.dstPerson=?2 and f.status.code=com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode.BLOCKED")
     Boolean isBlocked(Person srcPerson, Person dstPerson);
