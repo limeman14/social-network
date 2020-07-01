@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.controller;
 
 
+import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
@@ -13,13 +14,16 @@ import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
 import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.GeoIPLocationService;
 import com.skillbox.socialnetwork.main.service.NotificationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
+@Slf4j
 @RestController
 public class AuthenticationRestControllerV1 {
 
@@ -43,7 +47,13 @@ public class AuthenticationRestControllerV1 {
 
     @PostMapping("/api/v1/account/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDto requestDto, HttpServletRequest request) throws Exception {
-        GeoIP location = getLocation(null, request);
+        GeoIP location;
+        try {
+            location = getLocation(null, request);
+        } catch (GeoIp2Exception e) {
+            log.warn("Registration from localhost");
+            location = new GeoIP(null, "localhost", "localhost", "0.00", "0.00");
+        }
         Response result = authService.register(requestDto, location);
         return ResponseEntity.ok(result);
     }
@@ -88,7 +98,7 @@ public class AuthenticationRestControllerV1 {
     public GeoIP getLocation(
             @RequestParam(value = "ipAddress", required = false) String ipAddress,
             HttpServletRequest request
-    ) throws Exception {
+    ) throws IOException, GeoIp2Exception {
         String remoteAddress = "";
         if (request != null) {
             remoteAddress = request.getHeader("X-FORWARDED-FOR");

@@ -27,6 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @Slf4j
 public class DialogServiceImpl implements DialogService {
@@ -146,11 +148,31 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
-    public BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit, Person currentUser) {
+    public BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit, int fromMessageId, Person currentUser) {
         Dialog dialog = dialogRepository.findById(id).orElse(null);
         if (dialog != null) {
-            return DialogFactory.getMessages(messageRepository
-                    .getAllByMessageTextContainingAndDialog(query, dialog), currentUser, offset, limit);
+            List<Message> list = messageRepository.getAllByMessageTextContainingAndDialog(query, dialog);
+
+            int lastElementIndex = list.size();
+            int firstElementIndex = list.size() - limit;
+            if (offset != 0){
+                list = list.subList(0, fromMessageId);
+                lastElementIndex = list.size() - 1;
+                firstElementIndex = lastElementIndex - limit;
+            }
+            if (firstElementIndex >= 0){
+                list = list.subList(firstElementIndex, lastElementIndex);
+            }
+            else if (lastElementIndex > 0) {
+                list = list.subList(0, lastElementIndex);
+            }
+            else list = new ArrayList<>();
+            messageRepository.saveAll(list
+                    .stream()
+                    .filter(message -> message.getRecipient().equals(currentUser))
+                    .peek(message -> message.setReadStatus(ReadStatus.READ))
+                    .collect(toList()));
+            return DialogFactory.getMessages(list, currentUser, offset, limit, fromMessageId);
         } else {
             return null;
         }
