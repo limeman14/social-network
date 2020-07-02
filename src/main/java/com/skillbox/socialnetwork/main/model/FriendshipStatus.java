@@ -1,7 +1,7 @@
 package com.skillbox.socialnetwork.main.model;
 
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,15 +10,17 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "friendship_statuses")
+@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class FriendshipStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NonNull
     private Date time;
-
-    private String name;
-
+    @NonNull
     @Enumerated(value = EnumType.STRING)
     private FriendshipCode code;
 

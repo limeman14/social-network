@@ -7,14 +7,13 @@ import com.skillbox.socialnetwork.main.dto.dialog.response.*;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
-import com.skillbox.socialnetwork.main.model.Dialog;
-import com.skillbox.socialnetwork.main.model.DialogToPerson;
-import com.skillbox.socialnetwork.main.model.Message;
-import com.skillbox.socialnetwork.main.model.Person;
+import com.skillbox.socialnetwork.main.model.*;
+import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import com.skillbox.socialnetwork.main.model.enumerated.ReadStatus;
 import com.skillbox.socialnetwork.main.repository.D2PRepository;
 import com.skillbox.socialnetwork.main.repository.DialogRepository;
 import com.skillbox.socialnetwork.main.repository.MessageRepository;
+import com.skillbox.socialnetwork.main.repository.NotificationRepository;
 import com.skillbox.socialnetwork.main.service.DialogService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @Slf4j
 public class DialogServiceImpl implements DialogService {
@@ -36,13 +37,15 @@ public class DialogServiceImpl implements DialogService {
     private final PersonService personService;
     private final DialogRepository dialogRepository;
     private final D2PRepository d2pRepository;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
-    public DialogServiceImpl(MessageRepository messageRepository, PersonService personService, DialogRepository dialogRepository, D2PRepository d2pRepository) {
+    public DialogServiceImpl(MessageRepository messageRepository, PersonService personService, DialogRepository dialogRepository, D2PRepository d2pRepository, NotificationRepository notificationRepository) {
         this.messageRepository = messageRepository;
         this.personService = personService;
         this.dialogRepository = dialogRepository;
         this.d2pRepository = d2pRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -111,6 +114,7 @@ public class DialogServiceImpl implements DialogService {
     @Override
     public BaseResponse deleteDialog(int dialogId) {
         dialogRepository.deleteById(dialogId);
+        log.info("Dialog with id {} is deleted", dialogId);
         return new BaseResponse(new IdDto(dialogId));
     }
 
@@ -145,11 +149,31 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
-    public BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit, Person currentUser) {
+    public BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit, int fromMessageId, Person currentUser) {
         Dialog dialog = dialogRepository.findById(id).orElse(null);
         if (dialog != null) {
-            return DialogFactory.getMessages(messageRepository
-                    .getAllByMessageTextContainingAndDialog(query, dialog), currentUser, offset, limit);
+            List<Message> list = messageRepository.getAllByMessageTextContainingAndDialog(query, dialog);
+
+            int lastElementIndex = list.size();
+            int firstElementIndex = list.size() - limit;
+            if (offset != 0){
+                list = list.subList(0, fromMessageId);
+                lastElementIndex = list.size() - 1;
+                firstElementIndex = lastElementIndex - limit;
+            }
+            if (firstElementIndex >= 0){
+                list = list.subList(firstElementIndex, lastElementIndex);
+            }
+            else if (lastElementIndex > 0) {
+                list = list.subList(0, lastElementIndex);
+            }
+            else list = new ArrayList<>();
+            messageRepository.saveAll(list
+                    .stream()
+                    .filter(message -> message.getRecipient().equals(currentUser))
+                    .peek(message -> message.setReadStatus(ReadStatus.READ))
+                    .collect(toList()));
+            return DialogFactory.getMessages(list, currentUser, offset, limit, fromMessageId);
         } else {
             return null;
         }
@@ -158,8 +182,10 @@ public class DialogServiceImpl implements DialogService {
     @Override
     public BaseResponse addMessage(int dialogId, MessageTextDto request, Person user) {
         Dialog dialog = dialogRepository.findById(dialogId).orElse(null);
-        if (dialog == null)
+        if (dialog == null) {
+            log.error("Adding message failed, dialog {} is null", dialogId);
             throw new NullPointerException("Dialog cannot be null");
+        }
         Message message = new Message();
         Person dstPerson = dialog.getDialogToPersonList().stream().filter(dtp -> !dtp.getPerson().equals(user))
                 .findFirst().get().getPerson();
@@ -170,20 +196,34 @@ public class DialogServiceImpl implements DialogService {
         message.setReadStatus(ReadStatus.SENT);
         message.setDialog(dialog);
 
+        //уведомление о сообщении
+        Notification messageNotification = new Notification();
+        messageNotification.setPerson(dstPerson);
+        messageNotification.setEntityAuthor(user);
+        messageNotification.setType(NotificationCode.MESSAGE);
+        messageNotification.setInfo(message.getMessageText());
+        messageNotification.setSentTime(message.getTime());
+        messageNotification.setReadStatus(ReadStatus.SENT);
+        notificationRepository.save(messageNotification);
+        log.info("SENT MESSAGE notification to " + dstPerson.getFirstName() + " " + dstPerson.getLastName());
+
         return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message), user));
     }
 
     @Override
     public BaseResponse deleteMessage(int dialogId, int messageId) {
         messageRepository.deleteById(messageId);
+        log.info("Message with id {} is deleted", messageId);
         return new BaseResponse(new MessageIdDto(messageId));
     }
 
     @Override
     public BaseResponse editMessage(int dialogId, int messageId, MessageTextDto messageText, Person user) {
         Message message = messageRepository.findById(messageId).orElse(null);
-        if (message == null)
+        if (message == null) {
+            log.error("Message with id {} not found", messageId);
             throw new NullPointerException("Message not with id:" + messageId + " found");
+        }
         message.setMessageText(messageText.getText());
 
         return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message), user));
@@ -201,6 +241,7 @@ public class DialogServiceImpl implements DialogService {
             throw new NullPointerException("Message with id: " + messageId + " not found");
         message.setReadStatus(ReadStatus.READ);
         messageRepository.save(message);
+        log.info("Message {} marked as READ", message.getMessageText());
         return ResponseFactory.responseOk();
     }
 

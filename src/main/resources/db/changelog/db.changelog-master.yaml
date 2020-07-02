@@ -199,11 +199,11 @@ databaseChangeLog:
                     nullable: false
                   name: code
                   type: ENUM("REQUEST", "FRIEND", "BLOCKED", "DECLINED", "SUBSCRIBED")
-              - column:
-                  constraints:
-                    nullable: false
-                  name: name
-                  type: VARCHAR(255)
+#              - column:
+#                  constraints:
+#                    nullable: false
+#                  name: name
+#                  type: VARCHAR(255)
               - column:
                   constraints:
                     nullable: false
@@ -759,6 +759,73 @@ databaseChangeLog:
         - dropColumn:
             columnName: town_id
             tableName: persons
+  - changeSet:
+      id: 1.1.6
+      author: vlad
+      changes:
+        - dropTable:
+            tableName: notification_types
+        - dropColumn:
+            columnName: type_id
+            tableName: notifications
+        - dropColumn:
+            columnName: contact
+            tableName: notifications
+        - dropColumn:
+            columnName: entity_id
+            tableName: notifications
+        - addColumn:
+            columns:
+              - column:
+                  name: read_status
+                  type: ENUM("READ", "SENT")
+              - column:
+                  name: info
+                  type: varchar(255)
+              - column:
+                  name: entity_author
+                  type: int
+              - column:
+                  name: type
+                  type: ENUM("POST", "POST_COMMENT", "COMMENT_COMMENT", "FRIEND_REQUEST", "FRIEND_BIRTHDAY", "MESSAGE")
+            tableName: notifications
+  - changeSet:
+      id: 1.1.7
+      author: vlad
+      changes:
+        - createTable:
+            tableName: notification_settings
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                  name: id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: person_id
+                  type: INT
+              - column:
+                  name: POST
+                  type: BIT(1)
+              - column:
+                  name: POST_COMMENT
+                  type: BIT(1)
+              - column:
+                  name: COMMENT_COMMENT
+                  type: BIT(1)
+              - column:
+                  name: FRIEND_REQUEST
+                  type: BIT(1)
+              - column:
+                  name: FRIEND_BIRTHDAY
+                  type: BIT(1)
+              - column:
+                  name: MESSAGE
+                  type: BIT(1)
   - include:
       file: db/changelog/db.changelog-insertPersons.yaml
   - include:

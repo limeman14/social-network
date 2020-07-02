@@ -17,7 +17,7 @@ public interface DialogService {
     BaseResponse deleteUsersFromDialog(int dialogId, DialogAddRequest request);
     BaseResponse inviteUserToDialog(int id);
     BaseResponse joinDialog(int id, LinkDto linkDto);
-    BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit, Person currentUser);
+    BaseResponseList getMessagesFromDialog(int id, String query, int offset, int limit, int fromMessage, Person currentUser);
     BaseResponse addMessage(int dialogId, MessageTextDto message, Person user);
     BaseResponse deleteMessage(int dialogId, int messageId);
     BaseResponse editMessage(int dialogId, int messageId, MessageTextDto messageText, Person user);

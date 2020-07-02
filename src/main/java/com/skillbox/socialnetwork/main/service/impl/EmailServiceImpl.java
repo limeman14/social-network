@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.service.EmailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -14,6 +15,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 
 @Service("EmailService")
+@Slf4j
 public class EmailServiceImpl implements EmailService {
 
     private JavaMailSender emailSender;
@@ -40,6 +42,7 @@ public class EmailServiceImpl implements EmailService {
             message.setText(text);
 
             emailSender.send(message);
+            log.info("Email sent to {}", to);
         } catch (MailException exception) {
             exception.printStackTrace();
         }
@@ -49,12 +52,14 @@ public class EmailServiceImpl implements EmailService {
     public void sendSimpleMessageUsingTemplate(String to, String... templateModel) {
         String text = String.format(template.getText(), templateModel);
         sendSimpleMessage(to, text);
+        log.info("Email sent to {}", to);
     }
 
     @Override
     public void sendPasswordRecovery(String to, String name, String link) {
         String text = String.format(template.getText(), name, link);
         sendSimpleMessage(to, text);
+        log.info("Email with confirmation link is sent to {}", to);
     }
 
     @Override
@@ -71,6 +76,7 @@ public class EmailServiceImpl implements EmailService {
             helper.addAttachment("Invoice", file);
 
             emailSender.send(message);
+            log.info("Email with attachment link is sent to {}", to);
         } catch (javax.mail.MessagingException e) {
             e.printStackTrace();
         }

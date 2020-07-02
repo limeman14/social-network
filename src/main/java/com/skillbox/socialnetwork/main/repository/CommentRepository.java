@@ -11,4 +11,5 @@ public interface CommentRepository extends JpaRepository<PostComment, Integer> {
 
     @Query(value = "select * from post_comments ORDER BY time desc limit ?1, ?2", nativeQuery = true)
     List<PostComment> limitQuery(Integer offset, Integer limit);
+
 }
