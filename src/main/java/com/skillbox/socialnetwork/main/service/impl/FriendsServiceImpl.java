@@ -4,13 +4,20 @@ import com.skillbox.socialnetwork.main.model.Friendship;
 import com.skillbox.socialnetwork.main.model.FriendshipStatus;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
+import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import com.skillbox.socialnetwork.main.repository.FriendshipRepository;
 import com.skillbox.socialnetwork.main.repository.FriendshipStatusRepo;
 import com.skillbox.socialnetwork.main.service.FriendsService;
+import com.skillbox.socialnetwork.main.service.NotificationService;
+import com.skillbox.socialnetwork.main.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,15 +26,21 @@ import java.util.stream.Collectors;
 public class FriendsServiceImpl implements FriendsService {
     private final FriendshipRepository friendshipRepository;
     private final FriendshipStatusRepo friendshipStatusRepo;
+    private final NotificationService notificationService;
+    private final PersonService personService;
 
     @Autowired
-    public FriendsServiceImpl(FriendshipRepository friendshipRepository, FriendshipStatusRepo friendshipStatusRepo) {
+    public FriendsServiceImpl(FriendshipRepository friendshipRepository, FriendshipStatusRepo friendshipStatusRepo, NotificationService notificationService, PersonService personService)
+    {
         this.friendshipRepository = friendshipRepository;
         this.friendshipStatusRepo = friendshipStatusRepo;
+        this.notificationService = notificationService;
+        this.personService = personService;
     }
 
     @Override
-    public List<Person> getFriends(Person person, String name) {
+    public List<Person> getFriends(Person person, String name)
+    {
         return friendshipRepository.findAllFriends(person).stream()
                 .map(f -> f.getDstPerson())
                 .filter(f -> f.getFirstName().contains(name)
@@ -36,7 +49,8 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
-    public List<Person> getFriendRequest(Person person, String name) {
+    public List<Person> getFriendRequest(Person person, String name)
+    {
         return friendshipRepository.findAllRequests(person).stream()
                 .map(f -> f.getSrcPerson())
                 .filter(f -> f.getFirstName().contains(name)
@@ -54,10 +68,12 @@ public class FriendsServiceImpl implements FriendsService {
         Friendship friendshipSrc = friendshipRepository.findNonBLockedRelation(srcPerson, dstPerson);
         Friendship friendshipDst = friendshipRepository.findNonBLockedRelation(dstPerson, srcPerson);
         if (friendshipDst != null && (friendshipDst.getStatus().getCode().equals(FriendshipCode.REQUEST)
-                || friendshipDst.getStatus().getCode().equals(FriendshipCode.SUBSCRIBED))) {
+                || friendshipDst.getStatus().getCode().equals(FriendshipCode.SUBSCRIBED)))
+        {
             friendshipDst.getStatus().setCode(FriendshipCode.FRIEND);
             friendshipDst.getStatus().setTime(new Date());
-            if (friendshipSrc == null) {
+            if (friendshipSrc == null)
+            {
                 friendshipSrc = new Friendship(new FriendshipStatus(), srcPerson, dstPerson);
             }
             friendshipSrc.getStatus().setCode(FriendshipCode.FRIEND);
@@ -66,7 +82,11 @@ public class FriendsServiceImpl implements FriendsService {
             friendshipStatusRepo.save(friendshipSrc.getStatus());
             friendshipRepository.save(friendshipSrc);
             friendshipRepository.save(friendshipDst);
-        } else if (friendshipSrc != null) {
+
+            //Notification
+            notificationService.addNotification(srcPerson, dstPerson, NotificationCode.FRIEND_REQUEST,
+                    srcPerson.getFirstName() + " " + srcPerson.getLastName() + " добавил Вас в друзья.");
+    } else if (friendshipSrc != null) {
             if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.REQUEST)) {
                 log.warn("addFriend failed from {} to {} friend request is already sent",
                         srcPerson.getEmail(),
@@ -90,6 +110,9 @@ public class FriendsServiceImpl implements FriendsService {
             friendshipSrc = new Friendship(status, srcPerson, dstPerson);
             friendshipStatusRepo.save(status);
             friendshipRepository.save(friendshipSrc);
+
+            notificationService.addNotification(srcPerson, dstPerson, NotificationCode.FRIEND_REQUEST,
+                    srcPerson.getFirstName() + " " + srcPerson.getLastName() + " добавил Вас в друзья.");
         }
         return "ok";
     }
