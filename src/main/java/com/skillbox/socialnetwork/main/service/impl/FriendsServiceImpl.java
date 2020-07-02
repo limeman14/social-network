@@ -14,11 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,8 +29,7 @@ public class FriendsServiceImpl implements FriendsService {
     private final PersonService personService;
 
     @Autowired
-    public FriendsServiceImpl(FriendshipRepository friendshipRepository, FriendshipStatusRepo friendshipStatusRepo, NotificationService notificationService, PersonService personService)
-    {
+    public FriendsServiceImpl(FriendshipRepository friendshipRepository, FriendshipStatusRepo friendshipStatusRepo, NotificationService notificationService, PersonService personService) {
         this.friendshipRepository = friendshipRepository;
         this.friendshipStatusRepo = friendshipStatusRepo;
         this.notificationService = notificationService;
@@ -39,8 +37,7 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
-    public List<Person> getFriends(Person person, String name)
-    {
+    public List<Person> getFriends(Person person, String name) {
         return friendshipRepository.findAllFriends(person).stream()
                 .map(f -> f.getDstPerson())
                 .filter(f -> f.getFirstName().contains(name)
@@ -49,8 +46,7 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
-    public List<Person> getFriendRequest(Person person, String name)
-    {
+    public List<Person> getFriendRequest(Person person, String name) {
         return friendshipRepository.findAllRequests(person).stream()
                 .map(f -> f.getSrcPerson())
                 .filter(f -> f.getFirstName().contains(name)
@@ -68,12 +64,10 @@ public class FriendsServiceImpl implements FriendsService {
         Friendship friendshipSrc = friendshipRepository.findNonBLockedRelation(srcPerson, dstPerson);
         Friendship friendshipDst = friendshipRepository.findNonBLockedRelation(dstPerson, srcPerson);
         if (friendshipDst != null && (friendshipDst.getStatus().getCode().equals(FriendshipCode.REQUEST)
-                || friendshipDst.getStatus().getCode().equals(FriendshipCode.SUBSCRIBED)))
-        {
+                || friendshipDst.getStatus().getCode().equals(FriendshipCode.SUBSCRIBED))) {
             friendshipDst.getStatus().setCode(FriendshipCode.FRIEND);
             friendshipDst.getStatus().setTime(new Date());
-            if (friendshipSrc == null)
-            {
+            if (friendshipSrc == null) {
                 friendshipSrc = new Friendship(new FriendshipStatus(), srcPerson, dstPerson);
             }
             friendshipSrc.getStatus().setCode(FriendshipCode.FRIEND);
@@ -86,20 +80,20 @@ public class FriendsServiceImpl implements FriendsService {
             //Notification
             notificationService.addNotification(srcPerson, dstPerson, NotificationCode.FRIEND_REQUEST,
                     srcPerson.getFirstName() + " " + srcPerson.getLastName() + " добавил Вас в друзья.");
-    } else if (friendshipSrc != null) {
+        } else if (friendshipSrc != null) {
             if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.REQUEST)) {
                 log.warn("addFriend failed from {} to {} friend request is already sent",
                         srcPerson.getEmail(),
                         dstPerson.getEmail());
                 return "";
             }
-            if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.DECLINED)){
+            if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.DECLINED)) {
                 log.warn("addFriend failed from {} to {}, target user declined source user's request",
                         srcPerson.getEmail(),
                         dstPerson.getEmail());
                 return "";
             }
-            if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.BLOCKED)){
+            if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.BLOCKED)) {
                 log.warn("addFriend failed from {} to {}, target user blocked source user",
                         srcPerson.getEmail(),
                         dstPerson.getEmail());
@@ -121,11 +115,10 @@ public class FriendsServiceImpl implements FriendsService {
     @Override
     public Map<Person, String> isFriend(Person srcPerson, List<Person> dstPersonList) {
         Map<Person, String> isFriendMap = new HashMap<>();
-        for (int i = 0; i < dstPersonList.size(); i++) {
-            Person dstPerson = dstPersonList.get(i);
+        for (Person dstPerson : dstPersonList) {
             Friendship friendshipSrc = friendshipRepository
                     .findRelation(srcPerson, dstPerson, FriendshipCode.FRIEND);
-            if (friendshipSrc != null){
+            if (friendshipSrc != null) {
                 isFriendMap.put(dstPerson, friendshipSrc.getStatus().getCode().toString());
             }
         }
