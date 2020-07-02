@@ -15,6 +15,7 @@ import com.skillbox.socialnetwork.main.repository.CommentRepository;
 import com.skillbox.socialnetwork.main.repository.NotificationRepository;
 import com.skillbox.socialnetwork.main.repository.PostRepository;
 import com.skillbox.socialnetwork.main.service.CommentService;
+import com.skillbox.socialnetwork.main.service.NotificationService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,14 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final PersonService personService;
-    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, PersonService personService, NotificationRepository notificationRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, PersonService personService, NotificationService notificationService) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.personService = personService;
-        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -68,17 +69,11 @@ public class CommentServiceImpl implements CommentService {
         boolean sameAuthor = commentAuthor.equals(post.getAuthor()) && isParentComment;
 
         if (!sameAuthor) {
-            Notification notification = new Notification();
-            notification.setEntityAuthor(commentAuthor);
-            notification.setReadStatus(ReadStatus.SENT);
-            notification.setSentTime(comment.getTime());
-            notification.setPerson(
-                    isParentComment ? post.getAuthor() : comment.getParentComment().getAuthor());
-            notification.setType(
-                    isParentComment ? NotificationCode.POST_COMMENT : NotificationCode.COMMENT_COMMENT);
-            notification.setInfo(comment.getCommentText());
-            notificationRepository.save(notification);
-            log.info("SENT COMMENT notification to " + notification.getPerson().getFirstName() + " " + notification.getPerson().getLastName());
+            notificationService.addNotification(commentAuthor,
+                    isParentComment ? post.getAuthor() : comment.getParentComment().getAuthor(),
+                    isParentComment ? NotificationCode.POST_COMMENT : NotificationCode.COMMENT_COMMENT,
+                    comment.getCommentText());
+            log.info("SENT COMMENT notification to " + (isParentComment ? post.getAuthor() : comment.getParentComment().getAuthor()).getFirstName() + " " + (isParentComment ? post.getAuthor() : comment.getParentComment().getAuthor()).getLastName());
         }
         log.info("New comment added from user with id = {}", authorId);
         return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment));

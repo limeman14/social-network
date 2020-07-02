@@ -15,6 +15,7 @@ import com.skillbox.socialnetwork.main.repository.DialogRepository;
 import com.skillbox.socialnetwork.main.repository.MessageRepository;
 import com.skillbox.socialnetwork.main.repository.NotificationRepository;
 import com.skillbox.socialnetwork.main.service.DialogService;
+import com.skillbox.socialnetwork.main.service.NotificationService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,15 +38,15 @@ public class DialogServiceImpl implements DialogService {
     private final PersonService personService;
     private final DialogRepository dialogRepository;
     private final D2PRepository d2pRepository;
-    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     @Autowired
-    public DialogServiceImpl(MessageRepository messageRepository, PersonService personService, DialogRepository dialogRepository, D2PRepository d2pRepository, NotificationRepository notificationRepository) {
+    public DialogServiceImpl(MessageRepository messageRepository, PersonService personService, DialogRepository dialogRepository, D2PRepository d2pRepository, NotificationService notificationService) {
         this.messageRepository = messageRepository;
         this.personService = personService;
         this.dialogRepository = dialogRepository;
         this.d2pRepository = d2pRepository;
-        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -197,14 +198,7 @@ public class DialogServiceImpl implements DialogService {
         message.setDialog(dialog);
 
         //уведомление о сообщении
-        Notification messageNotification = new Notification();
-        messageNotification.setPerson(dstPerson);
-        messageNotification.setEntityAuthor(user);
-        messageNotification.setType(NotificationCode.MESSAGE);
-        messageNotification.setInfo(message.getMessageText());
-        messageNotification.setSentTime(message.getTime());
-        messageNotification.setReadStatus(ReadStatus.SENT);
-        notificationRepository.save(messageNotification);
+        notificationService.addNotification(user, dstPerson, NotificationCode.MESSAGE, message.getMessageText());
         log.info("SENT MESSAGE notification to " + dstPerson.getFirstName() + " " + dstPerson.getLastName());
 
         return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message), user));
