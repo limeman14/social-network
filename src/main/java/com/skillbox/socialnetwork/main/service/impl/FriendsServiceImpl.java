@@ -7,14 +7,15 @@ import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
 import com.skillbox.socialnetwork.main.repository.FriendshipRepository;
 import com.skillbox.socialnetwork.main.repository.FriendshipStatusRepo;
 import com.skillbox.socialnetwork.main.service.FriendsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class FriendsServiceImpl implements FriendsService {
     private final FriendshipRepository friendshipRepository;
     private final FriendshipStatusRepo friendshipStatusRepo;
@@ -45,8 +46,13 @@ public class FriendsServiceImpl implements FriendsService {
 
     @Override
     public String addFriend(Person srcPerson, Person dstPerson) {
-        Friendship friendshipSrc = friendshipRepository.findBySrcPersonAndDstPerson(srcPerson, dstPerson);
-        Friendship friendshipDst = friendshipRepository.findBySrcPersonAndDstPerson(dstPerson, srcPerson);
+        /*
+        Добавление в друзья: Текущий пользователь srcPerson, целевой пользователь dstPerson.
+        Принятие запроса в друзья: Тот, кто подтверждает или отклонияет запрос в друзья srcPerson,
+        тот, кто отправлял этот запрос - dstPerson
+         */
+        Friendship friendshipSrc = friendshipRepository.findNonBLockedRelation(srcPerson, dstPerson);
+        Friendship friendshipDst = friendshipRepository.findNonBLockedRelation(dstPerson, srcPerson);
         if (friendshipDst != null && (friendshipDst.getStatus().getCode().equals(FriendshipCode.REQUEST)
                 || friendshipDst.getStatus().getCode().equals(FriendshipCode.SUBSCRIBED))) {
             friendshipDst.getStatus().setCode(FriendshipCode.FRIEND);
@@ -62,6 +68,22 @@ public class FriendsServiceImpl implements FriendsService {
             friendshipRepository.save(friendshipDst);
         } else if (friendshipSrc != null) {
             if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.REQUEST)) {
+                log.warn("addFriend failed from {} to {} friend request is already sent",
+                        srcPerson.getEmail(),
+                        dstPerson.getEmail());
+                return "";
+            }
+            if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.DECLINED)){
+                log.warn("addFriend failed from {} to {}, target user declined source user's request",
+                        srcPerson.getEmail(),
+                        dstPerson.getEmail());
+                return "";
+            }
+            if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.BLOCKED)){
+                log.warn("addFriend failed from {} to {}, target user blocked source user",
+                        srcPerson.getEmail(),
+                        dstPerson.getEmail());
+                return "";
             }
         } else {
             FriendshipStatus status = new FriendshipStatus(new Date(), FriendshipCode.REQUEST);
@@ -72,11 +94,25 @@ public class FriendsServiceImpl implements FriendsService {
         return "ok";
     }
 
+
+    @Override
+    public Map<Person, String> isFriend(Person srcPerson, List<Person> dstPersonList) {
+        Map<Person, String> isFriendMap = new HashMap<>();
+        for (int i = 0; i < dstPersonList.size(); i++) {
+            Person dstPerson = dstPersonList.get(i);
+            Friendship friendshipSrc = friendshipRepository
+                    .findRelation(srcPerson, dstPerson, FriendshipCode.FRIEND);
+            if (friendshipSrc != null){
+                isFriendMap.put(dstPerson, friendshipSrc.getStatus().getCode().toString());
+            }
+        }
+        return isFriendMap;
+    }
+
     public String deleteFriend(Person owner, Person deletedFriend) {
-        Friendship relationsSrc = friendshipRepository.findBySrcPersonAndDstPerson(owner, deletedFriend);
-        Friendship relationsDst = friendshipRepository.findBySrcPersonAndDstPerson(deletedFriend, owner);
-        if (relationsSrc != null && relationsDst != null
-                && relationsSrc.getStatus().getCode().equals(FriendshipCode.FRIEND)
+        Friendship relationsSrc = friendshipRepository.findNonBLockedRelation(owner, deletedFriend);
+        Friendship relationsDst = friendshipRepository.findNonBLockedRelation(deletedFriend, owner);
+        if (relationsSrc != null
                 && relationsSrc.getStatus().getCode().equals(FriendshipCode.FRIEND)) {
             relationsSrc.getStatus().setCode(FriendshipCode.DECLINED);
             relationsDst.getStatus().setCode(FriendshipCode.SUBSCRIBED);

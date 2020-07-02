@@ -1,20 +1,22 @@
 package com.skillbox.socialnetwork.main.controller;
 
-import com.skillbox.socialnetwork.main.dto.friends.FriendsResponseFactory;
+import com.skillbox.socialnetwork.main.dto.friends.response.FriendsResponseFactory;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
 import com.skillbox.socialnetwork.main.service.FriendsService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/friends")
+@RequestMapping("/api/v1")
 public class FriendsController {
     private final FriendsService friendsService;
     private final PersonService personService;
@@ -25,45 +27,74 @@ public class FriendsController {
         this.personService = personService;
     }
 
-    @GetMapping
+    @GetMapping("/friends")
     public ResponseEntity<?> getFriends(
             @AuthenticationPrincipal JwtUser user,
             @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "0") Integer offset,
             @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
     ) {
+        if (personService.findById(user.getId()) == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FriendsResponseFactory.getErrorMessage());
+        }
         List<Person> friends = friendsService
                 .getFriends(personService.findById(user.getId()), name);
         return ResponseEntity.ok().body(PersonResponseFactory.getPersons(friends, offset, itemPerPage));
     }
 
-    @GetMapping("/request")
+    @GetMapping("/friends/request")
     public ResponseEntity<?> getFriendRequest(
             @AuthenticationPrincipal JwtUser user,
             @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "0") Integer offset,
             @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
     ) {
+        if (personService.findById(user.getId()) == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FriendsResponseFactory.getErrorMessage());
+        }
         List<Person> request = friendsService
                 .getFriendRequest(personService.findById(user.getId()), name);
         return ResponseEntity.ok().body(PersonResponseFactory.getPersons(request, offset, itemPerPage));
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/friends/{id}")
     public ResponseEntity<?> addFriend(
             @AuthenticationPrincipal JwtUser user,
             @PathVariable Integer id) {
-        return ResponseEntity.ok().body(FriendsResponseFactory.getMessage(
-                friendsService.addFriend(personService.findById(user.getId()), personService.findById(id))
-        ));
+        if (personService.findById(user.getId()) == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FriendsResponseFactory.getErrorMessage());
+        }
+        String message = friendsService.addFriend(personService.findById(user.getId()), personService.findById(id));
+        if (message.equals("ok")) {
+            return ResponseEntity.ok().body(FriendsResponseFactory.getMessage(message));
+        } else {
+            return ResponseEntity.badRequest().body(FriendsResponseFactory.getErrorMessage());
+        }
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/friends/{id}")
     public ResponseEntity<?> deleteFriend(@AuthenticationPrincipal JwtUser user, @PathVariable Integer id) {
+        if (personService.findById(user.getId()) == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FriendsResponseFactory.getErrorMessage());
+        }
         return ResponseEntity.ok().body(friendsService.deleteFriend(
                 personService.findById(user.getId()),
                 personService.findById(id)
         ));
+    }
+
+    @PostMapping("is/friends")
+    public ResponseEntity<?> isFriend(
+            @AuthenticationPrincipal JwtUser user,
+            @RequestParam List<Integer> idList
+    ) {
+        if (personService.findById(user.getId()) == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FriendsResponseFactory.getErrorMessage());
+        }
+        return ResponseEntity.ok().body(FriendsResponseFactory
+                .getIsFriendDtoList(friendsService.isFriend(personService.findById(user.getId()),
+                idList.stream().map(personService::findById).collect(Collectors.toList()))));
+
     }
 }
