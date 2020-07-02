@@ -3,7 +3,7 @@ spring:
     url: jdbc:mysql://localhost:3306/social_network_test?&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Moscow
     username: root
     password: testtest
-#    password: ab33aa4c
+
   jpa:
     show-sql: false
     hibernate.ddl-auto: none
@@ -16,7 +16,7 @@ spring:
 
 jwt.token:
   secret: jwtappdemo
-  expired: 3600000
+  expired: 360000000
 
 server:
   port: 8080

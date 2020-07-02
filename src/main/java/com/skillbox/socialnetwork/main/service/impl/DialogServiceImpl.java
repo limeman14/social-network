@@ -154,11 +154,13 @@ public class DialogServiceImpl implements DialogService {
         Dialog dialog = dialogRepository.findById(id).orElse(null);
         if (dialog != null) {
             List<Message> list = messageRepository.getAllByMessageTextContainingAndDialog(query, dialog);
-
             int lastElementIndex = list.size();
             int firstElementIndex = list.size() - limit;
             if (offset != 0){
-                list = list.subList(0, fromMessageId);
+                //достаем локальный индекс сообщения от которого будем грузить старые
+                Message fromMessage = messageRepository.findById(fromMessageId).get();
+                int indexOfFromMessage = list.indexOf(fromMessage);
+                list = list.subList(0, indexOfFromMessage);
                 lastElementIndex = list.size() - 1;
                 firstElementIndex = lastElementIndex - limit;
             }
