@@ -51,7 +51,7 @@ public class DialogFactory {
                 messageList.size(),
                 offset,
                 limit,
-                messageList.size() > 0 ? formatMessages(messageList, user) : null
+                messageList.size() > 0 ? formatMessages(messageList, user) : new ArrayList<>()
         );
     }
 

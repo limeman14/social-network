@@ -16,19 +16,19 @@ spring:
 
 jwt.token:
   secret: jwtappdemo
-  expired: 3600000
+  expired: 36000000000
 
 server:
   port: 8080
 
 upload:
-  path: "C:/Users/Katerina/Desktop/storage"
+  path: "C:/Users/Valet/Desktop/storage"
 
 hostname: localhost:8080
 
 project.name: Социальная сеть разработчиков
 
-path.to.dblocation.city: 'GeoLite2-City_20200616_2/GeoLite2-City.mmdb'
+path.to.dblocation.city: 'src/main/resources/static/GeoLite2-City_20200616_2/GeoLite2-City.mmdb'
 
 spring.mail:
   # Логин и пароль пользователя от почты на gmail
