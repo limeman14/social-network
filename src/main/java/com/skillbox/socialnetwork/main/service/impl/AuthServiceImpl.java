@@ -1,14 +1,11 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.*;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
-import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
@@ -49,26 +46,24 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @MethodLogWithTime
     public BaseResponse login(AuthenticationRequestDto request) {
         String email = request.getEmail();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             Person user = personService.findByEmail(email);
-
             String token = jwtTokenProvider.createToken(email);
-            log.info("User {} logged in", email);
             return AuthResponseFactory.getAuthResponse(user, token);
         } catch (AuthenticationException e) {
-            log.error("Invalid username or password for user {}", email);
             throw new BadCredentialsException("Invalid username or password for user " + email);
         }
     }
 
     @Override
+    @MethodLogWithTime
     public Response register(RegisterRequestDto request, GeoIP location) throws GeoIp2Exception, IOException {
         Response registration = personService.registration(request,location);
         emailService.sendSimpleMessageUsingTemplate(request.getEmail(), request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
-        log.info("User {} registered successfully", request.getEmail());
         return registration;
     }
 
