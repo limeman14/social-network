@@ -1,5 +1,8 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
+import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
