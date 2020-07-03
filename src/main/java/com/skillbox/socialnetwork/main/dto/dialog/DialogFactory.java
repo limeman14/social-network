@@ -28,6 +28,7 @@ public class DialogFactory {
     }
 
     private static List<Dto> formatDialogs(List<Dialog> dialogs, Person user, int offset, int limit) {
+
         return dialogs
                 .stream()
                 .map(dialog -> new DialogDto(dialog.getId(),
@@ -35,6 +36,7 @@ public class DialogFactory {
                                 .getMessages()
                                 .stream()
                                 .filter(message -> message.getReadStatus() == ReadStatus.SENT)
+                                .filter(message -> message.getAuthor() != user)
                                 .count(),
                         dialog
                                 .getMessages()
@@ -51,7 +53,7 @@ public class DialogFactory {
                 messageList.size(),
                 offset,
                 limit,
-                messageList.size() > 0 ? formatMessages(messageList, user) : null
+                messageList.size() > 0 ? formatMessages(messageList, user) : new ArrayList<>()
         );
     }
 
@@ -63,20 +65,6 @@ public class DialogFactory {
             e.getMessage();
         }
         return null;
-    }
-
-    private static List<Dto> getElementsInRange(List<Dto> list, int offset, int limit) {
-        int lastElementIndex = offset + limit;
-        int lastPostIndex = list.size();
-        if (lastPostIndex >= offset) {//если есть элементы входящие в нужный диапазон
-            if (lastElementIndex <= lastPostIndex) {//если все элементы с нужными индексами есть в листе
-                return list.subList(offset, lastElementIndex);
-            } else {//если не хватает элементов, то в посты записываем остаток, считая от offset
-                return list.subList(offset, lastPostIndex);
-            }
-        } else {
-            return new ArrayList<>();
-        }
     }
 
     public static Dto formatMessage(Message message, Person user) {

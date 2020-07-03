@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -51,7 +52,17 @@ public class DialogServiceImpl implements DialogService {
 
     @Override
     public BaseResponseList getDialogs(String query, int offset, int limit, Person person) {
-        return DialogFactory.getDialogs(dialogRepository.getDialogs(person, query), person, offset, limit);
+        List<Dialog> dialogList = dialogRepository.getDialogs(person, query);
+        dialogList.sort(Comparator.comparing(Dialog::getMessages, (d1, d2) -> {
+            Date date1 = d1.stream()
+                    .max(Comparator.comparing(Message::getTime))
+                    .get().getTime();
+            Date date2 = d2.stream()
+                    .max(Comparator.comparing(Message::getTime))
+                    .get().getTime();
+            return date2.compareTo(date1);
+        }));
+        return DialogFactory.getDialogs(dialogList, person, offset, limit);
     }
 
     @Override
