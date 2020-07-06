@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
 import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
@@ -48,12 +49,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @MethodLogWithTime
     public BaseResponse login(AuthenticationRequestDto request) {
         String email = request.getEmail();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             Person user = personService.findByEmail(email);
-
             String token = jwtTokenProvider.createToken(email);
             return AuthResponseFactory.getAuthResponse(user, token);
         } catch (AuthenticationException e) {
@@ -62,7 +63,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Response register(RegisterRequestDto request, GeoIP location) throws IOException, GeoIp2Exception {
+    @MethodLogWithTime
+    public Response register(RegisterRequestDto request, GeoIP location) throws GeoIp2Exception, IOException {
         Response registration = personService.registration(request,location);
         emailService.sendSimpleMessageUsingTemplate(request.getEmail(), request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
         return registration;
@@ -96,6 +98,7 @@ public class AuthServiceImpl implements AuthService {
         personService.save(person);
         String token = jwtTokenProvider.createToken(person.getEmail() + ":" + person.getConfirmationCode());
         emailService.sendPasswordRecovery(email, person.getFirstName(), url + "/change-password?token=" + token);
+        log.info("User {} requested password recovery, confirmation email was sent", email);
         return ResponseFactory.responseOk();
     }
 
@@ -112,11 +115,14 @@ public class AuthServiceImpl implements AuthService {
                     person.setPassword(passwordEncoder.encode(dto.getPassword()));
                     person.setConfirmationCode("");
                     personService.save(person);
+                    log.info("New password set for user {}", person.getEmail());
                     return ResponseFactory.responseOk();
                 }
             }
+            log.error("Password change failed: token error");
             throw new InvalidRequestException("token_error");
         } catch (MalformedURLException e) {
+            log.error("Password change failed: token not found");
             throw new InvalidRequestException("token not found");
         }
     }

@@ -28,6 +28,7 @@ public class DialogFactory {
     }
 
     private static List<Dto> formatDialogs(List<Dialog> dialogs, Person user, int offset, int limit) {
+
         return dialogs
                 .stream()
                 .map(dialog -> new DialogDto(dialog.getId(),
@@ -35,6 +36,7 @@ public class DialogFactory {
                                 .getMessages()
                                 .stream()
                                 .filter(message -> message.getReadStatus() == ReadStatus.SENT)
+                                .filter(message -> message.getAuthor() != user)
                                 .count(),
                         dialog
                                 .getMessages()
@@ -46,40 +48,23 @@ public class DialogFactory {
                 .collect(Collectors.toList());
     }
 
-    public static BaseResponseList getMessages(List<Message> messageList, Person user, int offset, int limit) {
+    public static BaseResponseList getMessages(List<Message> messageList, Person user, int offset, int limit, int fromMessageId) {
         return new BaseResponseList(
                 messageList.size(),
                 offset,
                 limit,
-                messageList.size() > 0 ? formatMessages(messageList, user, offset, limit) : null
+                messageList.size() > 0 ? formatMessages(messageList, user) : new ArrayList<>()
         );
     }
 
-    private static List<Dto> formatMessages(List<Message> messages, Person user, int offset, int limit) {
+    private static List<Dto> formatMessages(List<Message> messages, Person user) {
         try {
-            return getElementsInRange(messages
-                            .stream()
-                            .map(message -> message != null ? formatMessage(message, user) : null)
-                            .collect(toList()),
-                    offset, limit);
+            return messages.stream().map(message -> formatMessage(message, user))
+                    .collect(toList());
         } catch (NullPointerException e) {
-
+            e.getMessage();
         }
         return null;
-    }
-
-    private static List<Dto> getElementsInRange(List<Dto> list, int offset, int limit) {
-        int lastElementIndex = offset + limit;
-        int lastPostIndex = list.size();
-        if (lastPostIndex >= offset) {//если есть элементы входящие в нужный диапазон
-            if (lastElementIndex <= lastPostIndex) {//если все элементы с нужными индексами есть в листе
-                return list.subList(offset, lastElementIndex);
-            } else {//если не хватает элементов, то в посты записываем остаток, считая от offset
-                return list.subList(offset, lastPostIndex);
-            }
-        } else {
-            return new ArrayList<>();
-        }
     }
 
     public static Dto formatMessage(Message message, Person user) {

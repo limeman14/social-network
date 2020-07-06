@@ -50,6 +50,21 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(value = {InvalidRequestException.class})
+    protected ResponseEntity<?> handleInvalidRequestException(
+            InvalidRequestException ex,
+            WebRequest request
+    ) {
+        log.warn(ex.getMessage());
+        return handleExceptionInternal(
+                ex,
+                new ErrorResponse("invalid_request", ex.getMessage()),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
     @ExceptionHandler(value = {AuthenticationException.class})
     protected ResponseEntity<?> handleNotFoundException(
             AuthenticationException ex,

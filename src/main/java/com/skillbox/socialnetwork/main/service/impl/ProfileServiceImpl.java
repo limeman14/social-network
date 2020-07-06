@@ -7,7 +7,6 @@ import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.response.WallResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
-import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
@@ -20,7 +19,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -83,7 +85,7 @@ public class ProfileServiceImpl implements ProfileService {
         //эта строчка проверяет, заблокировал ли текущий авторизованный юзер юзера, которого ищем по id
         profile.setIsBlocked(friendshipRepository.isBlocked(authorizedUser, profile));
         BaseResponse result = PersonResponseFactory.getPerson(profile);
-        log.info("IN getUserById user with id: {} {}  found.", id, result);
+        log.info("IN getUserById user with id: {} {}  found.", id, profile);
         return result;
     }
 
@@ -95,7 +97,7 @@ public class ProfileServiceImpl implements ProfileService {
         posts.sort(Comparator.comparing(Post::getTime).reversed());//сортирую по дате чтобы на стенке выводились сначала новые
         BaseResponseList result = WallResponseFactory.getWall(posts, offset, limit, person);
 
-        log.info("IN getWallPosts posts {} have found", result);
+        log.info("IN getWallPosts posts {} have found", result.getData().size());
         return result;
     }
 
@@ -135,7 +137,7 @@ public class ProfileServiceImpl implements ProfileService {
             savedPost.setTags(tags);
         }
         Post result = postRepository.save(savedPost);
-        log.info("IN addPost post: {} added with tags: {} successfully", result, tags);
+        log.info("IN addPost post: {} added with tags: {} successfully", post.getId(), tags);
         return PostResponseFactory.getSinglePost(result, person);
     }
 
@@ -157,7 +159,6 @@ public class ProfileServiceImpl implements ProfileService {
         Person profileToBlock = personService.findById(idOfABlockedUser);
         FriendshipStatus status = new FriendshipStatus();
         status.setCode(FriendshipCode.BLOCKED);
-        status.setName("name");//Для чего поле ??
         status.setTime(new Date());
         Friendship relation = new Friendship();
         relation.setSrcPerson(authorizedUser);
@@ -174,7 +175,7 @@ public class ProfileServiceImpl implements ProfileService {
     public BaseResponse unblockUser(int id, Person authorizedUser) {
         Person profileToBlock = personService.findById(id);
         friendshipRepository.delete(friendshipRepository.findRelation(authorizedUser, profileToBlock, FriendshipCode.BLOCKED));
-        log.info("IN unblockUser user: {} unblocked user {}", authorizedUser.getEmail(), profileToBlock.getEmail());
+        log.info("IN unblockUser user: {} unblocked user {}", authorizedUser, profileToBlock);
         return ResponseFactory.responseOk();
     }
 

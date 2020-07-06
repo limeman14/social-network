@@ -29,22 +29,16 @@ public class GeoIPLocationServiceImpl implements GeoIPLocationService {
     }
 
     public GeoIP getLocation(String ip)
-            throws IOException {
-        try {
-            InetAddress ipAddress = InetAddress.getByName(ip);
-            CityResponse response = dbReader.city(ipAddress);
+            throws IOException, GeoIp2Exception {
+        InetAddress ipAddress = InetAddress.getByName(ip);
+        CityResponse response = dbReader.city(ipAddress);
 
-            String cityName = response.getCity().getName();
-            String countryName = response.getCountry().getName();
-            String latitude =
-                    response.getLocation().getLatitude().toString();
-            String longitude =
-                    response.getLocation().getLongitude().toString();
-            return new GeoIP(ip, cityName, countryName, latitude, longitude);
-        } catch (GeoIp2Exception e) {
-            //обработка локалхоста
-            return new GeoIP(ip, "LocalHost", "LocalHost", "0.000", "0.000");
-        }
-
+        String cityName = response.getCity().getName();
+        String countryName = response.getCountry().getName();
+        String latitude =
+                response.getLocation().getLatitude().toString();
+        String longitude =
+                response.getLocation().getLongitude().toString();
+        return new GeoIP(ip, cityName, countryName, latitude, longitude);
     }
 }
