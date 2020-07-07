@@ -40,7 +40,7 @@ public class LoggingAspect {
 
         String args = mask(Arrays.toString(joinPoint.getArgs()));
 
-        log.info("Method: " + joinPoint.getSignature().getName() + ", args: " +
+        log.info("Methoid: " + joinPoint.getSignature().getName() + ", args: " +
                 args + ", result: " + result + ", executed in " + executionTime + "ms");
         if(toThrow != null)
             throw toThrow;

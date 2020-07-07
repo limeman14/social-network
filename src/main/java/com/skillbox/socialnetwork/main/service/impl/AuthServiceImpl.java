@@ -9,7 +9,6 @@ import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.*;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
-import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
