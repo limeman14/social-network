@@ -116,7 +116,7 @@ databaseChangeLog:
                   value: "4914246579"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -206,7 +206,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nunc purus. Phasellus in felis. Donec semper sapien a libero. Nam dui. Proin leo odio porttitor id consequat in consequat ut nulla."
@@ -296,7 +296,7 @@ databaseChangeLog:
                   value: "9405213775"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Suspendisse accumsan tortor quis turpis. Sed ante. Vivamus tortor. Duis mattis egestas metus."
@@ -386,7 +386,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -746,7 +746,7 @@ databaseChangeLog:
                   value: "3128426073"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum. Curabitur in libero ut massa volutpat convallis. Morbi odio odio elementum eu interdum eu tincidunt in leo."
@@ -836,7 +836,7 @@ databaseChangeLog:
                   value: "1102100102"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Vestibulum sed magna at nunc commodo placerat. Praesent blandit. Nam nulla. Integer pede justo lacinia eget tincidunt eget tempus vel pede. Morbi porttitor lorem id ligula."
@@ -1016,7 +1016,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Fusce lacus purus aliquet at feugiat non pretium quis lectus."
@@ -1106,7 +1106,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -1241,7 +1241,7 @@ databaseChangeLog:
                   value: "8402452686"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Duis bibendum felis sed interdum venenatis turpis enim blandit mi in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum. In hac habitasse platea dictumst. Morbi vestibulum velit id pretium iaculis diam erat fermentum justo nec condimentum neque sapien placerat ante."
@@ -1331,7 +1331,7 @@ databaseChangeLog:
                   value: "4063765898"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui."
@@ -1601,7 +1601,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Integer ac neque. Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus. In sagittis dui vel nisl."
@@ -2546,7 +2546,7 @@ databaseChangeLog:
                   value: "8207408280"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien non mi. Integer ac neque. Duis bibendum. Morbi non quam nec dui luctus rutrum."
@@ -2681,7 +2681,7 @@ databaseChangeLog:
                   value: "2048761752"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -2726,7 +2726,7 @@ databaseChangeLog:
                   value: "2807038896"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -3131,7 +3131,7 @@ databaseChangeLog:
                   value: "2056310733"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aenean auctor gravida sem."
@@ -3491,7 +3491,7 @@ databaseChangeLog:
                   value: "9739553552"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -3716,7 +3716,7 @@ databaseChangeLog:
                   value: "7222123333"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -4391,7 +4391,7 @@ databaseChangeLog:
                   value: "1242682049"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero convallis eget eleifend luctus ultricies eu nibh. Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est."
@@ -4841,7 +4841,7 @@ databaseChangeLog:
                   value: "8067679834"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Morbi non quam nec dui luctus rutrum. Nulla tellus. In sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus aliquet at feugiat non pretium quis lectus."
@@ -4886,7 +4886,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nulla ut erat id mauris vulputate elementum. Nullam varius. Nulla facilisi."
@@ -5021,7 +5021,7 @@ databaseChangeLog:
                   value: "8275028807"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -5156,7 +5156,7 @@ databaseChangeLog:
                   value: "5751467352"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -5246,7 +5246,7 @@ databaseChangeLog:
                   value: "6755037717"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -5336,7 +5336,7 @@ databaseChangeLog:
                   value: "6791427586"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat. Curabitur gravida nisi at nibh."
@@ -5876,7 +5876,7 @@ databaseChangeLog:
                   value: "8785627337"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -6101,7 +6101,7 @@ databaseChangeLog:
                   value: "8285995194"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -6326,7 +6326,7 @@ databaseChangeLog:
                   value: "2811493984"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Praesent lectus. Vestibulum quam sapien varius ut blandit non interdum in ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend."
@@ -6416,7 +6416,7 @@ databaseChangeLog:
                   value: "6488287051"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -6821,7 +6821,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Ut at dolor quis odio consequat varius. Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi."
@@ -6911,7 +6911,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus. Cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus."
@@ -7091,7 +7091,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh."
@@ -7451,7 +7451,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -7586,7 +7586,7 @@ databaseChangeLog:
                   value: "5001128692"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nulla ut erat id mauris vulputate elementum. Nullam varius. Nulla facilisi. Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit."
@@ -7766,7 +7766,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Maecenas pulvinar lobortis est."
@@ -8621,7 +8621,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Duis at velit eu est congue elementum. In hac habitasse platea dictumst. Morbi vestibulum velit id pretium iaculis diam erat fermentum justo nec condimentum neque sapien placerat ante. Nulla justo. Aliquam quis turpis eget elit sodales scelerisque."
@@ -8666,7 +8666,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aenean auctor gravida sem."
@@ -8756,7 +8756,7 @@ databaseChangeLog:
                   value: "4692180414"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -9206,7 +9206,7 @@ databaseChangeLog:
                   value: "1191421837"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Morbi vestibulum velit id pretium iaculis diam erat fermentum justo nec condimentum neque sapien placerat ante."
@@ -9476,7 +9476,7 @@ databaseChangeLog:
                   value: "3273492133"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Duis at velit eu est congue elementum. In hac habitasse platea dictumst."
@@ -9521,7 +9521,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -9611,7 +9611,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -9701,7 +9701,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Morbi odio odio elementum eu interdum eu tincidunt in leo. Maecenas pulvinar lobortis est. Phasellus sit amet erat. Nulla tempus. Vivamus in felis eu sapien cursus vestibulum."
@@ -10151,7 +10151,7 @@ databaseChangeLog:
                   value: "2106635785"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Integer tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat. Praesent blandit."
@@ -10286,7 +10286,7 @@ databaseChangeLog:
                   value: "1779988430"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aenean auctor gravida sem. Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio. Cras mi pede malesuada in imperdiet et commodo vulputate justo."
@@ -10601,7 +10601,7 @@ databaseChangeLog:
                   value: "4047769055"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Cras mi pede malesuada in imperdiet et commodo vulputate justo."
@@ -10691,7 +10691,7 @@ databaseChangeLog:
                   value: "7685408798"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nulla suscipit ligula in lacus. Curabitur at ipsum ac tellus semper interdum. Mauris ullamcorper purus sit amet nulla. Quisque arcu libero rutrum ac lobortis vel dapibus at diam. Nam tristique tortor eu pede."
@@ -10916,7 +10916,7 @@ databaseChangeLog:
                   value: "1935448177"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Proin at turpis a pede posuere nonummy."
@@ -11006,7 +11006,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus. In sagittis dui vel nisl. Duis ac nibh."
@@ -11141,7 +11141,7 @@ databaseChangeLog:
                   value: "6346608570"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Quisque erat eros viverra eget congue eget semper rutrum nulla. Nunc purus."
@@ -11321,7 +11321,7 @@ databaseChangeLog:
                   value: "3438705099"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Vivamus in felis eu sapien cursus vestibulum. Proin eu mi."
@@ -11411,7 +11411,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Ut tellus. Nulla ut erat id mauris vulputate elementum. Nullam varius. Nulla facilisi. Cras non velit nec nisi vulputate nonummy."
@@ -11591,7 +11591,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Quisque ut erat. Curabitur gravida nisi at nibh. In hac habitasse platea dictumst."
@@ -11726,7 +11726,7 @@ databaseChangeLog:
                   value: "7474614846"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Quisque porta volutpat erat. Quisque erat eros viverra eget congue eget semper rutrum nulla. Nunc purus."
@@ -11771,7 +11771,7 @@ databaseChangeLog:
                   value: "8032994102"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Proin leo odio porttitor id consequat in consequat ut nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius. Integer ac leo. Pellentesque ultrices mattis odio."
@@ -11861,7 +11861,7 @@ databaseChangeLog:
                   value: "7794707367"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -12131,7 +12131,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -12311,7 +12311,7 @@ databaseChangeLog:
                   value: "7063416298"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Fusce consequat. Nulla nisl."
@@ -12491,7 +12491,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nullam molestie nibh in lectus. Pellentesque at nulla."
@@ -12581,7 +12581,7 @@ databaseChangeLog:
                   value: "6859046734"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -12851,7 +12851,7 @@ databaseChangeLog:
                   value: "5318778186"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Proin risus. Praesent lectus. Vestibulum quam sapien varius ut blandit non interdum in ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis."
@@ -13166,7 +13166,7 @@ databaseChangeLog:
                   value: "2985454341"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Suspendisse potenti."
@@ -14156,7 +14156,7 @@ databaseChangeLog:
                   value: "1822165586"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Integer tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat. Praesent blandit."
@@ -14381,7 +14381,7 @@ databaseChangeLog:
                   value: "6761738430"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl. Aenean lectus."
@@ -14516,7 +14516,7 @@ databaseChangeLog:
                   value: "6192602301"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Fusce congue diam id ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu sed augue. Aliquam erat volutpat. In congue."
@@ -15461,7 +15461,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -15641,7 +15641,7 @@ databaseChangeLog:
                   value: "8644861804"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Sed vel enim sit amet nunc viverra dapibus. Nulla suscipit ligula in lacus."
@@ -15821,7 +15821,7 @@ databaseChangeLog:
                   value: "4592232691"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Phasellus in felis. Donec semper sapien a libero. Nam dui. Proin leo odio porttitor id consequat in consequat ut nulla. Sed accumsan felis."
@@ -16046,7 +16046,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Vestibulum quam sapien varius ut blandit non interdum in ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio."
@@ -16316,7 +16316,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh. In quis justo. Maecenas rhoncus aliquam lacus."
@@ -16811,7 +16811,7 @@ databaseChangeLog:
                   value: "2004424446"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Vestibulum quam sapien varius ut blandit non interdum in ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend."
@@ -16856,7 +16856,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Vivamus vel nulla eget eros elementum pellentesque. Quisque porta volutpat erat. Quisque erat eros viverra eget congue eget semper rutrum nulla. Nunc purus. Phasellus in felis."
@@ -17351,7 +17351,7 @@ databaseChangeLog:
                   value: "9224991729"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aenean sit amet justo. Morbi ut odio. Cras mi pede malesuada in imperdiet et commodo vulputate justo. In blandit ultrices enim. Lorem ipsum dolor sit amet consectetuer adipiscing elit."
@@ -17396,7 +17396,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -17441,7 +17441,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -17531,7 +17531,7 @@ databaseChangeLog:
                   value: "4954547277"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Lorem ipsum dolor sit amet consectetuer adipiscing elit. Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl."
@@ -17666,7 +17666,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nulla ac enim. In tempor turpis nec euismod scelerisque quam turpis adipiscing lorem vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc."
@@ -17756,7 +17756,7 @@ databaseChangeLog:
                   value: "1261626822"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Suspendisse ornare consequat lectus."
@@ -18071,7 +18071,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nulla facilisi. Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque. Quisque porta volutpat erat."
@@ -18116,7 +18116,7 @@ databaseChangeLog:
                   value: "6693755052"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nullam molestie nibh in lectus. Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus. Cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus."
@@ -18296,7 +18296,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Sed ante."
@@ -18386,7 +18386,7 @@ databaseChangeLog:
                   value: "8176592274"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -18881,7 +18881,7 @@ databaseChangeLog:
                   value: "4953230970"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Integer non velit."
@@ -19151,7 +19151,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Mauris enim leo rhoncus sed vestibulum sit amet cursus id turpis. Integer aliquet massa id lobortis convallis tortor risus dapibus augue vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero."
@@ -19241,7 +19241,7 @@ databaseChangeLog:
                   value: "1115816816"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Pellentesque ultrices mattis odio."
@@ -19556,7 +19556,7 @@ databaseChangeLog:
                   value: "6351100048"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Donec diam neque vestibulum eget vulputate ut ultrices vel augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien non mi. Integer ac neque. Duis bibendum."
@@ -20006,7 +20006,7 @@ databaseChangeLog:
                   value: "3288919377"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Suspendisse potenti. Nullam porttitor lacus at turpis."
@@ -20231,7 +20231,7 @@ databaseChangeLog:
                   value: "6854066584"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "In hac habitasse platea dictumst."
@@ -20501,7 +20501,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Etiam vel augue. Vestibulum rutrum rutrum neque."
@@ -20546,7 +20546,7 @@ databaseChangeLog:
                   value: "2671308261"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -20681,7 +20681,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Quisque erat eros viverra eget congue eget semper rutrum nulla. Nunc purus. Phasellus in felis. Donec semper sapien a libero."
@@ -21221,7 +21221,7 @@ databaseChangeLog:
                   value: "3217769154"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet. Maecenas leo odio condimentum id luctus nec molestie sed justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui."
@@ -21356,7 +21356,7 @@ databaseChangeLog:
                   value: "5375629514"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Fusce lacus purus aliquet at feugiat non pretium quis lectus. Suspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst. Maecenas ut massa quis augue luctus tincidunt."
@@ -21446,7 +21446,7 @@ databaseChangeLog:
                   value: "6488639082"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Donec posuere metus vitae ipsum. Aliquam non mauris. Morbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet."
@@ -21626,7 +21626,7 @@ databaseChangeLog:
                   value: "9787435192"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -21716,7 +21716,7 @@ databaseChangeLog:
                   value: "2363115919"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -21986,7 +21986,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nam nulla. Integer pede justo lacinia eget tincidunt eget tempus vel pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus auctor sed tristique in tempus sit amet sem."
@@ -22031,7 +22031,7 @@ databaseChangeLog:
                   value: "9072861184"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "In est risus auctor sed tristique in tempus sit amet sem."
@@ -22211,7 +22211,7 @@ databaseChangeLog:
                   value: "5627554065"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Cras in purus eu magna vulputate luctus. Cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus. Vivamus vestibulum sagittis sapien."
@@ -22301,7 +22301,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Cras mi pede malesuada in imperdiet et commodo vulputate justo. In blandit ultrices enim. Lorem ipsum dolor sit amet consectetuer adipiscing elit. Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue."
@@ -22481,7 +22481,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nulla neque libero convallis eget eleifend luctus ultricies eu nibh."
@@ -23111,7 +23111,7 @@ databaseChangeLog:
                   value: "5244191680"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat. Curabitur gravida nisi at nibh."
@@ -23201,7 +23201,7 @@ databaseChangeLog:
                   value: "6092128280"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -23696,7 +23696,7 @@ databaseChangeLog:
                   value: "6484871852"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Donec diam neque vestibulum eget vulputate ut ultrices vel augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien non mi. Integer ac neque. Duis bibendum."
@@ -23831,7 +23831,7 @@ databaseChangeLog:
                   value: "5308161194"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Fusce posuere felis sed lacus. Morbi sem mauris laoreet ut rhoncus aliquet pulvinar sed nisl. Nunc rhoncus dui vel sem."
@@ -24011,7 +24011,7 @@ databaseChangeLog:
                   value: "9371185194"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nunc nisl. Duis bibendum felis sed interdum venenatis turpis enim blandit mi in porttitor pede justo eu massa."
@@ -24191,7 +24191,7 @@ databaseChangeLog:
                   value: "8865045668"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -24641,7 +24641,7 @@ databaseChangeLog:
                   value: "9153542652"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris. Morbi non lectus."
@@ -24731,7 +24731,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nulla tempus. Vivamus in felis eu sapien cursus vestibulum. Proin eu mi. Nulla ac enim. In tempor turpis nec euismod scelerisque quam turpis adipiscing lorem vitae mattis nibh ligula nec sem."
@@ -24956,7 +24956,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -25001,7 +25001,7 @@ databaseChangeLog:
                   value: "5187932431"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Integer a nibh."
@@ -25451,7 +25451,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Curabitur gravida nisi at nibh."
@@ -25631,7 +25631,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nam congue risus semper porta volutpat quam pede lobortis ligula sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus. Pellentesque at nulla."
@@ -25811,7 +25811,7 @@ databaseChangeLog:
                   value: "7585623289"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio."
@@ -26396,7 +26396,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Mauris ullamcorper purus sit amet nulla."
@@ -26486,7 +26486,7 @@ databaseChangeLog:
                   value: "4101711901"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -26621,7 +26621,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "In sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus aliquet at feugiat non pretium quis lectus. Suspendisse potenti."
@@ -26666,7 +26666,7 @@ databaseChangeLog:
                   value: "7808296626"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -27701,7 +27701,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -28061,7 +28061,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis."
@@ -28241,7 +28241,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -28466,7 +28466,7 @@ databaseChangeLog:
                   value: "4059359647"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Phasellus sit amet erat. Nulla tempus. Vivamus in felis eu sapien cursus vestibulum. Proin eu mi."
@@ -29186,7 +29186,7 @@ databaseChangeLog:
                   value: "3501842745"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "In hac habitasse platea dictumst. Aliquam augue quam sollicitudin vitae consectetuer eget rutrum at lorem."
@@ -29276,7 +29276,7 @@ databaseChangeLog:
                   value: "1084073532"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Pellentesque ultrices mattis odio."
@@ -29456,7 +29456,7 @@ databaseChangeLog:
                   value: "6127721565"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -29501,7 +29501,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Mauris lacinia sapien quis libero. Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum."
@@ -29771,7 +29771,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aliquam non mauris. Morbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet."
@@ -30131,7 +30131,7 @@ databaseChangeLog:
                   value: "8789968223"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl. Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum."
@@ -30356,7 +30356,7 @@ databaseChangeLog:
                   value: "1199676288"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aliquam non mauris. Morbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet."
@@ -30401,7 +30401,7 @@ databaseChangeLog:
                   value: "2868736110"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nunc rhoncus dui vel sem. Sed sagittis. Nam congue risus semper porta volutpat quam pede lobortis ligula sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus. Pellentesque at nulla."
@@ -30446,7 +30446,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -30491,7 +30491,7 @@ databaseChangeLog:
                   value: "9914026616"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Praesent blandit. Nam nulla. Integer pede justo lacinia eget tincidunt eget tempus vel pede."
@@ -30806,7 +30806,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -31076,7 +31076,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -31346,7 +31346,7 @@ databaseChangeLog:
                   value: "4779947285"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Suspendisse accumsan tortor quis turpis. Sed ante. Vivamus tortor."
@@ -32201,7 +32201,7 @@ databaseChangeLog:
                   value: "9022809057"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -32246,7 +32246,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Phasellus in felis. Donec semper sapien a libero. Nam dui. Proin leo odio porttitor id consequat in consequat ut nulla."
@@ -32471,7 +32471,7 @@ databaseChangeLog:
                   value: "4874700273"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -32696,7 +32696,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nulla tempus. Vivamus in felis eu sapien cursus vestibulum. Proin eu mi. Nulla ac enim. In tempor turpis nec euismod scelerisque quam turpis adipiscing lorem vitae mattis nibh ligula nec sem."
@@ -32741,7 +32741,7 @@ databaseChangeLog:
                   value: "8316234576"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Fusce consequat. Nulla nisl."
@@ -32786,7 +32786,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -32876,7 +32876,7 @@ databaseChangeLog:
                   value: "5839797137"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -33146,7 +33146,7 @@ databaseChangeLog:
                   value: "3487599974"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "In est risus auctor sed tristique in tempus sit amet sem. Fusce consequat. Nulla nisl. Nunc nisl."
@@ -33191,7 +33191,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum. Curabitur in libero ut massa volutpat convallis."
@@ -33776,7 +33776,7 @@ databaseChangeLog:
                   value: "7262224561"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -34631,7 +34631,7 @@ databaseChangeLog:
                   value: "6353512094"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Proin eu mi. Nulla ac enim."
@@ -34901,7 +34901,7 @@ databaseChangeLog:
                   value: "5136339828"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Donec dapibus. Duis at velit eu est congue elementum."
@@ -34946,7 +34946,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -35036,7 +35036,7 @@ databaseChangeLog:
                   value: "3506378799"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Donec ut mauris eget massa tempor convallis. Nulla neque libero convallis eget eleifend luctus ultricies eu nibh. Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est."
@@ -35171,7 +35171,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -35306,7 +35306,7 @@ databaseChangeLog:
                   value: "5266600074"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Praesent blandit. Nam nulla. Integer pede justo lacinia eget tincidunt eget tempus vel pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus."
@@ -35576,7 +35576,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Lorem ipsum dolor sit amet consectetuer adipiscing elit. Proin risus. Praesent lectus. Vestibulum quam sapien varius ut blandit non interdum in ante."
@@ -35936,7 +35936,7 @@ databaseChangeLog:
                   value: "4316945605"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "In congue. Etiam justo. Etiam pretium iaculis justo. In hac habitasse platea dictumst."
@@ -36071,7 +36071,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aliquam erat volutpat. In congue. Etiam justo."
@@ -36206,7 +36206,7 @@ databaseChangeLog:
                   value: "9692341166"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi. Nam ultrices libero non mattis pulvinar nulla pede ullamcorper augue a suscipit nulla elit ac nulla."
@@ -36431,7 +36431,7 @@ databaseChangeLog:
                   value: "6405965103"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Duis ac nibh. Fusce lacus purus aliquet at feugiat non pretium quis lectus. Suspendisse potenti."
@@ -36881,7 +36881,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Suspendisse accumsan tortor quis turpis. Sed ante. Vivamus tortor. Duis mattis egestas metus. Aenean fermentum."
@@ -36971,7 +36971,7 @@ databaseChangeLog:
                   value: "5042348074"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -37151,7 +37151,7 @@ databaseChangeLog:
                   value: "3629236193"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Curabitur in libero ut massa volutpat convallis."
@@ -37196,7 +37196,7 @@ databaseChangeLog:
                   value: "8102469298"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Donec posuere metus vitae ipsum. Aliquam non mauris. Morbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede venenatis non sodales sed tincidunt eu felis."
@@ -37646,7 +37646,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Morbi vestibulum velit id pretium iaculis diam erat fermentum justo nec condimentum neque sapien placerat ante. Nulla justo. Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis."
@@ -37736,7 +37736,7 @@ databaseChangeLog:
                   value: "1276231882"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -37781,7 +37781,7 @@ databaseChangeLog:
                   value: "9415921025"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Vivamus in felis eu sapien cursus vestibulum. Proin eu mi. Nulla ac enim."
@@ -38276,7 +38276,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -38321,7 +38321,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nam dui. Proin leo odio porttitor id consequat in consequat ut nulla. Sed accumsan felis."
@@ -38411,7 +38411,7 @@ databaseChangeLog:
                   value: "1027639613"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nulla tempus. Vivamus in felis eu sapien cursus vestibulum."
@@ -38546,7 +38546,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nullam varius. Nulla facilisi. Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque."
@@ -39131,7 +39131,7 @@ databaseChangeLog:
                   value: "7439313853"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Integer ac neque. Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus. In sagittis dui vel nisl."
@@ -39311,7 +39311,7 @@ databaseChangeLog:
                   value: "6511739150"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -39761,7 +39761,7 @@ databaseChangeLog:
                   value: "8326169263"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "In blandit ultrices enim. Lorem ipsum dolor sit amet consectetuer adipiscing elit. Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl."
@@ -40346,7 +40346,7 @@ databaseChangeLog:
                   value: "3608343875"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -40571,7 +40571,7 @@ databaseChangeLog:
                   value: "4088378073"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam sollicitudin vitae consectetuer eget rutrum at lorem."
@@ -40616,7 +40616,7 @@ databaseChangeLog:
                   value: "5725132567"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Integer aliquet massa id lobortis convallis tortor risus dapibus augue vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero. Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum."
@@ -40706,7 +40706,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aliquam erat volutpat. In congue. Etiam justo. Etiam pretium iaculis justo."
@@ -41201,7 +41201,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Suspendisse ornare consequat lectus."
@@ -41336,7 +41336,7 @@ databaseChangeLog:
                   value: "7694203069"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -41831,7 +41831,7 @@ databaseChangeLog:
                   value: "3197719145"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nunc purus. Phasellus in felis. Donec semper sapien a libero."
@@ -41966,7 +41966,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat. Praesent blandit. Nam nulla. Integer pede justo lacinia eget tincidunt eget tempus vel pede."
@@ -42056,7 +42056,7 @@ databaseChangeLog:
                   value: "6399187804"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "In congue. Etiam justo. Etiam pretium iaculis justo. In hac habitasse platea dictumst. Etiam faucibus cursus urna."
@@ -42641,7 +42641,7 @@ databaseChangeLog:
                   value: "3738779930"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nam ultrices libero non mattis pulvinar nulla pede ullamcorper augue a suscipit nulla elit ac nulla. Sed vel enim sit amet nunc viverra dapibus. Nulla suscipit ligula in lacus."
@@ -42686,7 +42686,7 @@ databaseChangeLog:
                   value: "8951138964"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -42821,7 +42821,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -42866,7 +42866,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -43091,7 +43091,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Donec diam neque vestibulum eget vulputate ut ultrices vel augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien non mi. Integer ac neque."
@@ -43136,7 +43136,7 @@ databaseChangeLog:
                   value: "9774938744"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nulla ut erat id mauris vulputate elementum."
@@ -43316,7 +43316,7 @@ databaseChangeLog:
                   value: "1631556645"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Quisque porta volutpat erat. Quisque erat eros viverra eget congue eget semper rutrum nulla. Nunc purus. Phasellus in felis."
@@ -43541,7 +43541,7 @@ databaseChangeLog:
                   value: "6049332464"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Integer ac neque. Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus. In sagittis dui vel nisl."
@@ -43766,7 +43766,7 @@ databaseChangeLog:
                   value: "5054289049"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Nunc nisl."
@@ -44171,7 +44171,7 @@ databaseChangeLog:
                   value: "7649348617"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum. Curabitur in libero ut massa volutpat convallis."
@@ -44621,7 +44621,7 @@ databaseChangeLog:
                   value: "5364899232"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Integer ac neque. Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus."
@@ -44666,7 +44666,7 @@ databaseChangeLog:
                   value: "null"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -44711,7 +44711,7 @@ databaseChangeLog:
                   value: "8165449143"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus. Etiam vel augue. Vestibulum rutrum rutrum neque. Aenean auctor gravida sem."
@@ -44756,7 +44756,7 @@ databaseChangeLog:
                   value: "3689180194"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: null
@@ -44846,7 +44846,7 @@ databaseChangeLog:
                   value: "3429924621"
               - column:
                   name: photo
-                  value: "null"
+                  value: "/static/img/user/default-avatar.png"
               - column:
                   name: about
                   value: "Sed vel enim sit amet nunc viverra dapibus. Nulla suscipit ligula in lacus. Curabitur at ipsum ac tellus semper interdum."
