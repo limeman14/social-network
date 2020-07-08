@@ -31,4 +31,6 @@ public class PersonResponseDto implements Dto {
     protected Long lastOnlineTime;
     @JsonProperty("messages_permission")
     protected String messagesPermission;
+    @JsonProperty("is_friend")
+    protected Boolean isFriend;
 }
