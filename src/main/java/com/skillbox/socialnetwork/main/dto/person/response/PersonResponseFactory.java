@@ -37,6 +37,27 @@ public class PersonResponseFactory {
                 person.getIsBlocked(),
                 person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null,
                 person.getMessagesPermission().toString()
+                , false
+        );
+    }
+
+    public static PersonResponseDto getPersonWithFriendshipDto(Person person, boolean isFriend) {
+        return new PersonResponseDto(
+                person.getId(),
+                person.getFirstName(),
+                person.getLastName(),
+                person.getRegDate().getTime(),
+                person.getBirthDate() != null ? person.getBirthDate().getTime() : null,
+                person.getEmail(),
+                person.getPhone(),
+                person.getPhoto(),
+                person.getAbout(),
+                person.getCity(),
+                person.getCountry(),
+                person.getIsBlocked(),
+                person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null,
+                person.getMessagesPermission().toString()
+                , isFriend
         );
     }
 
