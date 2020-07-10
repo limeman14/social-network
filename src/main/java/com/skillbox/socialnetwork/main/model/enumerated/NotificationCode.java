@@ -6,5 +6,6 @@ public enum NotificationCode {
     COMMENT_COMMENT,
     FRIEND_REQUEST,
     FRIEND_BIRTHDAY,
-    MESSAGE
+    MESSAGE,
+    LIKE
 }

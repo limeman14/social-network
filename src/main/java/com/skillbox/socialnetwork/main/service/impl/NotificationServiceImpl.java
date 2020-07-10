@@ -161,8 +161,6 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void addNotification(Person src, Person dst, NotificationCode code, String message)
     {
-        if(!notificationRepository.alreadyExists(src, dst, code, new Date()))
-        {
             Notification notification = Notification.builder()
                     .person(dst)
                     .entityAuthor(src)
@@ -172,7 +170,6 @@ public class NotificationServiceImpl implements NotificationService {
                     .readStatus(ReadStatus.SENT)
                     .build();
             notificationRepository.save(notification);
-        }
     }
 
     public void getBirthdays(Person user)
