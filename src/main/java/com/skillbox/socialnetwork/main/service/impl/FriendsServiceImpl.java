@@ -14,10 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,6 +49,28 @@ public class FriendsServiceImpl implements FriendsService {
                 .filter(f -> f.getFirstName().contains(name)
                         || f.getLastName().contains(name))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Person> getRecommendations(Person person) {
+        List<Friendship> allFriends = friendshipRepository.findAllFriends(person);
+        List<Person> allPeople = personService.getAll();
+        Set<Person> set = new HashSet<>();
+        allFriends.stream().map(friendship -> friendship.getDstPerson())
+                .map(person1 -> friendshipRepository.findAllFriends(person)).collect(Collectors.toSet())
+                .forEach(l -> l.forEach(f -> set.add(f.getDstPerson())));
+        allFriends.stream().map(friendship -> friendship.getDstPerson())
+                .map(person1 -> friendshipRepository.findAllFriends(person)).collect(Collectors.toSet())
+                .forEach(l -> l.forEach(friendship -> set.add(friendship.getSrcPerson())));
+        if (set.contains(person)) set.remove(person);
+        while (set.size() < 20) {
+            set.add(allPeople.get(
+                    (int) (Math.random() * allPeople.size())
+            ));
+        }
+        List<Person> result = new ArrayList<>();
+        result.addAll(set);
+        return result;
     }
 
     @Override
@@ -125,6 +144,7 @@ public class FriendsServiceImpl implements FriendsService {
         return isFriendMap;
     }
 
+    @Override
     public String deleteFriend(Person owner, Person deletedFriend) {
         Friendship relationsSrc = friendshipRepository.findNonBLockedRelation(owner, deletedFriend);
         Friendship relationsDst = friendshipRepository.findNonBLockedRelation(deletedFriend, owner);
