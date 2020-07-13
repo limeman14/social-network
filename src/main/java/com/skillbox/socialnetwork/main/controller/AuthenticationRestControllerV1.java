@@ -103,7 +103,7 @@ public class AuthenticationRestControllerV1 {
 
 
     @PutMapping("/api/v1/account/email")
-    public ResponseEntity<?> changeEmail(@RequestHeader(name = "Authorization") String token, EmailRequestDto request,
+    public ResponseEntity<?> changeEmail(@RequestHeader(name = "Authorization") String token, @RequestBody EmailRequestDto request,
             @RequestHeader(name = "Referer") String referer)
     {
         return ResponseEntity.ok(authService.changeEmail(token, request, referer));

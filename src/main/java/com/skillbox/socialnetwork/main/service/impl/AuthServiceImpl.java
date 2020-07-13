@@ -6,6 +6,7 @@ import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
+import com.skillbox.socialnetwork.main.dto.auth.response.TokenResponse;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.*;
@@ -150,6 +151,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             URL ub = new URL(referer);
             String[] strings = jwtTokenProvider.getUsername(ub.getQuery().replaceAll("token=", "")).split(":");
+            System.out.println("email ="+request.getEmail());
             if(strings.length == 2){
                 Person person = personService.findByEmail(strings[0]);
                 if(person.getConfirmationCode().equals(strings[1])){
@@ -158,7 +160,7 @@ public class AuthServiceImpl implements AuthService {
                     personService.save(person);
                     emailService.sendSimpleMessage(request.getEmail(), "Отныне для входа в Ваш аккаунт соцсети будет использоваться данная почта");
                     log.info("New email set for user {}", person.getEmail());
-                    return ResponseFactory.responseOk();
+                    return new TokenResponse(jwtTokenProvider.createToken(person.getEmail()));
                 }
             }
             log.error("Password change failed: token error");
