@@ -12,7 +12,9 @@ import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
+import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import com.skillbox.socialnetwork.main.repository.*;
+import com.skillbox.socialnetwork.main.service.NotificationService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.service.ProfileService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,17 +40,19 @@ public class ProfileServiceImpl implements ProfileService {
     private final FriendshipRepository friendshipRepository;
     private final FileRepository fileRepository;
     private final PersonService personService;
+    private final NotificationService notificationService;
 
     @Autowired
     public ProfileServiceImpl(PersonService personService, PostRepository postRepository,
-                              TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo,
-                              FriendshipRepository friendshipRepository, FileRepository fileRepository) {
+            TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo,
+            FriendshipRepository friendshipRepository, FileRepository fileRepository, NotificationService notificationService) {
         this.personService = personService;
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
         this.friendshipStatusRepo = friendshipStatusRepo;
         this.friendshipRepository = friendshipRepository;
         this.fileRepository = fileRepository;
+        this.notificationService = notificationService;
     }
 
 
@@ -142,6 +146,10 @@ public class ProfileServiceImpl implements ProfileService {
             savedPost.setTags(tags);
         }
         Post result = postRepository.save(savedPost);
+
+        //Notification
+        person.getFriendshipsDst().stream().map(Friendship::getSrcPerson).forEach(p->notificationService.addNotification(person, p, NotificationCode.POST, "Пользователь добавил новый пост \""+post.getTitle()+"\""));
+
         log.info("IN addPost post: {} added with tags: {} successfully", post.getId(), tags);
         return PostResponseFactory.getSinglePost(result, person);
     }

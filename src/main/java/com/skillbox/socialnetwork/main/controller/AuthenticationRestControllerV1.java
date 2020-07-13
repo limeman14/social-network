@@ -32,24 +32,29 @@ public class AuthenticationRestControllerV1 {
 
     @Autowired
     public AuthenticationRestControllerV1(AuthService authService,
-                                          GeoIPLocationService geoService,
-                                          NotificationService notificationService) {
+            GeoIPLocationService geoService,
+            NotificationService notificationService)
+    {
         this.authService = authService;
         this.geoService = geoService;
         this.notificationService = notificationService;
     }
 
     @PostMapping("/api/v1/auth/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto)
+    {
         return ResponseEntity.ok(authService.login(requestDto));
     }
 
     @PostMapping("/api/v1/account/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDto requestDto, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDto requestDto, HttpServletRequest request) throws Exception
+    {
         GeoIP location;
-        try {
+        try
+        {
             location = getLocation(null, request);
-        } catch (GeoIp2Exception e) {
+        } catch (GeoIp2Exception e)
+        {
             log.warn("Registration from localhost", e);
             location = new GeoIP(null, "localhost", "localhost", "0.00", "0.00");
         }
@@ -59,15 +64,17 @@ public class AuthenticationRestControllerV1 {
 
 
     @PostMapping("/api/v1/auth/logout")
-    public ResponseEntity<?> logout(@RequestHeader(name = "Authorization") String token) {
+    public ResponseEntity<?> logout(@RequestHeader(name = "Authorization") String token)
+    {
         authService.logout(token);
         return ResponseEntity.ok(ResponseFactory.responseOk());
     }
 
     @PutMapping("/api/v1/account/password/recovery")
-    public ResponseEntity<?> passwordRecovery(HttpServletRequest request, @RequestBody EmailRequestDto dto) {
+    public ResponseEntity<?> passwordRecovery(HttpServletRequest request, @RequestBody EmailRequestDto dto)
+    {
         Response response = authService.passwordRecovery(dto.getEmail(),
-                request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort());
+                request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort(), "change-password");
         return ResponseEntity.ok(response);
     }
 
@@ -75,12 +82,36 @@ public class AuthenticationRestControllerV1 {
     public ResponseEntity<?> passwordRecovery(
             @RequestHeader(name = "Referer") String referer,
             @RequestBody PasswordSetRequestDto dto
-    ) {
+                                             )
+    {
         return ResponseEntity.ok(authService.passwordSet(dto, referer));
     }
 
+    @PutMapping("/api/v1/account/password/change")
+    public ResponseEntity<?> passwordChange(HttpServletRequest request, @RequestHeader(name = "Authorization") String token)
+    {
+        return ResponseEntity.ok(authService.passwordRecovery(authService.getAuthorizedUser(token).getEmail(),
+                request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort(), "shift-password"));
+    }
+
+    @PutMapping("/api/v1/account/email/change")
+    public ResponseEntity<?> sendEmailChangeLetter(HttpServletRequest request,
+            @RequestHeader(name = "Authorization") String token)
+    {
+        return ResponseEntity.ok(authService.sendEmailChangeLetter(request, token));
+    }
+
+
+    @PutMapping("/api/v1/account/email")
+    public ResponseEntity<?> changeEmail(@RequestHeader(name = "Authorization") String token, @RequestBody EmailRequestDto request,
+            @RequestHeader(name = "Referer") String referer)
+    {
+        return ResponseEntity.ok(authService.changeEmail(token, request, referer));
+    }
+
     @GetMapping("/api/v1/account/notifications")
-    public ResponseEntity<?> getNotificationSettings(@AuthenticationPrincipal JwtUser user) {
+    public ResponseEntity<?> getNotificationSettings(@AuthenticationPrincipal JwtUser user)
+    {
         return ResponseEntity.ok(notificationService.getNotificationSettings(user.getId()));
     }
 
@@ -88,7 +119,8 @@ public class AuthenticationRestControllerV1 {
     public ResponseEntity<?> changeNotificationSetting(
             @AuthenticationPrincipal JwtUser user,
             @RequestBody NotificationSettingRequestDto dto
-    ) {
+                                                      )
+    {
         return ResponseEntity.ok(notificationService.changeNotificationSetting(user.getId(), dto));
     }
 
@@ -97,11 +129,14 @@ public class AuthenticationRestControllerV1 {
     public GeoIP getLocation(
             @RequestParam(value = "ipAddress", required = false) String ipAddress,
             HttpServletRequest request
-    ) throws IOException, GeoIp2Exception {
+                            ) throws IOException, GeoIp2Exception
+    {
         String remoteAddress = "";
-        if (request != null) {
+        if (request != null)
+        {
             remoteAddress = request.getHeader("X-FORWARDED-FOR");
-            if (remoteAddress == null || "".equals(remoteAddress)) {
+            if (remoteAddress == null || "".equals(remoteAddress))
+            {
                 remoteAddress = request.getRemoteAddr();
             }
         }
