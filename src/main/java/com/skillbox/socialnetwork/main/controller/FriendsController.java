@@ -4,7 +4,6 @@ import com.skillbox.socialnetwork.main.dto.friends.response.FriendsResponseFacto
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
-import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.FriendsService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +20,11 @@ import java.util.stream.Collectors;
 public class FriendsController {
     private final FriendsService friendsService;
     private final PersonService personService;
-    private final AuthService authService;
 
     @Autowired
-    public FriendsController(FriendsService friendsService, PersonService personService, AuthService authService) {
+    public FriendsController(FriendsService friendsService, PersonService personService) {
         this.friendsService = friendsService;
         this.personService = personService;
-        this.authService = authService;
     }
 
     @GetMapping("/friends")
@@ -52,21 +49,12 @@ public class FriendsController {
             @RequestParam(required = false, defaultValue = "0") Integer offset,
             @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
     ) {
+        if (personService.findById(user.getId()) == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FriendsResponseFactory.getErrorMessage());
+        }
         List<Person> request = friendsService
                 .getFriendRequest(personService.findById(user.getId()), name);
         return ResponseEntity.ok().body(PersonResponseFactory.getPersons(request, offset, itemPerPage));
-    }
-
-    @GetMapping("/friends/recommendations")
-    public ResponseEntity<?> gerRecommendations(
-            @AuthenticationPrincipal JwtUser user,
-            @RequestParam(required = false, defaultValue = "0") Integer offset,
-            @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
-    ) {
-        return ResponseEntity.ok().body(PersonResponseFactory.getPersons(
-                friendsService.getRecommendations(personService.findById(user.getId())),
-                offset,
-                itemPerPage));
     }
 
     @PostMapping("/friends/{id}")
@@ -106,7 +94,7 @@ public class FriendsController {
         }
         return ResponseEntity.ok().body(FriendsResponseFactory
                 .getIsFriendDtoList(friendsService.isFriend(personService.findById(user.getId()),
-                        idList.stream().map(personService::findById).collect(Collectors.toList()))));
+                idList.stream().map(personService::findById).collect(Collectors.toList()))));
 
     }
 }

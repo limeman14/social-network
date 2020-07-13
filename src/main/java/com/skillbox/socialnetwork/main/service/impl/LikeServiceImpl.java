@@ -5,9 +5,11 @@ import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.model.PostLike;
+import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import com.skillbox.socialnetwork.main.repository.LikeRepository;
 import com.skillbox.socialnetwork.main.repository.PostRepository;
 import com.skillbox.socialnetwork.main.service.LikeService;
+import com.skillbox.socialnetwork.main.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +20,13 @@ import java.util.stream.Collectors;
 public class LikeServiceImpl implements LikeService {
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
+    private final NotificationService notificationService;
 
     @Autowired
-    public LikeServiceImpl(LikeRepository likeRepository, PostRepository postRepository) {
+    public LikeServiceImpl(LikeRepository likeRepository, PostRepository postRepository, NotificationService notificationService) {
         this.likeRepository = likeRepository;
         this.postRepository = postRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -30,6 +34,8 @@ public class LikeServiceImpl implements LikeService {
         if (!isLiked(like.getPost(), like.getPerson())) {
             likeRepository.save(like);
         }
+        notificationService.addNotification(like.getPerson(), like.getPost().getAuthor(), NotificationCode.LIKE, "Пользователь "+like.getPerson() + " оценил вашу запись.");
+
         return new LikeResponseDto(like.getPost().getLikes().size(), like.getPost().getLikes().stream()
                 .map(PostLike::getPerson).map(Person::getId).collect(Collectors.toList()));
     }

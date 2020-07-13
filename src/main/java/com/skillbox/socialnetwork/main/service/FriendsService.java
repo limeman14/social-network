@@ -15,6 +15,4 @@ public interface FriendsService {
     Map<Person, String> isFriend(Person srcPerson, List<Person> dstPersonList);
 
     String deleteFriend(Person owner, Person deletedFriend);
-
-    List<Person> getRecommendations(Person person);
 }
