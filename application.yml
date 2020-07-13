@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/social_network_test?&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Moscow
+    url: jdbc:mysql://localhost:3306/social_network?&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Moscow
     username: root
     password: testtest
-
+#    password: ab33aa4c
   jpa:
     show-sql: false
     hibernate.ddl-auto: none
@@ -16,13 +16,13 @@ spring:
 
 jwt.token:
   secret: jwtappdemo
-  expired: 360000000
+  expired: 36000000000
 
 server:
   port: 8080
 
 upload:
-  path: "C:/Users/Katerina/Desktop/storage"
+  path: "C:/Users/Valet/Desktop/storage"
 
 hostname: localhost:8080
 
