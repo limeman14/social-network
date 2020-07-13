@@ -48,7 +48,7 @@ public class PostServiceImpl implements PostService {
         int count = postRepository.getCountNotBlockedPost();
         int page = offset / limit;
         return PostResponseFactory.getPostsList(
-                postRepository.getFeeds(PageRequest.of(page, limit)), //TODO исправить!
+                postRepository.getFeeds(PageRequest.of(page, limit)),
                 count,
                 offset,
                 limit,
