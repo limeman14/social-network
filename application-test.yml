@@ -27,6 +27,8 @@ hostname: localhost:8080
 
 project.name: Социальная сеть разработчиков
 
+path.to.dblocation.city: 'src\main\resources\static\GeoLite2-City_20200616_2\GeoLite2-City.mmdb'
+
 spring.mail:
   # Логин и пароль пользователя от почты на gmail
   host: smtp.gmail.com
@@ -43,5 +45,7 @@ spring.mail:
     starttls.enable: true
 
 test.user:
-  email: "test@test.com"
+  email: "test@javarush.ru"
   password: "12345678"
+  friendEmail: "friend@skillbox.ru"
+  friendPassword: "12345678"

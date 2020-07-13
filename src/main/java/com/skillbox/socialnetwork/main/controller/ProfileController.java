@@ -6,11 +6,13 @@ import com.skillbox.socialnetwork.main.dto.post.request.AddPostRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
+import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
 import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -75,9 +77,11 @@ public class ProfileController {
             @RequestParam(name = "country", required = false) String country,
             @RequestParam(name = "city", required = false) String city,
             @RequestParam(name = "offset", defaultValue = "0", required = false) Integer offset,
-            @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit
+            @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit,
+            @AuthenticationPrincipal JwtUser user
     ) {
-        return ResponseEntity.ok(profileService.searchPeople(name, surname, ageFrom, ageTo, country, city, offset, limit));
+        return ResponseEntity.ok(profileService.searchPeople(name, surname, ageFrom, ageTo,
+                country, city, offset, limit, user.getId()));
 
     }
 

@@ -1,12 +1,14 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.dto.person.request.UpdatePersonRequestDto;
+import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseDto;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
 import com.skillbox.socialnetwork.main.dto.post.request.AddPostRequestDto;
 import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
 import com.skillbox.socialnetwork.main.dto.profile.response.WallResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
+import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -88,7 +91,9 @@ public class ProfileServiceImpl implements ProfileService {
         Person profile = personService.findById(id);
         //эта строчка проверяет, заблокировал ли текущий авторизованный юзер юзера, которого ищем по id
         profile.setIsBlocked(friendshipRepository.isBlocked(authorizedUser, profile));
-        BaseResponse result = PersonResponseFactory.getPerson(profile);
+        Dto response = PersonResponseFactory.getPersonWithFriendshipDto(profile,
+                friendshipRepository.isFriend(authorizedUser, profile));
+        BaseResponse result = ResponseFactory.getBaseResponse(response);
         log.info("IN getUserById user with id: {} {}  found.", id, profile);
         return result;
     }
@@ -151,7 +156,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public BaseResponseList searchPeople(String name, String surname, Integer ageFrom, Integer ageTo, String country,
-                                         String city, Integer offset, Integer limit) {
+                                         String city, Integer offset, Integer limit, int authorizedUserId) {
         // превращаю из локалдейт в дату ибо spring jpa не может в query воспринимать LocalDate и принимает только Date
         Date dateTo = Date.from(LocalDate.now().minusYears(ageFrom).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//плюс день для верхней даты и минус день
         Date dateFrom = Date.from(LocalDate.now().minusYears(ageTo).minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//для нижней т.к. between строгое сравнение.(<>)
@@ -159,7 +164,11 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info("IN searchPeople by parameters: name {}, surname {}, ageFrom {}, ageTo {}, country {}, city {} found {} result",
                 name, surname, ageFrom, ageTo, country, city, result.size());
-        return PersonResponseFactory.getPersons(result, offset, limit);
+
+        return ResponseFactory.getBaseResponseListWithLimit(result.stream()
+                .map(r -> PersonResponseFactory.getPersonWithFriendshipDto(r,
+                        friendshipRepository.isFriend(personService.findById(authorizedUserId), r)))
+                .collect(Collectors.toList()), offset, limit);
     }
 
     @Override
