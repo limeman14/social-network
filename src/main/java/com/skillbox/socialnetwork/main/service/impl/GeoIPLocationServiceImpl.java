@@ -25,15 +25,18 @@ public class GeoIPLocationServiceImpl implements GeoIPLocationService {
 
     public GeoIP getLocation(String ip)
             throws IOException, GeoIp2Exception {
-//        InetAddress ipAddress = InetAddress.getByName(ip);
-//        CityResponse response = dbReader.city(ipAddress);
-//
-//        String cityName = response.getCity().getName();
-//        String countryName = response.getCountry().getName();
-//        String latitude =
-//                response.getLocation().getLatitude().toString();
-//        String longitude =
-//                response.getLocation().getLongitude().toString();
-        return new GeoIP(ip, "Minsk", "Belarus", "latitude", "longitude");
+        if (ip.equals("127.0.0.1"))
+            return new GeoIP(ip, "", "", "", "");
+
+        InetAddress ipAddress = InetAddress.getByName(ip);
+        CityResponse response = dbReader.city(ipAddress);
+
+        String cityName = response.getCity().getName();
+        String countryName = response.getCountry().getName();
+        String latitude =
+                response.getLocation().getLatitude().toString();
+        String longitude =
+                response.getLocation().getLongitude().toString();
+        return new GeoIP(ip, cityName, countryName, latitude, longitude);
     }
 }
