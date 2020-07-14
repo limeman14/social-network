@@ -2,9 +2,9 @@ package com.skillbox.socialnetwork.main;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
+import com.skillbox.socialnetwork.main.service.FriendsService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.thymeleaf.spring5.expression.Mvc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,6 +28,9 @@ public class FriendsControllerTest extends AbstractMvcTest {
 
     @Autowired
     PersonRepository personRepository;
+
+    @Autowired
+    FriendsService friendsService;
 
     @Autowired
     PersonService personService;
@@ -38,15 +44,17 @@ public class FriendsControllerTest extends AbstractMvcTest {
     @Value("${test.user.friendEmail}")
     private String friendEmail;
 
-    @Value("${test.user.friendPassword}")
-    private String friendPassword;
+    @Value("${test.user.myFriendsFriendEmail}")
+    private String myFriendsFriendEmail;
+
+    @Value("${test.user.userFromMyCityEmail}")
+    private String userFromMyCityEmail;
 
     @Override
     protected void doInit() throws Exception {
         personRepository.deleteAll();
         registerUser(email, password, "Ivan").andExpect(status().isOk());
-        registerUser(friendEmail, friendPassword, "Roman").andExpect(status().isOk());
-
+        registerUser(friendEmail, password, "Roman").andExpect(status().isOk());
     }
 
     @Test
@@ -54,7 +62,7 @@ public class FriendsControllerTest extends AbstractMvcTest {
         Integer friendId = personRepository.findByEmail(friendEmail).getId();
         Integer userId = personRepository.findByEmail(email).getId();
         final String userToken = extractToken(login(email, password).andReturn());
-        final String friendToken = extractToken(login(friendEmail, friendPassword).andReturn());
+        final String friendToken = extractToken(login(friendEmail, password).andReturn());
 
         mockMvc.perform(post("/api/v1/friends/" + friendId)
                 .header("Authorization", userToken))
@@ -89,6 +97,19 @@ public class FriendsControllerTest extends AbstractMvcTest {
 
         assertEquals("FRIEND", getStatusFromResponse(isFriend));
 
+        MvcResult recommendations = getRecommendationsResult(userToken);
+
+//        assertNotEquals(friendId, getIdFromData(getFromDataInResponse(recommendations, "id")));
+        assertTrue(getDataFromResponse(recommendations).getAsJsonArray().size() == 0);
+
+
+        addRecommendedFriends();
+        Integer personFromMyCityId = personRepository.findByEmail(userFromMyCityEmail).getId();
+        Integer friendsFriendId = personRepository.findByEmail(myFriendsFriendEmail).getId();
+        recommendations = getRecommendationsResult(userToken);
+        assertTrue(getIdListFromData(recommendations).contains(friendsFriendId));
+        assertTrue(getIdListFromData(recommendations).contains(personFromMyCityId));
+
         mockMvc.perform(delete("/api/v1/friends/" + userId)
                 .header("Authorization", friendToken))
                 .andDo(print())
@@ -96,14 +117,14 @@ public class FriendsControllerTest extends AbstractMvcTest {
 
     }
 
-    private ResultActions registerUser(String email, String password, String firstname) throws Exception {
+    private ResultActions registerUser(String email, String password, String firstName) throws Exception {
         return mockMvc.perform(
                 post("/api/v1/account/register")
                         .content("{\n" +
                                 "  \"email\": \"" + email + "\",\n" +
                                 "  \"passwd1\": \"" + password + "\",\n" +
                                 "  \"passwd2\": \"" + password + "\",\n" +
-                                "  \"firstName\": \"" + firstname + "\",\n" +
+                                "  \"firstName\": \"" + firstName + "\",\n" +
                                 "  \"lastName\": \"Паровозов\",\n" +
                                 "  \"code\": \"3675\"\n" +
                                 "}").contentType(MediaType.APPLICATION_JSON))
@@ -115,13 +136,25 @@ public class FriendsControllerTest extends AbstractMvcTest {
         JsonElement json = new JsonParser().parse(result.getResponse().getContentAsString());
 
         if (json instanceof JsonArray) {
-            JsonArray  parsedJson = json.getAsJsonArray();
-            return parsedJson.get(0).getAsJsonObject().get("data").getAsJsonArray().get(0).getAsJsonObject().get(field);
+            return getDataFromResponse(result).getAsJsonArray().get(0).getAsJsonObject().get(field);
         }
 
-        return json.getAsJsonObject().get("data").getAsJsonArray().get(0).getAsJsonObject().get(field);
+        return getDataFromResponse(result).getAsJsonArray().get(0).getAsJsonObject().get(field);
+    }
 
+    private List<Integer> getIdListFromData(MvcResult result) throws Exception {
+        List<Integer> idList = new ArrayList<>();
+        JsonArray jsonArray = getDataFromResponse(result).getAsJsonArray();
+        for (JsonElement jsonElement : jsonArray) {
+            idList.add(jsonElement.getAsJsonObject().get("id").getAsInt());
+        }
+        return idList;
+    }
 
+    private JsonElement getDataFromResponse(MvcResult result) throws Exception {
+        JsonElement data = new JsonParser().parse(result.getResponse().getContentAsString()).getAsJsonObject().get("data");
+        System.out.println(data);
+        return data;
     }
 
     private Integer getIdFromData(JsonElement element) {
@@ -131,5 +164,26 @@ public class FriendsControllerTest extends AbstractMvcTest {
     private String getStatusFromResponse(MvcResult result) throws Exception {
         return new JsonParser().parse(result.getResponse().getContentAsString()).getAsJsonArray().get(0)
                 .getAsJsonObject().get("status").getAsString();
+    }
+
+    private MvcResult getRecommendationsResult(String userToken) throws Exception {
+        return mockMvc.perform(get("/api/v1/friends/recommendations/")
+                .header("Authorization", userToken)
+                .param("offset", "0")
+                .param("itemPerPage", "20"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    private void addRecommendedFriends() throws Exception {
+        registerUser(myFriendsFriendEmail, password, "Semen").andExpect(status().isOk());
+        registerUser(userFromMyCityEmail, password, "Karen").andExpect(status().isOk());
+        personRepository.findByEmail(email).setCity("Москва");
+        personRepository.findByEmail(userFromMyCityEmail).setCity("Москва");
+        friendsService.addFriend(personRepository.findByEmail(friendEmail),
+                personRepository.findByEmail(userFromMyCityEmail));
+        friendsService.addFriend(personRepository.findByEmail(userFromMyCityEmail),
+                personRepository.findByEmail(friendEmail));
     }
 }

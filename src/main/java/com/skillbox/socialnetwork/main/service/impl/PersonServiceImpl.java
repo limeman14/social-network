@@ -3,19 +3,15 @@ package com.skillbox.socialnetwork.main.service.impl;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
-import com.skillbox.socialnetwork.main.dto.universal.MessageResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
 import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.NotificationSettings;
-import com.skillbox.socialnetwork.main.exception.user.input.UserInputException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
-import com.skillbox.socialnetwork.main.repository.NotificationRepository;
 import com.skillbox.socialnetwork.main.repository.NotificationSettingsRepository;
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import com.skillbox.socialnetwork.main.repository.RoleRepository;
@@ -136,6 +132,11 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Person save(Person person) {
         return repository.save(person);
+    }
+
+    @Override
+    public List<Person> findByCity(String city) {
+        return repository.findPeopleByCity(city);
     }
 
     @Override

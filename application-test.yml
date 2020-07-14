@@ -45,7 +45,8 @@ spring.mail:
     starttls.enable: true
 
 test.user:
-  email: "test@javarush.ru"
   password: "12345678"
+  email: "test@javarush.ru"
   friendEmail: "friend@skillbox.ru"
-  friendPassword: "12345678"
+  userFromMyCityEmail: "my@city.ru"
+  myFriendsFriendEmail: "my@friend.ru"
