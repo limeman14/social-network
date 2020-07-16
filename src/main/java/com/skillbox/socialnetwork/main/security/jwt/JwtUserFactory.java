@@ -30,6 +30,7 @@ public class JwtUserFactory {
                 user.getConfirmationCode(),
                 user.getIsApproved(),
                 user.getMessagesPermission(),
+                user.getStatus(),
                 user.getLastOnlineTime(),
                 user.getIsBlocked(),
                 getAuthorities(user.getRoles())

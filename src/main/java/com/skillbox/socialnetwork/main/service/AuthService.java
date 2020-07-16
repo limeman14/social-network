@@ -8,12 +8,13 @@ import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.model.Person;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public interface AuthService {
-    Response login(AuthenticationRequestDto request);
+    Response login(AuthenticationRequestDto request, HttpServletRequest httpServletRequest, String referer);
 
-    Response register(RegisterRequestDto request, GeoIP location) throws IOException, GeoIp2Exception;
+    Response register(RegisterRequestDto requestDTO, GeoIP location, HttpServletRequest request) throws IOException, GeoIp2Exception;
 
     void logout(String token);
 
@@ -24,4 +25,6 @@ public interface AuthService {
     Response passwordRecovery(String email, String url);
 
     Response passwordSet(PasswordSetRequestDto dto, String referer);
+
+    boolean sendActivationEmail(HttpServletRequest request, String email);
 }

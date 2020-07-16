@@ -5,6 +5,7 @@ import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.model.Person;
+import com.skillbox.socialnetwork.main.model.enumerated.Status;
 
 import java.io.IOException;
 import java.util.Date;

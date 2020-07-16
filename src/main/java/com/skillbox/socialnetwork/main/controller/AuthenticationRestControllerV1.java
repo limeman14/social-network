@@ -7,6 +7,7 @@ import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.notifications.request.NotificationSettingRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
+import com.skillbox.socialnetwork.main.dto.universal.ErrorResponse;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
@@ -15,6 +16,7 @@ import com.skillbox.socialnetwork.main.service.GeoIPLocationService;
 import com.skillbox.socialnetwork.main.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -40,20 +42,30 @@ public class AuthenticationRestControllerV1 {
     }
 
     @PostMapping("/api/v1/auth/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto) {
-        return ResponseEntity.ok(authService.login(requestDto));
+    public ResponseEntity<?> login(
+            HttpServletRequest request,
+            @RequestBody AuthenticationRequestDto requestDto,
+            @RequestHeader(name = "Referer", required = false) String referer
+    ) {
+        Response login = authService.login(requestDto, request, referer);
+        if (login.getClass().equals(ErrorResponse.class)) {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(login);
+        }
+
+        return ResponseEntity.ok(login);
     }
 
     @PostMapping("/api/v1/account/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDto requestDto, HttpServletRequest request) throws Exception {
         GeoIP location;
+        location = new GeoIP(null, "localhost", "localhost", "0.00", "0.00");
         try {
             location = getLocation(null, request);
         } catch (GeoIp2Exception e) {
             log.warn("Registration from localhost", e);
             location = new GeoIP(null, "localhost", "localhost", "0.00", "0.00");
         }
-        Response result = authService.register(requestDto, location);
+        Response result = authService.register(requestDto, location, request);
         return ResponseEntity.ok(result);
     }
 

@@ -26,7 +26,7 @@ upload:
 
 hostname: localhost:8080
 
-project.name: Социальная сеть разработчиков
+project.name: <Социальная сеть разработчиков/>
 
 path.to.dblocation.city: 'src/main/resources/static/GeoLite2-City_20200616_2/GeoLite2-City.mmdb'
 

@@ -3,6 +3,7 @@ package com.skillbox.socialnetwork.main.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
+import com.skillbox.socialnetwork.main.model.enumerated.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,6 +32,7 @@ public class JwtUser implements UserDetails {
     private String confirmationCode;
     private boolean isApproved;
     private Permission messagePermission;
+    private Status status;
     private Date lastOnline;
     private boolean isBlocked;
     private Collection<? extends GrantedAuthority> authorities;
