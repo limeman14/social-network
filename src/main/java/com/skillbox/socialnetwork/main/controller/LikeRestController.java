@@ -36,16 +36,7 @@ public class LikeRestController {
     @PutMapping("/api/v1/likes")
     public ResponseEntity putLike(@RequestHeader(name = "Authorization") String token,
                                   @RequestBody LikeRequest request) {
-        if (authService.isAuthorized(token)) {
-            PostLike like = new PostLike();
-            like.setPerson(authService.getAuthorizedUser(token));
-            like.setPost(postService.findById(request.getId()));
-            like.setTime(new Date());
-            likeService.save(like);
-            return ResponseEntity.status(HttpStatus.OK).body(LikeResponseFactory.getLikeDto(postService.findById(request.getId())));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ResponseFactory.getErrorResponse("invalid request", "unauthorized"));
+        return ResponseEntity.ok(likeService.putLike(request, authService.getAuthorizedUser(token)));
     }
 
     @GetMapping("/api/v1/likes") //Пока что реализовал получение лайков только у постов

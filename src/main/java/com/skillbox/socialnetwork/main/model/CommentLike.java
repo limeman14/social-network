@@ -10,14 +10,14 @@ import java.util.Date;
 
 @Entity
 @Data
-@Table(name = "post_likes")
+@Table(name = "comment_likes")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostLike {
+public class CommentLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
     private Date time;
 
@@ -26,6 +26,7 @@ public class PostLike {
     private Person person;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "comment_id")
+    private PostComment comment;
+
 }

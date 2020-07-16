@@ -27,4 +27,10 @@ public class CommentDto implements Dto {
 
     @JsonProperty("sub_comments")
     private List<Dto> subComments;
+
+    @JsonProperty("like_count")
+    private int likeCount;
+
+    @JsonProperty("is_my_like")
+    private boolean isMyLike;
 }

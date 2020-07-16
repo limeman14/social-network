@@ -826,6 +826,35 @@ databaseChangeLog:
               - column:
                   name: MESSAGE
                   type: BIT(1)
+  - changeSet:
+      id: 1.1.8
+      author: alexei
+      changes:
+        - createTable:
+            tableName: comment_likes
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                  name: id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: time
+                  type: datetime
+              - column:
+                  constraints:
+                    nullable: false
+                  name: person_id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: comment_id
+                  type: INT
   - include:
       file: db/changelog/db.changelog-insertPersons.yaml
   - include:
