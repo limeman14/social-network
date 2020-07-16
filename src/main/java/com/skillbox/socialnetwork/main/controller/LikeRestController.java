@@ -63,9 +63,10 @@ public class LikeRestController {
     @DeleteMapping("api/v1/likes")
     public ResponseEntity deleteLike(@RequestHeader(name = "Authorization") String token,
                                      @RequestParam(name = "item_id") Integer itemId,
+                                     @RequestParam(name = "post_id", required = false) Integer postId,
                                      @RequestParam String type) {
         return ResponseEntity.status(HttpStatus.OK).body(likeService.delete(
-                itemId,
+                itemId, postId, type,
                 authService.getAuthorizedUser(token)
         ));
     }

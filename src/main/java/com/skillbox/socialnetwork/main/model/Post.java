@@ -37,7 +37,7 @@ public class Post{
     )
     private List<Tag> tags;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostLike> likes;
 
     @OneToMany(mappedBy = "post")

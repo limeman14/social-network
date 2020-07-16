@@ -14,7 +14,7 @@ public interface LikeService {
 
     PostLike getLike(Integer id);
 
-    Dto delete(Integer id, Person person);
+    Dto delete(Integer id, Integer postId, String type, Person person);
 
     BaseResponse putLike(LikeRequest request, Person authorizedUser);
 }

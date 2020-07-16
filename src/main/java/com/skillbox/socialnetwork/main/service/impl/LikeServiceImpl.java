@@ -5,10 +5,7 @@ import com.skillbox.socialnetwork.main.dto.like.response.LikeResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
-import com.skillbox.socialnetwork.main.model.CommentLike;
-import com.skillbox.socialnetwork.main.model.Person;
-import com.skillbox.socialnetwork.main.model.Post;
-import com.skillbox.socialnetwork.main.model.PostLike;
+import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import com.skillbox.socialnetwork.main.repository.CommentLikeRepository;
 import com.skillbox.socialnetwork.main.repository.CommentRepository;
@@ -71,12 +68,21 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public Dto delete(Integer id, Person person)
+    public Dto delete(Integer id, Integer postId, String type, Person person)
     {
-        Post post = postRepository.findPostById(id);
-        PostLike like = postLikeRepository.findPostLikeByPostAndPerson(post, person);
-        postLikeRepository.delete(like);
-        return new LikeResponseDto(post.getLikes().size(), new ArrayList<>());
+        switch (type){
+            case "Post":
+                Post post = postRepository.findPostById(id);
+                PostLike postLike = postLikeRepository.findPostLikeByPostAndPerson(post, person);
+                postLikeRepository.delete(postLike);
+                return new LikeResponseDto(post.getLikes().size(), new ArrayList<>());
+            case "Comment":
+                PostComment comment = commentRepository.findPostCommentById(id);
+                CommentLike commentLike = commentLikeRepository.findCommentLikeByCommentAndPerson(comment, person);
+                commentLikeRepository.delete(commentLike);
+                return new LikeResponseDto(comment.getCommentLikes().size(), new ArrayList<>());
+        }
+        return null;
     }
 
     @Override

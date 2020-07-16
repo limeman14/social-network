@@ -40,12 +40,12 @@ public class PostComment {
     @NotNull
     private Boolean isBlocked;
 
-    @OneToMany(mappedBy = "parentComment")
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
     private List<PostComment> childComments;
 
     @OneToMany(mappedBy = "comment")
     private List<BlockHistory> blockHistories;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<CommentLike> commentLikes;
 }
