@@ -23,20 +23,20 @@ public class GeoIPLocationServiceImpl implements GeoIPLocationService {
         dbReader = new DatabaseReader.Builder(database).build();
     }
 
-    public GeoIP getLocation(String ip)
-            throws IOException, GeoIp2Exception {
-        if (ip.equals("127.0.0.1"))
+    public GeoIP getLocation(String ip) {
+        try {
+            InetAddress ipAddress = InetAddress.getByName(ip);
+            CityResponse response = null;
+            response = dbReader.city(ipAddress);
+            String cityName = response.getCity().getName();
+            String countryName = response.getCountry().getName();
+            String latitude =
+                    response.getLocation().getLatitude().toString();
+            String longitude =
+                    response.getLocation().getLongitude().toString();
+            return new GeoIP(ip, cityName, countryName, latitude, longitude);
+        } catch (GeoIp2Exception | IOException e) {
             return new GeoIP(ip, "", "", "", "");
-
-        InetAddress ipAddress = InetAddress.getByName(ip);
-        CityResponse response = dbReader.city(ipAddress);
-
-        String cityName = response.getCity().getName();
-        String countryName = response.getCountry().getName();
-        String latitude =
-                response.getLocation().getLatitude().toString();
-        String longitude =
-                response.getLocation().getLongitude().toString();
-        return new GeoIP(ip, cityName, countryName, latitude, longitude);
+        }
     }
 }

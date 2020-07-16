@@ -9,7 +9,9 @@ import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.auth.response.TokenResponse;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.*;
+import com.skillbox.socialnetwork.main.dto.universal.ErrorResponse;
+import com.skillbox.socialnetwork.main.dto.universal.Response;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
@@ -22,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,36 +43,68 @@ public class AuthServiceImpl implements AuthService {
     private final PersonService personService;
     private final EmailService emailService;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final NotificationServiceImpl notificationService;
 
 
     @Autowired
-    public AuthServiceImpl(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, PersonService personService, EmailService emailService, BCryptPasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, PersonService personService, EmailService emailService, BCryptPasswordEncoder passwordEncoder, NotificationServiceImpl notificationService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.personService = personService;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
+        this.notificationService = notificationService;
+    }
+
+    @Override
+    public boolean sendActivationEmail(HttpServletRequest request, String email) {
+        return false;
     }
 
     @Override
     @MethodLogWithTime
-    public BaseResponse login(AuthenticationRequestDto request) {
+    public Response login(AuthenticationRequestDto request, HttpServletRequest httpServletRequest, String referer) {
         String email = request.getEmail();
         try {
+            if (referer.contains("?")) {
+                URL ub = new URL(referer);
+                String token = ub.getQuery().replaceAll("token=", "");
+                String[] strings = jwtTokenProvider.getUsername(token).split(":");
+                if (strings.length == 2) {
+                    Person person = personService.findByEmail(strings[0]);
+                    if (person.getConfirmationCode().equals(strings[1])) {
+                        person.setPassword(passwordEncoder.encode(request.getPassword()));
+                        person.setConfirmationCode("");
+                        person.setIsApproved(true);
+                        personService.save(person);
+                        log.info("Account {} is activated", person.getEmail());
+                    }
+                }
+            }
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             Person user = personService.findByEmail(email);
             String token = jwtTokenProvider.createToken(email);
             return AuthResponseFactory.getAuthResponse(user, token);
+        } catch (DisabledException e) {
+            return new ErrorResponse("invalid_request", "activation required");
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password for user " + email);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Invalid activation url");
         }
     }
 
     @Override
     @MethodLogWithTime
-    public Response register(RegisterRequestDto request, GeoIP location) throws GeoIp2Exception, IOException {
-        Response registration = personService.registration(request,location);
-        emailService.sendSimpleMessageUsingTemplate(request.getEmail(), request.getFirstName(), "Рады приветствовать Вас на нашем ресурсе!");
+    public Response register(RegisterRequestDto requestDto, GeoIP location, HttpServletRequest request) throws GeoIp2Exception, IOException {
+        Response registration = personService.registration(requestDto, location);
+        String email = requestDto.getEmail();
+        String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        Person person = personService.findByEmail(email);
+        person.setConfirmationCode(CodeGenerator.codeGenerator());
+        personService.save(person);
+        String token = jwtTokenProvider.createToken(person.getEmail() + ":" + person.getConfirmationCode());
+        emailService.sendActivationLink(email, person.getFirstName(), url + "/login?token=" + token);
         return registration;
     }
 
@@ -78,7 +113,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             String email = jwtTokenProvider.getUsername(token);
             personService.logout(personService.findByEmail(email));
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
             log.warn("User not found.");
         }
     }
@@ -112,9 +147,9 @@ public class AuthServiceImpl implements AuthService {
             dto.setToken(ub.getQuery());
             String token = dto.getToken().replaceAll("token=", "");
             String[] strings = jwtTokenProvider.getUsername(token).split(":");
-            if(strings.length == 2){
+            if (strings.length == 2) {
                 Person person = personService.findByEmail(strings[0]);
-                if(person.getConfirmationCode().equals(strings[1])){
+                if (person.getConfirmationCode().equals(strings[1])) {
                     person.setPassword(passwordEncoder.encode(dto.getPassword()));
                     person.setConfirmationCode("");
                     personService.save(person);
@@ -170,6 +205,5 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidRequestException("token not found");
         }
     }
-
 
 }

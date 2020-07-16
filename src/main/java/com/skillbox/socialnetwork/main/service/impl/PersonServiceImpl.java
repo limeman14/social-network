@@ -12,6 +12,7 @@ import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Role;
 import com.skillbox.socialnetwork.main.model.enumerated.ERole;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
+import com.skillbox.socialnetwork.main.model.enumerated.Status;
 import com.skillbox.socialnetwork.main.repository.NotificationSettingsRepository;
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import com.skillbox.socialnetwork.main.repository.RoleRepository;
@@ -91,7 +92,8 @@ public class PersonServiceImpl implements PersonService {
         person.setCountry(location.getCountry());
         person.setIsBlocked(false);
         person.setMessagesPermission(Permission.ALL);
-        person.setIsApproved(true);
+        person.setStatus(Status.REGISTERED);
+        person.setIsApproved(false);
         person.setRoles(getBasePermission());
         person.setLastOnlineTime(new Date());
         person.setPhoto("/static/img/user/default-avatar.png");
@@ -143,6 +145,4 @@ public class PersonServiceImpl implements PersonService {
     public void delete(Person person) {
         repository.delete(person);
     }
-
-
 }

@@ -3,6 +3,7 @@ package com.skillbox.socialnetwork.main.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
+import com.skillbox.socialnetwork.main.model.enumerated.Status;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -50,6 +51,9 @@ public class Person {
     private String country;
 
     private String confirmationCode;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     private Boolean isApproved;
 

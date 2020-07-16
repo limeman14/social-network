@@ -59,6 +59,10 @@ databaseChangeLog:
                   type: ENUM("ALL", "FRIENDS")
                   defaultValue: "ALL"
               - column:
+                  name: status
+                  type: ENUM("REGISTERED", "BLOCKED", "DELETED")
+                    defaultValue: "REGISTERED"
+              - column:
                   constraints:
                     nullable: false
                   name: password

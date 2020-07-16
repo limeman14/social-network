@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public interface AuthService {
-    Response login(AuthenticationRequestDto request);
+    Response login(AuthenticationRequestDto request, HttpServletRequest httpServletRequest, String referer);
 
-    Response register(RegisterRequestDto request, GeoIP location) throws IOException, GeoIp2Exception;
+    Response register(RegisterRequestDto requestDTO, GeoIP location, HttpServletRequest request) throws IOException, GeoIp2Exception;
 
     void logout(String token);
 
@@ -31,4 +31,6 @@ public interface AuthService {
     Response sendEmailChangeLetter(HttpServletRequest request, String token);
 
     Response changeEmail(String token, EmailRequestDto request, String referer);
+
+    boolean sendActivationEmail(HttpServletRequest request, String email);
 }
