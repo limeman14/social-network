@@ -76,7 +76,7 @@ public class CommentServiceImpl implements CommentService {
             log.info("SENT COMMENT notification to " + (isParentComment ? post.getAuthor() : comment.getParentComment().getAuthor()).getFirstName() + " " + (isParentComment ? post.getAuthor() : comment.getParentComment().getAuthor()).getLastName());
         }
         log.info("New comment added from user with id = {}", authorId);
-        return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment));
+        return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment, commentAuthor), commentAuthor);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setParentComment(commentRepository.findPostCommentById(request.getParentId()));
         commentRepository.save(comment);
         log.info("Comment with id {} successfully updated", commentId);
-        return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment));
+        return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment, comment.getAuthor()), comment.getAuthor());
     }
 
     @Override
@@ -99,8 +99,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Response getComments(int postId) {
+    public Response getComments(int postId, Person person) {
         Post postById = postRepository.findPostById(postId);
-        return CommentResponseFactory.getComments(postById.getComments(), 10, 10);
+        return CommentResponseFactory.getComments(postById.getComments(), 10, 10, person);
     }
 }

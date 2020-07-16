@@ -6,6 +6,7 @@ import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
+import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.CommentService;
 import com.skillbox.socialnetwork.main.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,13 @@ import org.springframework.web.bind.annotation.*;
 public class PostRestController {
     private final PostService postService;
     private final CommentService commentService;
+    private final AuthService authService;
 
     @Autowired
-    public PostRestController(PostService postService, CommentService commentService) {
+    public PostRestController(PostService postService, CommentService commentService, AuthService authService) {
         this.postService = postService;
         this.commentService = commentService;
+        this.authService = authService;
     }
 
     @GetMapping("/api/v1/post")
@@ -72,8 +75,9 @@ public class PostRestController {
 
     @GetMapping("api/v1/post/{id}/comments")
     public ResponseEntity<?> getComments(
-            @PathVariable int id) {
-        Response result = commentService.getComments(id);
+            @PathVariable int id,
+            @RequestHeader(name = "Authorization") String token) {
+        Response result = commentService.getComments(id, authService.getAuthorizedUser(token));
         return result != null ? ResponseEntity.status(HttpStatus.OK)
                 .body(result)
                 : new ResponseEntity("Bad request", HttpStatus.BAD_REQUEST);

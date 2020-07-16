@@ -45,4 +45,7 @@ public class PostComment {
 
     @OneToMany(mappedBy = "comment")
     private List<BlockHistory> blockHistories;
+
+    @OneToMany(mappedBy = "comment")
+    private List<CommentLike> commentLikes;
 }

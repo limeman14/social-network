@@ -35,7 +35,7 @@ public class WallResponseFactory {
                         post.getIsBlocked(),
                         post.getLikes().stream().map(PostLike::getPerson).collect(Collectors.toList()).contains(person),
                         post.getLikes().size(),
-                        CommentResponseFactory.getCommentList(post.getComments(), null),
+                        CommentResponseFactory.getCommentList(post.getComments(), null, person),
                         post.getTime().before(new Date()) ? PostType.POSTED : PostType.QUEUED,           //фильтрация между опубликованными и отложенными постами
                         post.getTags() != null
                                 ? post.getTags()

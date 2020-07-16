@@ -1,5 +1,7 @@
 package com.skillbox.socialnetwork.main.service;
 
+import com.skillbox.socialnetwork.main.dto.like.request.LikeRequest;
+import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Post;
@@ -13,4 +15,6 @@ public interface LikeService {
     PostLike getLike(Integer id);
 
     Dto delete(Integer id, Person person);
+
+    BaseResponse putLike(LikeRequest request, Person authorizedUser);
 }

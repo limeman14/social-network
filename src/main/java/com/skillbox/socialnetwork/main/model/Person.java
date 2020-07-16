@@ -129,6 +129,11 @@ public class Person {
     @ToString.Exclude
     private List<Notification> sentNotifications;
 
+    @OneToMany(mappedBy = "person")
+    @JsonIgnore
+    @ToString.Exclude
+    private List<CommentLike> commentLikes;
+
     @Override
     public String toString() {
         return id + " " + firstName + " " + lastName;
