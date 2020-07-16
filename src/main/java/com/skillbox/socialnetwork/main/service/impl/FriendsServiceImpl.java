@@ -54,20 +54,32 @@ public class FriendsServiceImpl implements FriendsService {
     @Override
     public List<Person> getRecommendations(Person person) {
         List<Friendship> allFriends = friendshipRepository.findAllFriends(person);
-        List<Person> allPeople = personService.getAll();
+        List<Person> peopleFromCity = person.getCity().equals("")
+                ? new ArrayList<>()
+                : personService.findByCity(person.getCity());
+        List<Person> srcFriends = allFriends.stream()
+                .map(friendship -> friendship.getSrcPerson()).collect(Collectors.toList());
+        List<Person> dstFriends = allFriends.stream()
+                .map(friendship -> friendship.getDstPerson()).collect(Collectors.toList());
+
         Set<Person> set = new HashSet<>();
-        allFriends.stream().map(friendship -> friendship.getDstPerson())
-                .map(person1 -> friendshipRepository.findAllFriends(person)).collect(Collectors.toSet())
+
+        dstFriends.stream().map(person1 -> friendshipRepository.findAllFriends(person)).collect(Collectors.toSet())
                 .forEach(l -> l.forEach(f -> set.add(f.getDstPerson())));
-        allFriends.stream().map(friendship -> friendship.getDstPerson())
-                .map(person1 -> friendshipRepository.findAllFriends(person)).collect(Collectors.toSet())
+        srcFriends.stream().map(person1 -> friendshipRepository.findAllFriends(person)).collect(Collectors.toSet())
                 .forEach(l -> l.forEach(friendship -> set.add(friendship.getSrcPerson())));
+
+        set.addAll(peopleFromCity);
         if (set.contains(person)) set.remove(person);
-        while (set.size() < 20) {
-            set.add(allPeople.get(
-                    (int) (Math.random() * allPeople.size())
-            ));
+
+        for (Person srcFriend : srcFriends) {
+            if (set.contains(srcFriend)) set.remove(srcFriend);
         }
+        for (Person dstFriend : dstFriends) {
+            if (set.contains(dstFriend)) set.remove(dstFriend);
+        }
+
+
         List<Person> result = new ArrayList<>();
         result.addAll(set);
         return result;

@@ -30,5 +30,7 @@ public interface PersonService {
 
     Person save(Person person);
 
+    List<Person> findByCity(String city);
+
     void delete(Person person);
 }

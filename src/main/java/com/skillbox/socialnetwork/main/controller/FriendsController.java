@@ -37,9 +37,6 @@ public class FriendsController {
             @RequestParam(required = false, defaultValue = "0") Integer offset,
             @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
     ) {
-        if (personService.findById(user.getId()) == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FriendsResponseFactory.getErrorMessage());
-        }
         List<Person> friends = friendsService
                 .getFriends(personService.findById(user.getId()), name);
         return ResponseEntity.ok().body(PersonResponseFactory.getPersons(friends, offset, itemPerPage));
@@ -73,9 +70,6 @@ public class FriendsController {
     public ResponseEntity<?> addFriend(
             @AuthenticationPrincipal JwtUser user,
             @PathVariable Integer id) {
-        if (personService.findById(user.getId()) == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FriendsResponseFactory.getErrorMessage());
-        }
         String message = friendsService.addFriend(personService.findById(user.getId()), personService.findById(id));
         if (message.equals("ok")) {
             return ResponseEntity.ok().body(FriendsResponseFactory.getMessage(message));
@@ -87,9 +81,6 @@ public class FriendsController {
 
     @DeleteMapping("/friends/{id}")
     public ResponseEntity<?> deleteFriend(@AuthenticationPrincipal JwtUser user, @PathVariable Integer id) {
-        if (personService.findById(user.getId()) == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FriendsResponseFactory.getErrorMessage());
-        }
         return ResponseEntity.ok().body(friendsService.deleteFriend(
                 personService.findById(user.getId()),
                 personService.findById(id)
@@ -101,9 +92,6 @@ public class FriendsController {
             @AuthenticationPrincipal JwtUser user,
             @RequestParam List<Integer> idList
     ) {
-        if (personService.findById(user.getId()) == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FriendsResponseFactory.getErrorMessage());
-        }
         return ResponseEntity.ok().body(FriendsResponseFactory
                 .getIsFriendDtoList(friendsService.isFriend(personService.findById(user.getId()),
                         idList.stream().map(personService::findById).collect(Collectors.toList()))));
