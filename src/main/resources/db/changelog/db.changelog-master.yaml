@@ -787,7 +787,7 @@ databaseChangeLog:
                   type: int
               - column:
                   name: type
-                  type: ENUM("POST", "POST_COMMENT", "COMMENT_COMMENT", "FRIEND_REQUEST", "FRIEND_BIRTHDAY", "MESSAGE")
+                  type: ENUM("POST", "POST_COMMENT", "COMMENT_COMMENT", "FRIEND_REQUEST", "FRIEND_BIRTHDAY", "MESSAGE", "LIKE")
             tableName: notifications
   - changeSet:
       id: 1.1.7

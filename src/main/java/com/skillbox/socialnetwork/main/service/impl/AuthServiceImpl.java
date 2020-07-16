@@ -19,6 +19,7 @@ import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.EmailService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.util.CodeGenerator;
+import com.skillbox.socialnetwork.main.util.LastOnlineTimeAdjuster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,6 +60,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             Person user = personService.findByEmail(email);
+            LastOnlineTimeAdjuster.refreshLastOnlineTime(user);
             String token = jwtTokenProvider.createToken(email);
             return AuthResponseFactory.getAuthResponse(user, token);
         } catch (AuthenticationException e) {
