@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.skillbox.socialnetwork.main.model.Person;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
@@ -13,7 +14,6 @@ import com.skillbox.socialnetwork.main.dto.universal.ErrorResponse;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
-import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
 import com.skillbox.socialnetwork.main.service.AuthService;
@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
             String token = jwtTokenProvider.createToken(email);
             return AuthResponseFactory.getAuthResponse(user, token);
         } catch (DisabledException e) {
-            return new ErrorResponse("invalid_request", "activation required");
+            return new ErrorResponse("invalid_request", "Необходимо активировать аккаунт.");
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password for user " + email);
         } catch (MalformedURLException e) {
@@ -175,7 +175,7 @@ public class AuthServiceImpl implements AuthService {
         person.setConfirmationCode(CodeGenerator.codeGenerator());
         personService.save(person);
         String secret = jwtTokenProvider.createToken(person.getEmail() + ":" + person.getConfirmationCode());
-        emailService.sendSimpleMessage(email, person.getFirstName()+", Вот ссылка для изменения почты вашего аккаунта : "+ url + "/shift-email?token=" + secret);
+        emailService.sendSimpleMessage(email, person.getFirstName()+", Вот ссылка для изменения почты вашего аккаунта : "+ url + "/shift-email?token=" + secret, "");
         log.info("User {} requested email change, confirmation email was sent", email);
         return ResponseFactory.responseOk();
     }
@@ -193,7 +193,7 @@ public class AuthServiceImpl implements AuthService {
                     person.setEmail(request.getEmail());
                     person.setConfirmationCode("");
                     personService.save(person);
-                    emailService.sendSimpleMessage(request.getEmail(), "Отныне для входа в Ваш аккаунт соцсети будет использоваться данная почта");
+                    emailService.sendSimpleMessage(request.getEmail(), "Отныне для входа в Ваш аккаунт соцсети будет использоваться данная почта", "");
                     log.info("New email set for user {}", person.getEmail());
                     return new TokenResponse(jwtTokenProvider.createToken(person.getEmail()));
                 }
