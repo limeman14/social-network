@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.skillbox.socialnetwork.main.util.LastOnlineTimeAdjuster.refreshLastOnlineTime;
+
 @Slf4j
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -85,6 +87,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public BaseResponse changeNotificationSetting(int userId, NotificationSettingRequestDto settingDto)
     {
+        refreshLastOnlineTime(personRepository.findPersonById(userId));
         NotificationSettings notificationSettings = notificationSettingsRepository.findByPersonId(userId);
         if (notificationSettings == null)
         {
@@ -124,6 +127,7 @@ public class NotificationServiceImpl implements NotificationService {
     public BaseResponseList getUserNotifications(int userId, int offset, int limit)
     {
         Person user = personRepository.findPersonById(userId);
+        refreshLastOnlineTime(user);
         getBirthdays(user);
         List<Notification> notifications = user.getNotifications();
         notifications.sort(Comparator.comparing(Notification::getSentTime).reversed());

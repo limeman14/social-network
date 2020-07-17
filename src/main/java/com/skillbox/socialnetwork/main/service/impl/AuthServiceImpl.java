@@ -10,9 +10,7 @@ import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.auth.response.TokenResponse;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.ErrorResponse;
-import com.skillbox.socialnetwork.main.dto.universal.Response;
-import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
+import com.skillbox.socialnetwork.main.dto.universal.*;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
@@ -20,6 +18,7 @@ import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.EmailService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.util.CodeGenerator;
+import com.skillbox.socialnetwork.main.util.LastOnlineTimeAdjuster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -83,6 +82,7 @@ public class AuthServiceImpl implements AuthService {
             }
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             Person user = personService.findByEmail(email);
+            LastOnlineTimeAdjuster.refreshLastOnlineTime(user);
             String token = jwtTokenProvider.createToken(email);
             return AuthResponseFactory.getAuthResponse(user, token);
         } catch (DisabledException e) {
