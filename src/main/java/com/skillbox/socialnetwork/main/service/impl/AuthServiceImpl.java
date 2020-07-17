@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
             String token = jwtTokenProvider.createToken(email);
             return AuthResponseFactory.getAuthResponse(user, token);
         } catch (DisabledException e) {
-            return new ErrorResponse("invalid_request", "Необходимо активировать аккаунт.");
+            return new ErrorResponse("invalid_request", "Активируйте аккаунт по ссылке, отправленной вам на email");
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password for user " + email);
         } catch (MalformedURLException e) {
