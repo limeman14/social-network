@@ -1,9 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/social_network?&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Moscow
-    username: root
-  #  password: testtest
-    password: ab33aa4c
+    username: javapro
+    password: iddqd
   jpa:
     show-sql: false
     hibernate.ddl-auto: none
@@ -13,17 +12,19 @@ spring:
         jdbc.time_zone: Europe/Moscow
         dialect: org.hibernate.dialect.MySQL55Dialect
         globally_quoted_identifiers: true
+  boot.admin.client.url: http://localhost:8082
 
 jwt.token:
   secret: jwtappdemo
   expired: 3600000
 
-#server:
-#  port: 8080
+server:
+  port: 8080
 
 upload:
-  path: "C:/Users/Katerina/Desktop/storage"
+  path: "/home/javapro/uploads"
 
+hostname: localhost:8080
 
 project.name: Социальная сеть разработчиков
 
@@ -43,3 +44,10 @@ spring.mail:
     writetimeout: 5000
     # TLS , port 587
     starttls.enable: true
+
+spring.boot.admin.client.username: admin
+spring.boot.admin.client.password: admin-password
+spring.boot.admin.client.instance.metadata.user.name: kmazzia1@fastcompany.com
+spring.boot.admin.client.instance.metadata.user.password: 12345678
+management:
+  endpoints.web.exposure.include: '*'
