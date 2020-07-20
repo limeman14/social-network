@@ -1,7 +1,12 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
+import com.skillbox.socialnetwork.main.dto.files.request.FileRequestDto;
 import com.skillbox.socialnetwork.main.dto.files.response.FileResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
+import com.skillbox.socialnetwork.main.dto.universal.Response;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
+import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
 import com.skillbox.socialnetwork.main.model.UploadFile;
 import com.skillbox.socialnetwork.main.model.enumerated.FileType;
 import com.skillbox.socialnetwork.main.repository.FileRepository;
@@ -24,21 +29,30 @@ import java.util.UUID;
 @Slf4j
 public class FileServiceImpl implements FileService {
 
-    @Value("${upload.path}")
-    private String uploadPath;
-
     private final FileRepository fileRepository;
     private final PersonServiceImpl personService;
-    private final JwtTokenProvider jwtTokenProvider;
+    @Value("${upload.path}")
+    private String uploadPath;
 
     public FileServiceImpl(FileRepository fileRepository, PersonServiceImpl personService, JwtTokenProvider jwtTokenProvider) {
         this.fileRepository = fileRepository;
         this.personService = personService;
-        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+    @MethodLogWithTime
+    @Override
+    public Response saveFile(String userEmail, FileRequestDto fileRequest) throws IOException {
+        switch (fileRequest.getType()) {
+            case "IMAGE": {
+                return ResponseFactory.getBaseResponse(saveImage(userEmail, fileRequest.getFile()));
+            }
+            default:
+                throw new InvalidRequestException("Неизвестный тип файла");
+        }
     }
 
     @Override
-    public Dto saveImage(String token, MultipartFile file) throws IOException {
+    public Dto saveImage(String userEmail, MultipartFile file) throws IOException {
         File resizeDir = new File(uploadPath + "/img/resize");
         File fullDir = new File(uploadPath + "/img/full");
         if (!resizeDir.exists()) {
@@ -49,14 +63,13 @@ public class FileServiceImpl implements FileService {
         }
 
         String id = UUID.randomUUID().toString();
-        int ownerId = personService.findByEmail(jwtTokenProvider.getUsername(token)).getId();
+        int ownerId = personService.findByEmail(userEmail).getId();
         String fullFileName = file.getOriginalFilename();
         String fileName = fullFileName.substring(0, fullFileName.lastIndexOf("."));
         String fileFormat = fullFileName.substring(fullFileName.lastIndexOf(".") + 1);
 
         String relativeFilePath = uploadPath + "/img/resize/" + id + "." + fileName + "." + fileFormat;
         String rawFileURL = uploadPath + "/img/full/" + id + "." + fileName + "." + fileFormat;
-        assert fileName != null;
         long bytes = file.getSize();
         FileType fileType = FileType.IMAGE;
 

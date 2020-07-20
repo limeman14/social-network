@@ -4,12 +4,12 @@ import com.skillbox.socialnetwork.main.dto.files.request.FileRequestDto;
 import com.skillbox.socialnetwork.main.dto.files.response.FileResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.Dto;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
+import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
 import com.skillbox.socialnetwork.main.service.impl.FileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,19 +27,8 @@ public class ApiGeneralController {
 
 
     @PostMapping("/storage")
-    public ResponseEntity<?> saveFile(@RequestHeader(name = "Authorization") String token, FileRequestDto fileRequest) throws IOException {
-        if (fileRequest.getFile() != null) {
-            Dto dto;
-            switch (fileRequest.getType()) {
-                case "IMAGE": {
-                    dto = fileService.saveImage(token, fileRequest.getFile());
-                    break;
-                }
-                default:
-                    dto = new FileResponseDto();
-            }
-            return ResponseEntity.ok(ResponseFactory.getBaseResponse(dto));
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    public ResponseEntity<?> saveFile(@AuthenticationPrincipal JwtUser user,
+                                      FileRequestDto fileRequest) throws IOException {
+        return ResponseEntity.ok(fileService.saveFile(user.getEmail(), fileRequest));
     }
 }
