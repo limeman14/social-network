@@ -19,5 +19,5 @@ public interface PostService {
 
     BaseResponse deletePost(int id);
 
-    BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, int offset, int limit, int personId);
+    BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, String tags, int offset, int limit, int personId);
 }

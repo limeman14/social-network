@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -93,9 +94,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, int offset, int limit, int personId) {
-        return PostResponseFactory.getPostsListWithLimit(
-                postRepository.searchPosts(text, new Date(dateFrom), new Date(dateTo), author),
+    public BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, String tagsRequest, int offset, int limit, int personId) {
+        List<Post> result = postRepository.searchPosts(text, new Date(dateFrom), new Date(dateTo), author);
+        String[] tags = tagsRequest.split(",");
+        if(tags.length>0){
+                result = result.stream().filter(post -> {
+                    boolean flag = false;
+                    for(Tag tag:post.getTags()){
+                        for(String queryTag: tags){
+                            if(tag.getTag().equalsIgnoreCase(queryTag)){
+                                flag = true;
+                            }
+                        }
+                    }
+                    return flag;
+                }).collect(Collectors.toList());
+            }
+        return PostResponseFactory.getPostsListWithLimit(result,
                 offset, limit, personService.findById(personId));
     }
 }

@@ -34,11 +34,12 @@ public class PostRestController {
             @RequestParam(defaultValue = "") String text,
             @RequestParam(name = "date_from", required = false, defaultValue = "946684800000") Long dateFrom,       //1 января 2000 года, если не указано иное
             @RequestParam(name = "date_to", required = false, defaultValue = "4102444800000") Long dateTo,          //1 января 2100 года, если не указано иное
-            @RequestParam(required = false, defaultValue = "") String author,
+            @RequestParam(name = "author", required = false, defaultValue = "") String author,
+            @RequestParam(name = "tags", required = false, defaultValue = "") String tags,
             @RequestParam(required = false, defaultValue = "0") Integer offset,
             @RequestParam(required = false, defaultValue = "20") Integer itemPerPage
     ) {
-        return ResponseEntity.ok(postService.searchPosts(text, dateFrom, dateTo, author, offset, itemPerPage, user.getId()));
+        return ResponseEntity.ok(postService.searchPosts(text, dateFrom, dateTo, author, tags, offset, itemPerPage, user.getId()));
     }
 
     @GetMapping("/api/v1/post/{id}")
