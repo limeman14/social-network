@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,11 +51,24 @@ public class FriendsControllerTest extends AbstractMvcTest {
     @Value("${test.user.userFromMyCityEmail}")
     private String userFromMyCityEmail;
 
+    private String url;
+
     @Override
     protected void doInit() throws Exception {
         personRepository.deleteAll();
-        registerUser(email, password, "Ivan").andExpect(status().isOk());
-        registerUser(friendEmail, password, "Roman").andExpect(status().isOk());
+
+        registerUser(email, password, "Ivan");
+        registerUser(friendEmail, password, "Roman");
+        registerUser(myFriendsFriendEmail, password, "Semen");
+        registerUser(userFromMyCityEmail, password, "Karen");
+        activateAccounts(personRepository, email, friendEmail, myFriendsFriendEmail, userFromMyCityEmail);
+        personRepository.findByEmail(email).setCity("Москва");
+        personRepository.findByEmail(userFromMyCityEmail).setCity("Москва");
+        friendsService.addFriend(personRepository.findByEmail(friendEmail),
+                personRepository.findByEmail(userFromMyCityEmail));
+        friendsService.addFriend(personRepository.findByEmail(userFromMyCityEmail),
+                personRepository.findByEmail(friendEmail));
+
     }
 
     @Test
@@ -117,20 +131,6 @@ public class FriendsControllerTest extends AbstractMvcTest {
 
     }
 
-    private ResultActions registerUser(String email, String password, String firstName) throws Exception {
-        return mockMvc.perform(
-                post("/api/v1/account/register")
-                        .content("{\n" +
-                                "  \"email\": \"" + email + "\",\n" +
-                                "  \"passwd1\": \"" + password + "\",\n" +
-                                "  \"passwd2\": \"" + password + "\",\n" +
-                                "  \"firstName\": \"" + firstName + "\",\n" +
-                                "  \"lastName\": \"Паровозов\",\n" +
-                                "  \"code\": \"3675\"\n" +
-                                "}").contentType(MediaType.APPLICATION_JSON))
-                .andDo(print());
-    }
-
     private JsonElement getFromDataInResponse(MvcResult result, String field) throws Exception {
         System.out.println(result.getResponse().getContentAsString());
         JsonElement json = new JsonParser().parse(result.getResponse().getContentAsString());
@@ -177,8 +177,8 @@ public class FriendsControllerTest extends AbstractMvcTest {
     }
 
     private void addRecommendedFriends() throws Exception {
-        registerUser(myFriendsFriendEmail, password, "Semen").andExpect(status().isOk());
-        registerUser(userFromMyCityEmail, password, "Karen").andExpect(status().isOk());
+        registerUser(myFriendsFriendEmail, password, "Semen");
+        registerUser(userFromMyCityEmail, password, "Karen");
         personRepository.findByEmail(email).setCity("Москва");
         personRepository.findByEmail(userFromMyCityEmail).setCity("Москва");
         friendsService.addFriend(personRepository.findByEmail(friendEmail),

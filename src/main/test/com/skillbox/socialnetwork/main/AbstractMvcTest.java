@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
+import com.skillbox.socialnetwork.main.model.Person;
+import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
@@ -24,6 +26,7 @@ import java.util.Set;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @SpringBootTest
@@ -65,7 +68,9 @@ public class AbstractMvcTest {
         return mockMvc.perform(
                 post("/api/v1/auth/login")
                         .content(json(auth))
-                        .contentType(MediaType.APPLICATION_JSON)).andDo(print());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("referer", ""))
+                .andDo(print());
     }
 
     protected String extractToken(MvcResult result) throws UnsupportedEncodingException {
@@ -73,5 +78,27 @@ public class AbstractMvcTest {
         return jsonObject.get("data").getAsJsonObject().get("token").getAsString();
     }
 
+    protected MvcResult registerUser(String email, String password, String firstName) throws Exception {
+        return mockMvc.perform(
+                post("/api/v1/account/register")
+                        .content("{\n" +
+                                "  \"email\": \"" + email + "\",\n" +
+                                "  \"passwd1\": \"" + password + "\",\n" +
+                                "  \"passwd2\": \"" + password + "\",\n" +
+                                "  \"firstName\": \"" + firstName + "\",\n" +
+                                "  \"lastName\": \"Паровозов\",\n" +
+                                "  \"code\": \"3675\"\n" +
+                                "}").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(status().isOk()).andReturn();
+    }
+
+    protected void activateAccounts (PersonRepository repository, String ... emails){
+
+        for (String email: emails) {
+            Person user = repository.findByEmail(email);
+            user.setIsApproved(true);
+            repository.save(user);
+        }
+    }
 
 }

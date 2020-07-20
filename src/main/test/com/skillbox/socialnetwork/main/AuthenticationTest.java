@@ -8,14 +8,15 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
@@ -35,13 +36,18 @@ public class AuthenticationTest extends AbstractMvcTest {
     @Value("${test.user.password}")
     private String password;
 
+    private String url;
+
+    @Value("${port}")
+    private String port;
+
     @Override
     protected void doInit() throws Exception {
         if (personRepository.findByEmail(email) != null) {
             deleteTestUser();
         }
-        registerUser(email, password).andExpect(status().isOk());
-
+        registerUser(email, password, "Валдис").getRequest();
+        activateAccounts(personRepository, email);
     }
 
 
@@ -85,11 +91,13 @@ public class AuthenticationTest extends AbstractMvcTest {
     @Test
     public void passwordSetTest() throws Exception {
 
-        mockMvc.perform(
+        MvcResult recovery = mockMvc.perform(
                 put("/api/v1/account/password/recovery")
                         .content("{\"email\": \"" + email + "\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
+
+        url = recovery.getRequest().getScheme() + "://" + recovery.getRequest().getServerName() + ":" + port;
 
         Person user = personService.findByEmail(email);
         String token = tokenProvider.createToken(user.getEmail() + ":" + user.getConfirmationCode());
@@ -101,8 +109,10 @@ public class AuthenticationTest extends AbstractMvcTest {
                                 "\"token\": \"" + token + "\",\n" +
                                 "\"password\": \"" + password + "\"}")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("referer", "http://localhost:8080/change-password?token=" + token))
+                        .header("referer", url + "/change-password?token=" + token))
                 .andReturn();
+
+        System.out.println(url);
 
         assertEquals(200, result.getResponse().getStatus());
 
@@ -116,19 +126,6 @@ public class AuthenticationTest extends AbstractMvcTest {
                 .andExpect(status().is4xxClientError());
     }
 
-    private ResultActions registerUser(String email, String password) throws Exception {
-        return mockMvc.perform(
-                post("/api/v1/account/register")
-                        .content("{\n" +
-                                "  \"email\": \"" + email + "\",\n" +
-                                "  \"passwd1\": \"" + password + "\",\n" +
-                                "  \"passwd2\": \"" + password + "\",\n" +
-                                "  \"firstName\": \"Аркадий\",\n" +
-                                "  \"lastName\": \"Паровозов\",\n" +
-                                "  \"code\": \"3675\"\n" +
-                                "}").contentType(MediaType.APPLICATION_JSON))
-                .andDo(print());
-    }
 
     private void deleteTestUser() {
         Person user = personService.findByEmail(email);
