@@ -61,7 +61,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Person findById(Integer id) {
         Person person = repository.findPersonById(id);
-        if (person == null) {
+        if (person == null || person.getStatus().equals(Status.DELETED)) {
             throw new PersonNotFoundException(id);
         }
         return person;
@@ -143,6 +143,20 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void delete(Person person) {
-        repository.delete(person);
+        String dummyEmail = (100000 * Math.random()) + "@deleted.com";
+        for (;;) {
+            if (repository.findByEmail(dummyEmail) == null)
+                break;
+            dummyEmail = (100000 * Math.random()) + "@deleted.com";
+        }
+        person.setEmail(dummyEmail);
+        person.setFirstName("DELETED");
+        person.setLastName("");
+        person.setCity("");
+        person.setCountry("");
+        person.setStatus(Status.DELETED);
+        person.setLastOnlineTime(new Date());
+        person.setPhoto("/static/img/user/deleted-user.png");
+        repository.save(person);
     }
 }
