@@ -143,6 +143,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void delete(Person person) {
+        person.setConfirmationCode(person.getEmail());
         String dummyEmail = (100000 * Math.random()) + "@deleted.com";
         for (;;) {
             if (repository.findByEmail(dummyEmail) == null)
