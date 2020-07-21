@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .antMatcher("/api/**")
                 .httpBasic().disable()
                 .csrf().disable()
                 .cors()
@@ -49,7 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             "/api/v1/storage/*"
                     ).permitAll()
                     .antMatchers("/api/v1/**").hasRole("USER")
-                    .antMatchers("/actuator/","/actuator/**").hasRole("USER")
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider))
                 .and().exceptionHandling().authenticationEntryPoint(Http401EntryPoint.unauthorizedHandler());

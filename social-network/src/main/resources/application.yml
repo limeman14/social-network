@@ -47,7 +47,6 @@ spring.mail:
 
 spring.boot.admin.client.username: admin
 spring.boot.admin.client.password: admin-password
-spring.boot.admin.client.instance.metadata.user.name: kmazzia1@fastcompany.com
-spring.boot.admin.client.instance.metadata.user.password: 12345678
-management:
-  endpoints.web.exposure.include: '*'
+spring.boot.admin.client.instance.metadata.user.name: actuator
+spring.boot.admin.client.instance.metadata.user.password: actuator
+management.endpoints.web.exposure.include: '*'
