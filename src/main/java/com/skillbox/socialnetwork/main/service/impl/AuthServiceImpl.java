@@ -48,6 +48,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, PersonService personService, EmailService emailService, BCryptPasswordEncoder passwordEncoder, NotificationServiceImpl notificationService) {
         this.authenticationManager = authenticationManager;
+
         this.jwtTokenProvider = jwtTokenProvider;
         this.personService = personService;
         this.emailService = emailService;
