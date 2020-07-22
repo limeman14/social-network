@@ -1,10 +1,10 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
 import com.skillbox.socialnetwork.main.dto.person.request.UpdatePersonRequestDto;
-import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseDto;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
 import com.skillbox.socialnetwork.main.dto.post.request.AddPostRequestDto;
 import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
+import com.skillbox.socialnetwork.main.dto.profile.request.ContactSupportRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.response.WallResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
@@ -14,6 +14,7 @@ import com.skillbox.socialnetwork.main.model.*;
 import com.skillbox.socialnetwork.main.model.enumerated.FriendshipCode;
 import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import com.skillbox.socialnetwork.main.repository.*;
+import com.skillbox.socialnetwork.main.service.EmailService;
 import com.skillbox.socialnetwork.main.service.NotificationService;
 import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.service.ProfileService;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -33,7 +36,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProfileServiceImpl implements ProfileService {
 
-
+    private final EmailService emailService;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
     private final FriendshipStatusRepo friendshipStatusRepo;
@@ -43,9 +46,10 @@ public class ProfileServiceImpl implements ProfileService {
     private final NotificationService notificationService;
 
     @Autowired
-    public ProfileServiceImpl(PersonService personService, PostRepository postRepository,
-            TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo,
-            FriendshipRepository friendshipRepository, FileRepository fileRepository, NotificationService notificationService) {
+    public ProfileServiceImpl(EmailService emailService, PersonService personService, PostRepository postRepository,
+                              TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo,
+                              FriendshipRepository friendshipRepository, FileRepository fileRepository, NotificationService notificationService) {
+        this.emailService = emailService;
         this.personService = personService;
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
@@ -115,7 +119,7 @@ public class ProfileServiceImpl implements ProfileService {
         Person person = personService.findById(id);
         Post post = new Post();
         post.setAuthor(person);
-        if (publishDate == 0) {
+        if (publishDate == 0 || new Date(publishDate).before(new Date())) {
             post.setTime(new Date());
         } else {
             post.setTime(new Date(publishDate));
@@ -193,6 +197,24 @@ public class ProfileServiceImpl implements ProfileService {
         Person profileToBlock = personService.findById(id);
         friendshipRepository.delete(friendshipRepository.findRelation(authorizedUser, profileToBlock, FriendshipCode.BLOCKED));
         log.info("IN unblockUser user: {} unblocked user {}", authorizedUser, profileToBlock);
+        return ResponseFactory.responseOk();
+    }
+
+    @Override
+    public BaseResponse sendMessageToSupport(ContactSupportRequestDto dto) {
+        String messageText = new StringBuilder()
+                .append("Пользователь с именем ")
+                .append(dto.getName())
+                .append(" и email ")
+                .append(dto.getEmail())
+                .append(" отправил запрос:\n")
+                .append(dto.getMessage())
+                .toString();
+        emailService.sendSimpleMessage(
+                "skillboxsocial@gmail.com",
+                messageText,
+                "Обращение в службу поддержки от " + LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
+        log.info("IN sendMessageToSupport user with email {} contacted support", dto.getEmail());
         return ResponseFactory.responseOk();
     }
 

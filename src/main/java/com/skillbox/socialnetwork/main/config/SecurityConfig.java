@@ -48,7 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/account/password/recovery",
                         "/api/v1/account/password/set",
                         "/api/v1/platform/languages",
-                        "/api/v1/storage/*"
+                        "/api/v1/storage/*",
+                        "/api/v1/support/message"
                 ).permitAll()
                 .antMatchers("/api/v1/**").hasRole("USER")
                 .and()

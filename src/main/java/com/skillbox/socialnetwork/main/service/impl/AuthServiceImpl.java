@@ -1,6 +1,5 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
-import com.skillbox.socialnetwork.main.model.Person;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
@@ -10,8 +9,11 @@ import com.skillbox.socialnetwork.main.dto.auth.response.AuthResponseFactory;
 import com.skillbox.socialnetwork.main.dto.auth.response.TokenResponse;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.PasswordSetRequestDto;
-import com.skillbox.socialnetwork.main.dto.universal.*;
+import com.skillbox.socialnetwork.main.dto.universal.ErrorResponse;
+import com.skillbox.socialnetwork.main.dto.universal.Response;
+import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.exception.InvalidRequestException;
+import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.security.jwt.JwtAuthenticationException;
 import com.skillbox.socialnetwork.main.security.jwt.JwtTokenProvider;
 import com.skillbox.socialnetwork.main.service.AuthService;
@@ -42,17 +44,15 @@ public class AuthServiceImpl implements AuthService {
     private final PersonService personService;
     private final EmailService emailService;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final NotificationServiceImpl notificationService;
 
 
     @Autowired
-    public AuthServiceImpl(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, PersonService personService, EmailService emailService, BCryptPasswordEncoder passwordEncoder, NotificationServiceImpl notificationService) {
+    public AuthServiceImpl(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, PersonService personService, EmailService emailService, BCryptPasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.personService = personService;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
-        this.notificationService = notificationService;
     }
 
     @Override

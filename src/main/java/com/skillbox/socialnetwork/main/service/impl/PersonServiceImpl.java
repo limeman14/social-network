@@ -17,6 +17,7 @@ import com.skillbox.socialnetwork.main.repository.NotificationSettingsRepository
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import com.skillbox.socialnetwork.main.repository.RoleRepository;
 import com.skillbox.socialnetwork.main.service.PersonService;
+import com.skillbox.socialnetwork.main.util.LastOnlineTimeAdjuster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -127,7 +128,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     public void logout(Person person) {
-        person.setLastOnlineTime(new Date());
+        LastOnlineTimeAdjuster.refreshLastOnlineTime(person);
         log.info("IN logout - user: {} logged out", repository.save(person));
     }
 

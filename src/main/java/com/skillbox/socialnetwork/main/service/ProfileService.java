@@ -3,6 +3,7 @@ package com.skillbox.socialnetwork.main.service;
 
 import com.skillbox.socialnetwork.main.dto.person.request.UpdatePersonRequestDto;
 import com.skillbox.socialnetwork.main.dto.post.request.AddPostRequestDto;
+import com.skillbox.socialnetwork.main.dto.profile.request.ContactSupportRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.model.Person;
@@ -32,4 +33,6 @@ public interface ProfileService {
     BaseResponse blockUser(int idOfABlockedUser, Person authorizedUser);
 
     BaseResponse unblockUser(int id, Person authorizedUser);
+
+    BaseResponse sendMessageToSupport(ContactSupportRequestDto dto);
 }

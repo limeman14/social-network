@@ -25,7 +25,7 @@ server:
   port: 8080
 
 upload:
-  path: "C:/Users/Valet/Desktop/storage"
+  path: "C:/Users/limeman/Desktop/storage"
 
 hostname: localhost:8080
 
@@ -47,11 +47,3 @@ spring.mail:
     writetimeout: 5000
     # TLS , port 587
     starttls.enable: true
-
-spring.jmx:
-    unique-names: true
-    enabled: true
-management:
-  server:
-    port: 8081
-    address: localhost

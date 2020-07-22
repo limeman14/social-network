@@ -60,7 +60,6 @@ public class AuthenticationRestControllerV1 {
     public ResponseEntity<?> register(@RequestBody RegisterRequestDto requestDto, HttpServletRequest request) throws Exception
     {
         GeoIP location;
-        location = new GeoIP(null, "localhost", "localhost", "0.00", "0.00");
         try {
             location = getLocation(null, request);
         } catch (GeoIp2Exception e)
