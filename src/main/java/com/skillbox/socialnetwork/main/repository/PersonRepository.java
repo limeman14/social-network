@@ -11,6 +11,8 @@ import java.util.List;
 public interface PersonRepository extends JpaRepository<Person, Integer> {
     Person findByEmail(String email);
 
+    Person findByConfirmationCode(String code);
+
     Person findPersonById(Integer id);
 
     List<Person> findPeopleByCity(String city);

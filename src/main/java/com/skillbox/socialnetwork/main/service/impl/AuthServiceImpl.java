@@ -199,10 +199,10 @@ public class AuthServiceImpl implements AuthService {
                     return new TokenResponse(jwtTokenProvider.createToken(person.getEmail()));
                 }
             }
-            log.error("Password change failed: token error");
+            log.error("Email change failed: token error");
             throw new InvalidRequestException("token_error");
         } catch (MalformedURLException e) {
-            log.error("Password change failed: token not found");
+            log.error("Email change failed: token not found");
             throw new InvalidRequestException("token not found");
         }
     }

@@ -34,4 +34,6 @@ public interface PersonService {
     List<Person> findByCity(String city);
 
     void delete(Person person);
+
+    void restore (String email);
 }
