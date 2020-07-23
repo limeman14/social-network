@@ -152,6 +152,7 @@ public class PersonServiceImpl implements PersonService {
             dummyEmail = (100000 * Math.random()) + "@deleted.com";
         }
         person.setEmail(dummyEmail);
+        person.setPassword("12345678");
         person.setFirstName("DELETED");
         person.setLastName("");
         person.setCity("");
@@ -160,5 +161,13 @@ public class PersonServiceImpl implements PersonService {
         person.setLastOnlineTime(new Date());
         person.setPhoto("/static/img/user/deleted-user.png");
         repository.save(person);
+    }
+
+    @Override
+    public void restore(String email) {
+        Person person = repository.findByConfirmationCode(email);
+        person.setStatus(Status.REGISTERED);
+        person.setEmail(email);
+        person.setPhoto("/static/img/user/default-avatar.png");
     }
 }
