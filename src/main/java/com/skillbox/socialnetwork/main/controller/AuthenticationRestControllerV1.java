@@ -88,7 +88,7 @@ public class AuthenticationRestControllerV1 {
     }
 
     @PutMapping("/api/v1/account/password/set")
-    public ResponseEntity<?> passwordRecovery(
+    public ResponseEntity<?> passwordSet(
             @RequestHeader(name = "Referer") String referer,
             @RequestBody PasswordSetRequestDto dto
                                              )

@@ -20,6 +20,8 @@ jwt.token:
 server:
   port: 8080
 
+port: "8080"
+
 upload:
   path: "C:/Users/Katerina/Desktop/storage"
 

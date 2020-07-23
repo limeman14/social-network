@@ -1,26 +1,18 @@
 package com.skillbox.socialnetwork.main;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.repository.PersonRepository;
 import com.skillbox.socialnetwork.main.service.FriendsService;
 import com.skillbox.socialnetwork.main.service.PersonService;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
@@ -53,14 +45,30 @@ public class FriendsControllerTest extends AbstractMvcTest {
     @Override
     protected void doInit() throws Exception {
         personRepository.deleteAll();
-        registerUser(email, password, "Ivan").andExpect(status().isOk());
-        registerUser(friendEmail, password, "Roman").andExpect(status().isOk());
+
+        registerUser(email, password, "Ivan");
+        registerUser(friendEmail, password, "Roman");
+        registerUser(myFriendsFriendEmail, password, "Semen");
+        registerUser(userFromMyCityEmail, password, "Karen");
+        activateAccounts(personRepository, email, friendEmail, myFriendsFriendEmail, userFromMyCityEmail);
+        Person user = personRepository.findByEmail(email);
+        Person userFromMyCity = personRepository.findByEmail(userFromMyCityEmail);
+        user.setCity("Москва");
+        userFromMyCity.setCity("Москва");
+        friendsService.addFriend(personRepository.findByEmail(friendEmail),
+                personRepository.findByEmail(myFriendsFriendEmail));
+        friendsService.addFriend(personRepository.findByEmail(myFriendsFriendEmail),
+                personRepository.findByEmail(friendEmail));
+        personService.save(user);
+        personService.save(userFromMyCity);
     }
 
     @Test
     public void addFriendTest() throws Exception {
         Integer friendId = personRepository.findByEmail(friendEmail).getId();
         Integer userId = personRepository.findByEmail(email).getId();
+        Integer myFfId = personRepository.findByEmail(myFriendsFriendEmail).getId();
+        Integer userFromMyCity = personRepository.findByEmail(userFromMyCityEmail).getId();
         final String userToken = extractToken(login(email, password).andReturn());
         final String friendToken = extractToken(login(friendEmail, password).andReturn());
 
@@ -68,122 +76,47 @@ public class FriendsControllerTest extends AbstractMvcTest {
                 .header("Authorization", userToken))
                 .andExpect(status().isOk());
 
-        MvcResult requestSent = mockMvc.perform(get("/api/v1/friends/request")
+        mockMvc.perform(get("/api/v1/friends/request")
                 .header("Authorization", friendToken))
                 .andExpect(status().isOk())
-                .andReturn();
-
-        assertEquals(userId, getIdFromData(getFromDataInResponse(requestSent, "id")));
+                .andExpect(jsonPath("$.data..id", Matchers.contains(userId)));
 
         mockMvc.perform(post("/api/v1/friends/" + userId)
                 .header("Authorization", friendToken))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        MvcResult friendAdded = mockMvc.perform(get("/api/v1/friends/")
+        mockMvc.perform(get("/api/v1/friends/")
                 .header("Authorization", friendToken))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(jsonPath("$.data[0].id").value(myFfId))
+                .andExpect(jsonPath("$.data[1].id").value(userId));
 
-        assertEquals(userId, getIdFromData(getFromDataInResponse(friendAdded, "id")));
-
-        MvcResult isFriend = mockMvc.perform(post("/api/v1/is/friends/")
+        mockMvc.perform(post("/api/v1/is/friends/")
                 .header("Authorization", friendToken)
-                .param("idList", String.valueOf(userId)))
+                .param("idList",
+                        String.valueOf(myFfId),
+                        String.valueOf(userId)
+                ))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(jsonPath("$..user_id", Matchers.containsInAnyOrder(userId, myFfId)));
 
-        assertEquals("FRIEND", getStatusFromResponse(isFriend));
-
-        MvcResult recommendations = getRecommendationsResult(userToken);
-
-//        assertNotEquals(friendId, getIdFromData(getFromDataInResponse(recommendations, "id")));
-        assertTrue(getDataFromResponse(recommendations).getAsJsonArray().size() == 0);
-
-
-        addRecommendedFriends();
-        Integer personFromMyCityId = personRepository.findByEmail(userFromMyCityEmail).getId();
-        Integer friendsFriendId = personRepository.findByEmail(myFriendsFriendEmail).getId();
-        recommendations = getRecommendationsResult(userToken);
-        assertTrue(getIdListFromData(recommendations).contains(friendsFriendId));
-        assertTrue(getIdListFromData(recommendations).contains(personFromMyCityId));
+        mockMvc.perform(get("/api/v1/friends/recommendations/")
+                .header("Authorization", userToken)
+                .param("offset", "0")
+                .param("itemPerPage", "20")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data..id", Matchers.not(Matchers.contains(friendId))))
+                .andExpect(jsonPath("$.data..id", Matchers.containsInAnyOrder(myFfId, userFromMyCity)));
 
         mockMvc.perform(delete("/api/v1/friends/" + userId)
                 .header("Authorization", friendToken))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-    }
-
-    private ResultActions registerUser(String email, String password, String firstName) throws Exception {
-        return mockMvc.perform(
-                post("/api/v1/account/register")
-                        .content("{\n" +
-                                "  \"email\": \"" + email + "\",\n" +
-                                "  \"passwd1\": \"" + password + "\",\n" +
-                                "  \"passwd2\": \"" + password + "\",\n" +
-                                "  \"firstName\": \"" + firstName + "\",\n" +
-                                "  \"lastName\": \"Паровозов\",\n" +
-                                "  \"code\": \"3675\"\n" +
-                                "}").contentType(MediaType.APPLICATION_JSON))
-                .andDo(print());
-    }
-
-    private JsonElement getFromDataInResponse(MvcResult result, String field) throws Exception {
-        System.out.println(result.getResponse().getContentAsString());
-        JsonElement json = new JsonParser().parse(result.getResponse().getContentAsString());
-
-        if (json instanceof JsonArray) {
-            return getDataFromResponse(result).getAsJsonArray().get(0).getAsJsonObject().get(field);
-        }
-
-        return getDataFromResponse(result).getAsJsonArray().get(0).getAsJsonObject().get(field);
-    }
-
-    private List<Integer> getIdListFromData(MvcResult result) throws Exception {
-        List<Integer> idList = new ArrayList<>();
-        JsonArray jsonArray = getDataFromResponse(result).getAsJsonArray();
-        for (JsonElement jsonElement : jsonArray) {
-            idList.add(jsonElement.getAsJsonObject().get("id").getAsInt());
-        }
-        return idList;
-    }
-
-    private JsonElement getDataFromResponse(MvcResult result) throws Exception {
-        JsonElement data = new JsonParser().parse(result.getResponse().getContentAsString()).getAsJsonObject().get("data");
-        System.out.println(data);
-        return data;
-    }
-
-    private Integer getIdFromData(JsonElement element) {
-        return element.getAsInt();
-    }
-
-    private String getStatusFromResponse(MvcResult result) throws Exception {
-        return new JsonParser().parse(result.getResponse().getContentAsString()).getAsJsonArray().get(0)
-                .getAsJsonObject().get("status").getAsString();
-    }
-
-    private MvcResult getRecommendationsResult(String userToken) throws Exception {
-        return mockMvc.perform(get("/api/v1/friends/recommendations/")
-                .header("Authorization", userToken)
-                .param("offset", "0")
-                .param("itemPerPage", "20"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
-    }
-
-    private void addRecommendedFriends() throws Exception {
-        registerUser(myFriendsFriendEmail, password, "Semen").andExpect(status().isOk());
-        registerUser(userFromMyCityEmail, password, "Karen").andExpect(status().isOk());
-        personRepository.findByEmail(email).setCity("Москва");
-        personRepository.findByEmail(userFromMyCityEmail).setCity("Москва");
-        friendsService.addFriend(personRepository.findByEmail(friendEmail),
-                personRepository.findByEmail(userFromMyCityEmail));
-        friendsService.addFriend(personRepository.findByEmail(userFromMyCityEmail),
-                personRepository.findByEmail(friendEmail));
     }
 }

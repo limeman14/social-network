@@ -53,35 +53,27 @@ public class FriendsServiceImpl implements FriendsService {
 
     @Override
     public List<Person> getRecommendations(Person person) {
-        List<Friendship> allFriends = friendshipRepository.findAllFriends(person);
+        List<Person> myFriends = getFriends(person, "");
         List<Person> peopleFromCity = person.getCity().equals("")
                 ? new ArrayList<>()
                 : personService.findByCity(person.getCity());
-        List<Person> srcFriends = allFriends.stream()
-                .map(friendship -> friendship.getSrcPerson()).collect(Collectors.toList());
-        List<Person> dstFriends = allFriends.stream()
-                .map(friendship -> friendship.getDstPerson()).collect(Collectors.toList());
 
-        Set<Person> set = new HashSet<>();
+        Set<Person> recommendedFriends = new HashSet<>();
+        myFriends.stream().map(person1 -> getFriends(person1, "")).forEach(l -> recommendedFriends.addAll(l));
 
-        dstFriends.stream().map(person1 -> friendshipRepository.findAllFriends(person)).collect(Collectors.toSet())
-                .forEach(l -> l.forEach(f -> set.add(f.getDstPerson())));
-        srcFriends.stream().map(person1 -> friendshipRepository.findAllFriends(person)).collect(Collectors.toSet())
-                .forEach(l -> l.forEach(friendship -> set.add(friendship.getSrcPerson())));
+        recommendedFriends.addAll(peopleFromCity);
 
-        set.addAll(peopleFromCity);
-        if (set.contains(person)) set.remove(person);
+        if (recommendedFriends.isEmpty())
+            recommendedFriends.addAll(personService.getAll());
 
-        for (Person srcFriend : srcFriends) {
-            if (set.contains(srcFriend)) set.remove(srcFriend);
+        if (recommendedFriends.contains(person)) recommendedFriends.remove(person);
+
+        for (Person friend : myFriends) {
+            if (recommendedFriends.contains(friend)) recommendedFriends.remove(friend);
         }
-        for (Person dstFriend : dstFriends) {
-            if (set.contains(dstFriend)) set.remove(dstFriend);
-        }
-
 
         List<Person> result = new ArrayList<>();
-        result.addAll(set);
+        result.addAll(recommendedFriends);
         return result;
     }
 
