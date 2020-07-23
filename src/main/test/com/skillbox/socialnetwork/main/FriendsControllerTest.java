@@ -42,8 +42,6 @@ public class FriendsControllerTest extends AbstractMvcTest {
     @Value("${test.user.userFromMyCityEmail}")
     private String userFromMyCityEmail;
 
-    private String url;
-
     @Override
     protected void doInit() throws Exception {
         personRepository.deleteAll();
@@ -61,8 +59,8 @@ public class FriendsControllerTest extends AbstractMvcTest {
                 personRepository.findByEmail(myFriendsFriendEmail));
         friendsService.addFriend(personRepository.findByEmail(myFriendsFriendEmail),
                 personRepository.findByEmail(friendEmail));
-        personRepository.save(user);
-        personRepository.save(userFromMyCity);
+        personService.save(user);
+        personService.save(userFromMyCity);
     }
 
     @Test
@@ -81,8 +79,7 @@ public class FriendsControllerTest extends AbstractMvcTest {
         mockMvc.perform(get("/api/v1/friends/request")
                 .header("Authorization", friendToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data..id", Matchers.contains(userId)))
-                .andReturn();
+                .andExpect(jsonPath("$.data..id", Matchers.contains(userId)));
 
         mockMvc.perform(post("/api/v1/friends/" + userId)
                 .header("Authorization", friendToken))
@@ -94,8 +91,7 @@ public class FriendsControllerTest extends AbstractMvcTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].id").value(myFfId))
-                .andExpect(jsonPath("$.data[1].id").value(userId))
-                .andReturn();
+                .andExpect(jsonPath("$.data[1].id").value(userId));
 
         mockMvc.perform(post("/api/v1/is/friends/")
                 .header("Authorization", friendToken)
@@ -105,8 +101,7 @@ public class FriendsControllerTest extends AbstractMvcTest {
                 ))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$..user_id", Matchers.containsInAnyOrder(userId, myFfId)))
-                .andReturn();
+                .andExpect(jsonPath("$..user_id", Matchers.containsInAnyOrder(userId, myFfId)));
 
         mockMvc.perform(get("/api/v1/friends/recommendations/")
                 .header("Authorization", userToken)
@@ -116,8 +111,7 @@ public class FriendsControllerTest extends AbstractMvcTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data..id", Matchers.not(Matchers.contains(friendId))))
-                .andExpect(jsonPath("$.data..id", Matchers.containsInAnyOrder(myFfId, userFromMyCity)))
-                .andReturn();
+                .andExpect(jsonPath("$.data..id", Matchers.containsInAnyOrder(myFfId, userFromMyCity)));
 
         mockMvc.perform(delete("/api/v1/friends/" + userId)
                 .header("Authorization", friendToken))

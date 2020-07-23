@@ -763,3 +763,8 @@ databaseChangeLog:
         - dropColumn:
             columnName: town_id
             tableName: persons
+
+  - include:
+      file: db/changelog-test/db.changelog-test-insertPersons.yaml
+  - include:
+      file: db/changelog-test/db.changelog-test-insertPosts.yaml
