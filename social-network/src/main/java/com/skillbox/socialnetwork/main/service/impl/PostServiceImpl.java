@@ -96,19 +96,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, String tagsRequest, int offset, int limit, int personId) {
         List<String> tags = Arrays.asList(tagsRequest.split(","));
-//        if(tags.size()>0){
-//                result = result.stream().filter(post -> {
-//                    boolean flag = false;
-//                    for(Tag tag:post.getTags()){
-//                        for(String queryTag: tags){
-//                            if(tag.getTag().equalsIgnoreCase(queryTag)){
-//                                flag = true;
-//                            }
-//                        }
-//                    }
-//                    return flag;
-//                }).collect(Collectors.toList());
-//            }
         List<Post> result = tagsRequest.length()>0 && tags.size()!=0
                 ? postRepository.searchPostsWithTags(text, new Date(dateFrom), new Date(dateTo), author, tags)
                 : postRepository.searchPosts(text, new Date(dateFrom), new Date(dateTo), author);

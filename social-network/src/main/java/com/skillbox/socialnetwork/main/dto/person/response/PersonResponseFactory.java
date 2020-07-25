@@ -35,6 +35,7 @@ public class PersonResponseFactory {
                 person.getCity(),
                 person.getCountry(),
                 person.getIsBlocked(),
+                person.getAreYouBlocked(),
                 person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null,
                 person.getMessagesPermission().toString()
                 , false
@@ -55,6 +56,7 @@ public class PersonResponseFactory {
                 person.getCity(),
                 person.getCountry(),
                 person.getIsBlocked(),
+                person.getAreYouBlocked(),
                 person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null,
                 person.getMessagesPermission().toString()
                 , isFriend

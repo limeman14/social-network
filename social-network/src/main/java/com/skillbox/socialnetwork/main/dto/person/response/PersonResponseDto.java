@@ -27,6 +27,8 @@ public class PersonResponseDto implements Dto {
     protected String country;
     @JsonProperty("is_blocked")
     protected Boolean isBlocked;
+    @JsonProperty("are_you_blocked")
+    protected Boolean areYouBlocked;
     @JsonProperty("last_online_time")
     protected Long lastOnlineTime;
     @JsonProperty("messages_permission")

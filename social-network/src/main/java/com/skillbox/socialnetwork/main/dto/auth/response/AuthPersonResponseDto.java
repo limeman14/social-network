@@ -27,7 +27,7 @@ public class AuthPersonResponseDto extends PersonResponseDto {
             String token
     ) {
         super(id, firstName, lastName, regDate, birthDate, email,
-                phone, photo, about, city, country, isBlocked,
+                phone, photo, about, city, country, isBlocked, false,
                 lastOnlineTime, messagesPermission, false);
         this.token = token;
     }

@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skillbox.socialnetwork.main.model.enumerated.Permission;
 import com.skillbox.socialnetwork.main.model.enumerated.Status;
@@ -16,6 +17,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "persons")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,6 +65,9 @@ public class Person {
     private Date lastOnlineTime;
 
     private Boolean isBlocked;
+
+    @JsonProperty("are_you_blocked")
+    private Boolean areYouBlocked;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore

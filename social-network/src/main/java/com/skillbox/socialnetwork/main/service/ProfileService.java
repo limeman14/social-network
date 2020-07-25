@@ -17,7 +17,7 @@ public interface ProfileService {
 
     BaseResponse getUserById(int id, Person authorizedUser);
 
-    BaseResponseList getWallPosts(int id, int offset, int limit);
+    Object getWallPosts(int id, int offset, int limit, Person authorizedUser);
 
     BaseResponse addPost(int id, long publishDate, AddPostRequestDto request);
 

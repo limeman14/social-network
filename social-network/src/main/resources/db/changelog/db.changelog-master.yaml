@@ -63,6 +63,10 @@ databaseChangeLog:
                   type: ENUM("REGISTERED", "BLOCKED", "DELETED")
                   defaultValue: "REGISTERED"
               - column:
+                  defaultValue: false
+                  name: are_you_blocked
+                  type: BIT(1)
+              - column:
                   constraints:
                     nullable: false
                   name: password

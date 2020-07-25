@@ -71,14 +71,7 @@ public class DialogServiceImpl implements DialogService {
     @Override
     public BaseResponse addDialog(DialogAddRequest request, Person currentUser)
     {
-//        AtomicBoolean dialogAlreadyExists = new AtomicBoolean(false);
         AtomicInteger dialogId = new AtomicInteger();
-//        currentUser.getDialogToPeople().stream().map(DialogToPerson::getDialog).map(Dialog::getDialogToPersonList).forEach(dialogToPeople -> dialogAlreadyExists
-//                .set(dialogToPeople.stream().anyMatch(dialogToPerson -> {
-//                    dialogId.set(dialogToPerson.getDialog().getId());
-//                    return dialogToPerson.getPerson().getId()
-//                            .equals(request.getUserIds().get(0));
-//                })));
 
         boolean dialogAlreadyExists = currentUser.getDialogToPeople().stream()
                 .anyMatch(dtp ->
