@@ -24,4 +24,7 @@ public interface DialogRepository extends JpaRepository<Dialog, Integer> {
             "join Person p on p.id = dtp.person.id " +
             "where p = ?1 and d = ?2")
     void deleteUserFromDialog(Person person, Dialog dialog);
+//
+//    @Query("update Dialog d set d.isFrozen=true where d.id=(select d.id from Dialog d join d.dialogToPersonList dtp where dtp.person=)")
+//    void freezeAllDialogsWithPerson(Person authorizedUser, Person profileToBlock);
 }

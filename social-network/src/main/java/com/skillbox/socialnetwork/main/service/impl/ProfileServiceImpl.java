@@ -43,12 +43,13 @@ public class ProfileServiceImpl implements ProfileService {
     private final FriendshipRepository friendshipRepository;
     private final FileRepository fileRepository;
     private final PersonService personService;
+    private final DialogRepository dialogRepository;
     private final NotificationService notificationService;
 
     @Autowired
     public ProfileServiceImpl(EmailService emailService, PersonService personService, PostRepository postRepository,
             TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo,
-            FriendshipRepository friendshipRepository, FileRepository fileRepository, NotificationService notificationService)
+            FriendshipRepository friendshipRepository, FileRepository fileRepository, DialogRepository dialogRepository, NotificationService notificationService)
     {
         this.emailService = emailService;
         this.personService = personService;
@@ -57,6 +58,7 @@ public class ProfileServiceImpl implements ProfileService {
         this.friendshipStatusRepo = friendshipStatusRepo;
         this.friendshipRepository = friendshipRepository;
         this.fileRepository = fileRepository;
+        this.dialogRepository = dialogRepository;
         this.notificationService = notificationService;
     }
 
@@ -201,6 +203,7 @@ public class ProfileServiceImpl implements ProfileService {
         FriendshipStatus status = new FriendshipStatus();
         status.setCode(FriendshipCode.BLOCKED);
         status.setTime(new Date());
+
         if (friendshipRepository.isFriend(authorizedUser, profileToBlock))
         {
             Friendship srcRelation = friendshipRepository
@@ -224,6 +227,9 @@ public class ProfileServiceImpl implements ProfileService {
 
             friendshipRepository.save(relation);
         }
+        //заморозка диалогов с заблокированным
+//        dialogRepository.freezeAllDialogsWithPerson(authorizedUser, profileToBlock);
+
         log.info("IN blockUser user: {} blocked user {}", authorizedUser.getEmail(), profileToBlock.getEmail());
         return ResponseFactory.responseOk();
 

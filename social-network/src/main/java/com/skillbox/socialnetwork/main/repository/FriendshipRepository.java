@@ -34,4 +34,12 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Integer>
             "where f.srcPerson=?1 and f.dstPerson=?2 and f.status.code='FRIEND'")
     Boolean isFriend(Person srcPerson, Person dstPerson);
 
+    @Query("select p from Person p join Friendship f on p=f.dstPerson " +
+            "where f.status.code='BLOCKED' and f.srcPerson=?1")
+    List<Person> getUsersBlockedByYou(Person person);
+
+    @Query("select p from Person p join Friendship f on p=f.srcPerson " +
+            "where f.status.code='BLOCKED' and f.dstPerson=?1")
+    List<Person> getUsersThatBlockedYou(Person person);
+
 }

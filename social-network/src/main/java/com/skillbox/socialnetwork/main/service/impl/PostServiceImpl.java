@@ -8,6 +8,7 @@ import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.model.Tag;
+import com.skillbox.socialnetwork.main.repository.FriendshipRepository;
 import com.skillbox.socialnetwork.main.repository.PostRepository;
 import com.skillbox.socialnetwork.main.repository.TagRepository;
 import com.skillbox.socialnetwork.main.service.PersonService;
@@ -26,12 +27,14 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
     private final PersonService personService;
+    private final FriendshipRepository friendshipRepository;
 
     @Autowired
-    public PostServiceImpl(PostRepository repository, TagRepository tagRepository, PersonService personService) {
+    public PostServiceImpl(PostRepository repository, TagRepository tagRepository, PersonService personService, FriendshipRepository friendshipRepository) {
         this.postRepository = repository;
         this.tagRepository = tagRepository;
         this.personService = personService;
+        this.friendshipRepository = friendshipRepository;
     }
 
     @Override
@@ -48,8 +51,12 @@ public class PostServiceImpl implements PostService {
     public BaseResponseList feeds(int offset, int limit, Person person) {
         int count = postRepository.getCountNotBlockedPost();
         int page = offset / limit;
+
+        List<Person> usersBlockedByYou = friendshipRepository.getUsersBlockedByYou(person);
+        List<Person> usersThatBlockedYou = friendshipRepository.getUsersThatBlockedYou(person);
+
         return PostResponseFactory.getPostsList(
-                postRepository.getFeeds(PageRequest.of(page, limit)),
+                postRepository.getFeeds(usersBlockedByYou, usersThatBlockedYou, PageRequest.of(page, limit)),
                 count,
                 offset,
                 limit,
