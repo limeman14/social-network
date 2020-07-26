@@ -8,12 +8,10 @@ import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponseList;
 import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Dialog;
-import com.skillbox.socialnetwork.main.model.DialogToPerson;
 import com.skillbox.socialnetwork.main.model.Message;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.enumerated.NotificationCode;
 import com.skillbox.socialnetwork.main.model.enumerated.ReadStatus;
-import com.skillbox.socialnetwork.main.repository.D2PRepository;
 import com.skillbox.socialnetwork.main.repository.DialogRepository;
 import com.skillbox.socialnetwork.main.repository.MessageRepository;
 import com.skillbox.socialnetwork.main.service.DialogService;
@@ -39,16 +37,14 @@ public class DialogServiceImpl implements DialogService {
     private final MessageRepository messageRepository;
     private final PersonService personService;
     private final DialogRepository dialogRepository;
-    private final D2PRepository d2pRepository;
     private final NotificationService notificationService;
 
     @Autowired
-    public DialogServiceImpl(MessageRepository messageRepository, PersonService personService, DialogRepository dialogRepository, D2PRepository d2pRepository, NotificationService notificationService)
+    public DialogServiceImpl(MessageRepository messageRepository, PersonService personService, DialogRepository dialogRepository, NotificationService notificationService)
     {
         this.messageRepository = messageRepository;
         this.personService = personService;
         this.dialogRepository = dialogRepository;
-        this.d2pRepository = d2pRepository;
         this.notificationService = notificationService;
     }
 
@@ -73,23 +69,20 @@ public class DialogServiceImpl implements DialogService {
     {
         AtomicInteger dialogId = new AtomicInteger();
 
-        boolean dialogAlreadyExists = currentUser.getDialogToPeople().stream()
-                .anyMatch(dtp ->
-                        personService.findById(request.getUserIds().get(0)).getDialogToPeople().stream()
-                                .anyMatch(dialogToPerson -> {
-                                    if (dialogToPerson.getDialog().getId() == dtp.getDialog().getId())
-                                    {
-                                        dialogId.set(dtp.getDialog().getId());
-                                        return true;
-                                    } else return false;
-                                }));
+        boolean dialogAlreadyExists = currentUser.getDialogs().stream()
+                .anyMatch(dialog ->{
+                    if(dialog.getPeople().contains(personService.findById(request.getUserIds().get(0))) && dialog.getPeople().contains(currentUser)){
+                        dialogId.set(dialog.getId());
+                        return true;
+                    }
+                    return false;
+                });
         if (dialogAlreadyExists)
         {
             return new BaseResponse(new IdDto(dialogId.get()));
         } else
         {//if not exists
             Dialog d = new Dialog();
-            d.setDialogToPersonList(new ArrayList<>());
             d.setMessages(new ArrayList<>());
             Dialog dialog = dialogRepository.save(d);
             List<Person> result = request
@@ -98,18 +91,9 @@ public class DialogServiceImpl implements DialogService {
                     .map(personService::findById)
                     .collect(Collectors.toList());
             result.add(currentUser);
-            List<DialogToPerson> dtps = d2pRepository.saveAll(result
-                    .stream()
-                    .map(person -> {
-                        DialogToPerson dtp = new DialogToPerson();
-                        dtp.setDialog(dialog);
-                        dtp.setPerson(person);
-                        return dtp;
-                    })
-                    .collect(Collectors.toList()));
-            dialog.setDialogToPersonList(dtps);
+            dialog.setPeople(result);
             Dialog saved = dialogRepository.save(dialog);
-
+            System.out.println("People"+saved.getPeople());
             //dialog initializer
             Message message = new Message();
             message.setMessageText("Пользователь " + currentUser.getFirstName() + " " + currentUser
@@ -122,7 +106,6 @@ public class DialogServiceImpl implements DialogService {
             messageRepository.save(message);
             saved.getMessages().add(message);
             saved = dialogRepository.save(saved);
-
 
             log.info("IN addDialog Dialog: {} added", saved.getId());
             return new BaseResponse(new IdDto(saved.getId()));
@@ -152,16 +135,15 @@ public class DialogServiceImpl implements DialogService {
     @Override
     public BaseResponse deleteUsersFromDialog(int dialogId, DialogAddRequest request)
     {
-        Dialog dialog = dialogRepository
-                .findById(dialogId)
-                .orElse(null);
-        DialogToPerson dtp = new DialogToPerson();
-        request
-                .getUserIds()
-                .stream()
-                .map(personService::findById)
-                .collect(Collectors.toList())
-                .forEach(o -> dialogRepository.deleteUserFromDialog(o, dialog));
+//        Dialog dialog = dialogRepository
+//                .findById(dialogId)
+//                .orElse(null);
+//        request
+//                .getUserIds()
+//                .stream()
+//                .map(personService::findById)
+//                .collect(Collectors.toList())
+//                .forEach(o -> dialogRepository.deleteUserFromDialog(o, dialog));
         return new BaseResponse(request);
     }
 
@@ -224,8 +206,8 @@ public class DialogServiceImpl implements DialogService {
             throw new NullPointerException("Dialog cannot be null");
         }
         Message message = new Message();
-        Person dstPerson = dialog.getDialogToPersonList().stream().filter(dtp -> !dtp.getPerson().equals(user))
-                .findFirst().get().getPerson();
+        Person dstPerson = dialog.getPeople().stream().filter(person -> !person.equals(user))
+                .findFirst().get();
         message.setAuthor(user);
         message.setRecipient(dstPerson);
         message.setTime(new Date());

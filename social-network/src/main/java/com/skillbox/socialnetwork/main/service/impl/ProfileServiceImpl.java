@@ -228,7 +228,7 @@ public class ProfileServiceImpl implements ProfileService {
             friendshipRepository.save(relation);
         }
         //заморозка диалогов с заблокированным
-//        dialogRepository.freezeAllDialogsWithPerson(authorizedUser, profileToBlock);
+        dialogRepository.updateDialogStatus(getDialogIdByPeople(authorizedUser, profileToBlock), true);
 
         log.info("IN blockUser user: {} blocked user {}", authorizedUser.getEmail(), profileToBlock.getEmail());
         return ResponseFactory.responseOk();
@@ -241,6 +241,10 @@ public class ProfileServiceImpl implements ProfileService {
         Person profileToBlock = personService.findById(id);
         friendshipRepository
                 .delete(friendshipRepository.findRelation(authorizedUser, profileToBlock, FriendshipCode.BLOCKED));
+
+        //разморозка диалогов
+        dialogRepository.updateDialogStatus(getDialogIdByPeople(authorizedUser, profileToBlock), false);
+
         log.info("IN unblockUser user: {} unblocked user {}", authorizedUser, profileToBlock);
         return ResponseFactory.responseOk();
     }
@@ -263,6 +267,12 @@ public class ProfileServiceImpl implements ProfileService {
                         .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
         log.info("IN sendMessageToSupport user with email {} contacted support", dto.getEmail());
         return ResponseFactory.responseOk();
+    }
+
+    private int getDialogIdByPeople(Person p1, Person p2){
+        return p1.getDialogs().stream()
+                .filter(dialog -> dialog.getPeople().contains(p1) && dialog.getPeople()
+                        .contains(p2)).findFirst().get().getId();
     }
 
 }

@@ -122,11 +122,6 @@ public class Person {
     @ToString.Exclude
     private List<Notification> notifications;
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-    @JsonIgnore
-    @ToString.Exclude
-    private List<DialogToPerson> dialogToPeople;
-
     @OneToOne(mappedBy = "person")
     @JsonIgnore
     @ToString.Exclude
@@ -142,6 +137,10 @@ public class Person {
     @JsonIgnore
     @ToString.Exclude
     private List<CommentLike> commentLikes;
+
+    @ManyToMany(mappedBy = "people")
+    @JsonIgnore
+    private List<Dialog> dialogs;
 
     @Override
     public String toString() {

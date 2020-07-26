@@ -15,4 +15,6 @@ public class DialogDto implements Dto {
     private int unreadCount;
     @JsonProperty("last_message")
     private Dto lastMessage;
+    @JsonProperty("is_frozen")
+    private boolean isFrozen;
 }

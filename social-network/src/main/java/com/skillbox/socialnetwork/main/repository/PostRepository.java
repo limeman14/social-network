@@ -9,18 +9,27 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
     Post findPostById(Integer id);
 
     @Query(value = "select p from Post p where " +
-            "p.isBlocked = false and p.author not in ?1 and p.author not in ?2 order by p.time desc")
-    List<Post> getFeeds(List<Person> blockedByYou, List<Person> blockedYou, Pageable pageable);
+            "p.isBlocked = false and p.author not in ?1 order by p.time desc")
+    List<Post> getFeedsWithBlocked(Set<Person> blockedUsers, Pageable pageable);
+
+    @Query(value = "select p from Post p where " +
+            "p.isBlocked = false order by p.time desc")
+    List<Post> getFeeds(Pageable pageable);
 
     @Query(value = "select count(p) from Post p where " +
             "p.isBlocked = false order by p.time desc")
-    int getCountNotBlockedPost();
+    int countPosts();
+
+    @Query(value = "select count(p) from Post p where " +
+            "p.isBlocked = false and p.author not in ?1 order by p.time desc")
+    int countPostsWithBlockedUsers(Set<Person> users);
 
     @Query(value = "select p from Post p join p.tags t where " +
             "(p.postText like %?1% or p.title like %?1%) and " +

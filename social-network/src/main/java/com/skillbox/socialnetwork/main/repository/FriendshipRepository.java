@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Set;
 
 public interface FriendshipRepository extends JpaRepository<Friendship, Integer> {
     @Query("select f from Friendship f where f.srcPerson=?1 and f.dstPerson=?2 and f.status.code=?3")
@@ -36,10 +37,10 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Integer>
 
     @Query("select p from Person p join Friendship f on p=f.dstPerson " +
             "where f.status.code='BLOCKED' and f.srcPerson=?1")
-    List<Person> getUsersBlockedByYou(Person person);
+    Set<Person> getUsersBlockedByYou(Person person);
 
     @Query("select p from Person p join Friendship f on p=f.srcPerson " +
             "where f.status.code='BLOCKED' and f.dstPerson=?1")
-    List<Person> getUsersThatBlockedYou(Person person);
+    Set<Person> getUsersThatBlockedYou(Person person);
 
 }

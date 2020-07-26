@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -49,15 +46,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public BaseResponseList feeds(int offset, int limit, Person person) {
-        int count = postRepository.getCountNotBlockedPost();
         int page = offset / limit;
 
-        List<Person> usersBlockedByYou = friendshipRepository.getUsersBlockedByYou(person);
-        List<Person> usersThatBlockedYou = friendshipRepository.getUsersThatBlockedYou(person);
-
+        Set<Person> blockedUsers = friendshipRepository.getUsersBlockedByYou(person);
+        blockedUsers.addAll(friendshipRepository.getUsersThatBlockedYou(person));
         return PostResponseFactory.getPostsList(
-                postRepository.getFeeds(usersBlockedByYou, usersThatBlockedYou, PageRequest.of(page, limit)),
-                count,
+                !blockedUsers.isEmpty()
+                        ? postRepository.getFeedsWithBlocked(blockedUsers, PageRequest.of(page, limit))
+                        : postRepository.getFeeds(PageRequest.of(page, limit)),
+                !blockedUsers.isEmpty()
+                        ? postRepository.countPostsWithBlockedUsers(blockedUsers)
+                        : postRepository.countPosts(),
                 offset,
                 limit,
                 person);
