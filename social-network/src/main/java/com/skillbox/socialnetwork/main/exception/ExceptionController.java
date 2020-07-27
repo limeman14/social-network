@@ -90,7 +90,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
                 ex,
                 new ErrorResponse(ex.getErrorName(), ex.getMessage()),
                 new HttpHeaders(),
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.NOT_FOUND,
                 request
         );
     }

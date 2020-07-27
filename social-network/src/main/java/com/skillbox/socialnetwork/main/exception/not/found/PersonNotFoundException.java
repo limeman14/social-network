@@ -7,7 +7,7 @@ public class PersonNotFoundException extends NotFoundException{
     }
 
     public PersonNotFoundException(String message){
-        super("invalid request", String.format("Person with email = %s not found", message));
+        super("invalid request", message);
     }
 
     public PersonNotFoundException(Integer id){

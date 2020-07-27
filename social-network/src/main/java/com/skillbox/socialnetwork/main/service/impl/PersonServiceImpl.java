@@ -63,7 +63,7 @@ public class PersonServiceImpl implements PersonService {
     public Person findById(Integer id) {
         Person person = repository.findPersonById(id);
         if (person == null || person.getStatus().equals(Status.DELETED)) {
-            throw new PersonNotFoundException(id);
+            throw new PersonNotFoundException("Данный пользователь удалил свою страницу.");
         }
         return person;
     }
