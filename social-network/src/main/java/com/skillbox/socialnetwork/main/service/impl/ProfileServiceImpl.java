@@ -191,8 +191,12 @@ public class ProfileServiceImpl implements ProfileService {
                 name, surname, ageFrom, ageTo, country, city, result.size());
 
         return ResponseFactory.getBaseResponseListWithLimit(result.stream()
-                .map(r -> PersonResponseFactory.getPersonWithFriendshipDto(r,
-                        friendshipRepository.isFriend(personService.findById(authorizedUserId), r)))
+                .map(r -> {
+                    r.setIsBlocked(friendshipRepository.isBlocked(personService.findById(authorizedUserId), r));
+                    r.setAreYouBlocked(friendshipRepository.areYouBlocked(personService.findById(authorizedUserId), r));
+                    return PersonResponseFactory.getPersonWithFriendshipDto(r,
+                            friendshipRepository.isFriend(personService.findById(authorizedUserId), r));
+                })
                 .collect(Collectors.toList()), offset, limit);
     }
 

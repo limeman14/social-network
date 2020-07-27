@@ -22,7 +22,7 @@ jwt.token:
   expired: 36000000000
 
 upload:
-  path: "C:/Users/limeman/Desktop/storage"
+  path: "C:/Users/Valet/Desktop/storage"
 
 hostname: localhost:8080
 
