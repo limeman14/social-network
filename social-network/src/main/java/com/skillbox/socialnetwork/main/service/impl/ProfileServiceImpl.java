@@ -26,10 +26,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -269,10 +266,15 @@ public class ProfileServiceImpl implements ProfileService {
         return ResponseFactory.responseOk();
     }
 
-    private int getDialogIdByPeople(Person p1, Person p2){
-        return p1.getDialogs().stream()
-                .filter(dialog -> dialog.getPeople().contains(p1) && dialog.getPeople()
-                        .contains(p2)).findFirst().get().getId();
+    private Integer getDialogIdByPeople(Person p1, Person p2){
+        try
+        {
+            return p1.getDialogs().stream()
+                    .filter(dialog -> dialog.getPeople().contains(p1) && dialog.getPeople()
+                            .contains(p2)).findFirst().get().getId();
+        } catch (NoSuchElementException ex){
+            return -1;
+        }
     }
 
 }
