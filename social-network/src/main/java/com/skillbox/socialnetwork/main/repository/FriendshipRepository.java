@@ -13,8 +13,8 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Integer>
     @Query("select f from Friendship f where f.srcPerson=?1 and f.dstPerson=?2 and f.status.code=?3")
     Friendship findRelation(Person srcPerson, Person dstPerson, FriendshipCode code);
 
-    @Query("select f from Friendship f where f.srcPerson=?1 and f.dstPerson=?2 and f.status.code<>'BLOCKED'")
-    Friendship findNonBLockedRelation(Person srcPerson, Person dstPerson);
+    @Query("select f from Friendship f where f.srcPerson.id=?1 and f.dstPerson.id=?2 and f.status.code<>'BLOCKED'")
+    Friendship findNonBLockedRelation(Integer srcPersonId, Integer dstPersonId);
 
 
     @Query("select f from Friendship f where f.srcPerson=?1 and f.status.code='FRIEND'")
