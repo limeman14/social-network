@@ -100,8 +100,9 @@ public class ProfileServiceImpl implements ProfileService {
         Person profile = personService.findById(id);
         profile.setIsBlocked(friendshipRepository.isBlocked(authorizedUser, profile));
         profile.setAreYouBlocked(friendshipRepository.areYouBlocked(authorizedUser, profile));
-        Dto response = PersonResponseFactory.getPersonWithFriendshipDto(profile,
-                friendshipRepository.isFriend(authorizedUser, profile));
+        boolean isMyProfile = id == authorizedUser.getId();
+        Dto response = PersonResponseFactory.getPersonById(profile,
+                friendshipRepository.isFriend(authorizedUser, profile), isMyProfile);
         BaseResponse result = ResponseFactory.getBaseResponse(response);
         log.info("IN getUserById user with id: {} {}  found.", id, profile);
         return result;
