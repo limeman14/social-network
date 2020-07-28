@@ -75,7 +75,7 @@ public class PostServiceImpl implements PostService {
         post.setTime(publishDate == null ? new Date() : new Date(publishDate));
 
         //tags
-        List<Tag> tags = new ArrayList<>();
+        Set<Tag> tags = new HashSet<>();
         if (request.getTags().size() != 0) {            //если тегов нет в запросе, блок пропускается
             request.getTags().forEach(tag -> {
                 Tag postTag;

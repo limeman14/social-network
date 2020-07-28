@@ -146,7 +146,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         Post savedPost = postRepository.save(post);
         //tags
-        List<Tag> tags = new ArrayList<>();
+        Set<Tag> tags = new HashSet<>();
         if (request.getTags().size() != 0)
         {            //если тегов нет в запросе, блок пропускается
             request.getTags().forEach(tag -> {
