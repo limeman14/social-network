@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.person.request.UpdatePersonRequestDto;
 import com.skillbox.socialnetwork.main.dto.person.response.PersonResponseFactory;
 import com.skillbox.socialnetwork.main.dto.post.request.AddPostRequestDto;
@@ -30,7 +31,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class ProfileServiceImpl implements ProfileService {
 
     private final EmailService emailService;
@@ -61,13 +61,14 @@ public class ProfileServiceImpl implements ProfileService {
 
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "MyProfile loaded")
     public BaseResponse getMyProfile(Person person)
     {
-        log.info("IN getMyProfile person: {} found", person);
         return PersonResponseFactory.getPerson(person);
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Profile edited")
     public BaseResponse editMyProfile(Person person, UpdatePersonRequestDto request)
     {
         person.setFirstName(request.getFirstName());
@@ -82,19 +83,19 @@ public class ProfileServiceImpl implements ProfileService {
         person.setCity(request.getCity());
         person.setCountry(request.getCountry());
 
-        log.info("IN editMyProfile person: {} edited with request: {} and saved to a database", person, request);
         return PersonResponseFactory.getPerson(personService.save(person));
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Profile deleted")
     public BaseResponse deleteMyProfile(Person person)
     {
         personService.delete(person);
-        log.info("IN deleteMyProfile user: {} deleted successfully", person);
         return ResponseFactory.responseOk();
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "getUserById")
     public BaseResponse getUserById(int id, Person authorizedUser)
     {
         Person profile = personService.findById(id);
@@ -103,12 +104,11 @@ public class ProfileServiceImpl implements ProfileService {
         boolean isMyProfile = id == authorizedUser.getId();
         Dto response = PersonResponseFactory.getPersonById(profile,
                 friendshipRepository.isFriend(authorizedUser, profile), isMyProfile);
-        BaseResponse result = ResponseFactory.getBaseResponse(response);
-        log.info("IN getUserById user with id: {} {}  found.", id, profile);
-        return result;
+        return ResponseFactory.getBaseResponse(response);
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Wall posts loaded")
     public Object getWallPosts(int id, int offset, int limit, Person authorizedUser)
     {
         Person person = personService.findById(id);
@@ -118,11 +118,11 @@ public class ProfileServiceImpl implements ProfileService {
                 .reversed());//сортирую по дате чтобы на стенке выводились сначала новые
         BaseResponseList result = WallResponseFactory.getWall(posts, offset, limit, person);
 
-        log.info("IN getWallPosts posts {} have found", result.getData().size());
         return result;
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "New wall post added")
     public BaseResponse addPost(int id, long publishDate, AddPostRequestDto request)
     {
         Person person = personService.findById(id);
@@ -170,11 +170,11 @@ public class ProfileServiceImpl implements ProfileService {
                 .addNotification(person, p, NotificationCode.POST, "Пользователь добавил новый пост \"" + post
                         .getTitle() + "\""));
 
-        log.info("IN addPost post: {} added with tags: {} successfully", post.getId(), tags);
         return PostResponseFactory.getSinglePost(result, person);
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Search people")
     public BaseResponseList searchPeople(String name, String surname, Integer ageFrom, Integer ageTo, String country,
             String city, Integer offset, Integer limit, int authorizedUserId)
     {
@@ -184,10 +184,6 @@ public class ProfileServiceImpl implements ProfileService {
         Date dateFrom = Date.from(LocalDate.now().minusYears(ageTo).minusDays(1).atStartOfDay(ZoneId.systemDefault())
                 .toInstant());//для нижней т.к. between строгое сравнение.(<>)
         List<Person> result = personService.search(name, surname, dateFrom, dateTo, city, country);
-
-        log.info("IN searchPeople by parameters: name {}, surname {}, ageFrom {}, ageTo {}, country {}, city {} found {} result",
-                name, surname, ageFrom, ageTo, country, city, result.size());
-
         return ResponseFactory.getBaseResponseListWithLimit(result.stream()
                 .map(r -> {
                     r.setIsBlocked(friendshipRepository.isBlocked(personService.findById(authorizedUserId), r));
@@ -199,6 +195,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "User blocked")
     public BaseResponse blockUser(int idOfABlockedUser, Person authorizedUser)
     {
         Person profileToBlock = personService.findById(idOfABlockedUser);
@@ -232,12 +229,12 @@ public class ProfileServiceImpl implements ProfileService {
         //заморозка диалогов с заблокированным
         dialogRepository.updateDialogStatus(getDialogIdByPeople(authorizedUser, profileToBlock), true);
 
-        log.info("IN blockUser user: {} blocked user {}", authorizedUser.getEmail(), profileToBlock.getEmail());
         return ResponseFactory.responseOk();
 
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "User unblocked")
     public BaseResponse unblockUser(int id, Person authorizedUser)
     {
         Person profileToBlock = personService.findById(id);
@@ -247,11 +244,11 @@ public class ProfileServiceImpl implements ProfileService {
         //разморозка диалогов
         dialogRepository.updateDialogStatus(getDialogIdByPeople(authorizedUser, profileToBlock), false);
 
-        log.info("IN unblockUser user: {} unblocked user {}", authorizedUser, profileToBlock);
         return ResponseFactory.responseOk();
     }
 
     @Override
+    @MethodLogWithTime(fullMessage = "Support message sent")
     public BaseResponse sendMessageToSupport(ContactSupportRequestDto dto)
     {
         String messageText = new StringBuilder()
@@ -267,7 +264,6 @@ public class ProfileServiceImpl implements ProfileService {
                 messageText,
                 "Обращение в службу поддержки от " + LocalDate.now()
                         .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
-        log.info("IN sendMessageToSupport user with email {} contacted support", dto.getEmail());
         return ResponseFactory.responseOk();
     }
 

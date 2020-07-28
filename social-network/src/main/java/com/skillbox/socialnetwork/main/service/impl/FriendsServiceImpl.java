@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.Friendship;
 import com.skillbox.socialnetwork.main.model.FriendshipStatus;
@@ -19,7 +20,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class FriendsServiceImpl implements FriendsService {
     private final FriendshipRepository friendshipRepository;
     private final FriendshipStatusRepo friendshipStatusRepo;
@@ -35,24 +35,27 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Friend list loaded")
     public List<Person> getFriends(Person person, String name) {
         return friendshipRepository.findAllFriends(person).stream()
-                .map(f -> f.getDstPerson())
+                .map(Friendship::getDstPerson)
                 .filter(f -> f.getFirstName().contains(name)
                         || f.getLastName().contains(name))
                 .collect(Collectors.toList());
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Friend request loaded")
     public List<Person> getFriendRequest(Person person, String name) {
         return friendshipRepository.findAllRequests(person).stream()
-                .map(f -> f.getSrcPerson())
+                .map(Friendship::getSrcPerson)
                 .filter(f -> f.getFirstName().contains(name)
                         || f.getLastName().contains(name))
                 .collect(Collectors.toList());
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Friend recommendations loaded")
     public List<Person> getRecommendations(Person person) {
         List<Person> myFriends = getFriends(person, "");
         List<Person> peopleFromCity = person.getCity().equals("")
@@ -79,6 +82,7 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "New friend added")
     public String addFriend(Person srcPerson, Person dstPerson) {
         /*
         Добавление в друзья: Текущий пользователь srcPerson, целевой пользователь dstPerson.
@@ -106,21 +110,12 @@ public class FriendsServiceImpl implements FriendsService {
                     srcPerson.getFirstName() + " " + srcPerson.getLastName() + " добавил Вас в друзья.");
         } else if (friendshipSrc != null) {
             if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.REQUEST)) {
-                log.warn("addFriend failed from {} to {} friend request is already sent",
-                        srcPerson.getEmail(),
-                        dstPerson.getEmail());
                 return "";
             }
             if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.DECLINED)) {
-                log.warn("addFriend failed from {} to {}, target user declined source user's request",
-                        srcPerson.getEmail(),
-                        dstPerson.getEmail());
                 return "";
             }
             if (friendshipSrc.getStatus().getCode().equals(FriendshipCode.BLOCKED)) {
-                log.warn("addFriend failed from {} to {}, target user blocked source user",
-                        srcPerson.getEmail(),
-                        dstPerson.getEmail());
                 return "";
             }
         } else {
@@ -137,6 +132,7 @@ public class FriendsServiceImpl implements FriendsService {
 
 
     @Override
+    @MethodLogWithTime(fullMessage = "Friend check")
     public Map<Person, String> isFriend(Person srcPerson, List<Person> dstPersonList) {
         Map<Person, String> isFriendMap = new HashMap<>();
         for (Person dstPerson : dstPersonList) {
@@ -150,6 +146,7 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Person removed from friends list")
     public String deleteFriend(Person owner, int deletedFriendId) {
         Friendship relationsSrc = friendshipRepository.findNonBLockedRelation(owner.getId(), deletedFriendId);
         Friendship relationsDst = friendshipRepository.findNonBLockedRelation(deletedFriendId, owner.getId());

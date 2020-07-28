@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.like.request.LikeRequest;
 import com.skillbox.socialnetwork.main.dto.like.response.LikeResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
@@ -57,6 +58,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Like check")
     public Boolean isLiked(Post post, Person person)
     {
         return post.getLikes().stream().map(PostLike::getPerson).collect(Collectors.toList()).contains(person);
@@ -69,6 +71,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Like removed")
     public Dto delete(Integer id, Integer postId, String type, Person person)
     {
         switch (type)
@@ -88,6 +91,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Post or Comment was liked")
     public BaseResponse putLike(LikeRequest request, Person person)
     {
         switch (request.getType())

@@ -35,4 +35,6 @@ public interface PersonService {
     void delete(Person person);
 
     void restore (String email);
+
+    String getAuthUserEmail();
 }

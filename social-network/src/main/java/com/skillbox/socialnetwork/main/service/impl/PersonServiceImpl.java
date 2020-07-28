@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
 import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.universal.Response;
@@ -20,6 +21,7 @@ import com.skillbox.socialnetwork.main.service.PersonService;
 import com.skillbox.socialnetwork.main.util.LastOnlineTimeAdjuster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,6 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@Slf4j
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository repository;
@@ -69,6 +70,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Search person result")
     public List<Person> search(String name, String surname, Date dateFrom, Date dateTo, String cityName, String countryName) {
         return repository.search(name, surname, dateFrom, dateTo, cityName, countryName);
     }
@@ -79,6 +81,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    @MethodLogWithTime(fullMessage = "New account registered")
     public Response registration(RegisterRequestDto dto, GeoIP location) throws RuntimeException, IOException, GeoIp2Exception {
         checkUserLogin(dto.getEmail());
         checkUserRegisterPassword(dto.getPassword1(), dto.getPassword2());
@@ -109,7 +112,6 @@ public class PersonServiceImpl implements PersonService {
 
     private void checkUserRegisterPassword(String password1, String password2) throws RuntimeException {
         if (!password1.equals(password2)) {
-            log.error("Registration failed, passwords don't match");
             throw new InvalidRequestException("Пароли не совпадают");
         }
     }
@@ -127,9 +129,9 @@ public class PersonServiceImpl implements PersonService {
         return userRoles;
     }
 
+    @MethodLogWithTime(userAuth = true, fullMessage = "Logout made")
     public void logout(Person person) {
         LastOnlineTimeAdjuster.refreshLastOnlineTime(person);
-        log.info("IN logout - user: {} logged out", repository.save(person));
     }
 
     @Override
@@ -143,6 +145,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Account deleted")
     public void delete(Person person) {
         person.setConfirmationCode(person.getEmail());
         String dummyEmail = (100000 * Math.random()) + "@deleted.com";
@@ -164,10 +167,17 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    @MethodLogWithTime(fullMessage = "Account restored")
     public void restore(String email) {
         Person person = repository.findByConfirmationCode(email);
         person.setStatus(Status.REGISTERED);
         person.setEmail(email);
         person.setPhoto("/static/img/user/default-avatar.png");
+    }
+
+    @Override
+    public String getAuthUserEmail()
+    {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.post.request.UpdatePostRequestDto;
 import com.skillbox.socialnetwork.main.dto.post.response.PostResponseFactory;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
@@ -45,6 +46,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Feeds loaded")
     public BaseResponseList feeds(int offset, int limit, Person person) {
         int page = offset / limit;
 
@@ -63,11 +65,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Post loaded")
     public BaseResponse getPost(int id, int personId) {
         return PostResponseFactory.getSinglePost(findById(id), personService.findById(personId));
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Post edited")
     public BaseResponse editPost(int id, Long publishDate, UpdatePostRequestDto request, int personId) {
         Post post = postRepository.findPostById(id);
         post.setPostText(request.getPostText());
@@ -94,12 +98,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Post deleted")
     public BaseResponse deletePost(int id) {
         postRepository.delete(postRepository.findPostById(id));
         return ResponseFactory.responseOk();
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Search posts")
     public BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, String tagsRequest, int offset, int limit, int personId) {
         List<String> tags = Arrays.asList(tagsRequest.split(","));
         List<Post> result = tagsRequest.length()>0 && tags.size()!=0

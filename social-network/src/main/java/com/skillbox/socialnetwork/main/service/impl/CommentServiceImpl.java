@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.comment.request.CommentRequest;
 import com.skillbox.socialnetwork.main.dto.comment.response.CommentDto;
 import com.skillbox.socialnetwork.main.dto.comment.response.CommentResponseFactory;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
-@Slf4j
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
@@ -48,6 +48,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Comment added")
     public Dto addComment(int postId, CommentRequest request, int authorId) {
         PostComment comment = new PostComment();
         Person commentAuthor = personService.findById(authorId);
@@ -71,30 +72,30 @@ public class CommentServiceImpl implements CommentService {
                     isParentComment ? NotificationCode.POST_COMMENT : NotificationCode.COMMENT_COMMENT,
                     comment.getCommentText());
         }
-        log.info("New comment added from user with id = {}", authorId);
         return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment, commentAuthor), commentAuthor);
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Comment updated")
     public Dto updateComment(int commentId, CommentRequest request) {
         PostComment comment = commentRepository.findPostCommentById(commentId);
         comment.setCommentText(request.getText());
         comment.setParentComment(commentRepository.findPostCommentById(request.getParentId()));
         commentRepository.save(comment);
-        log.info("Comment with id {} successfully updated", commentId);
         return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment, comment.getAuthor()), comment.getAuthor());
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Comment deleted")
     public Dto deleteComment(int commentId) {
         commentRepository.deleteById(commentId);
         CommentDto dto = new CommentDto();
         dto.setId(commentId);
-        log.info("Comment with id {} is deleted", commentId);
         return dto;
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "getComments() called")
     public Response getComments(int postId, Person person) {
         Post postById = postRepository.findPostById(postId);
         return CommentResponseFactory.getComments(postById.getComments(), 10, 10, person);
