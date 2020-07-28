@@ -179,7 +179,7 @@ public class NotificationServiceImpl implements NotificationService {
                 settingEnabled = true; break;
         }
 
-        if (settingEnabled) {
+        if (settingEnabled && !src.getId().equals(dst.getId())) {
             Notification notification = Notification.builder()
                     .person(dst)
                     .entityAuthor(src)
