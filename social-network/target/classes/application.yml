@@ -1,5 +1,5 @@
 spring:
-  boot.admin.client.url: http://localhost:8082
+##  boot.admin.client.url: http://localhost:8082
 #  boot.admin.client.url: http://176.118.165.204:8082
   datasource:
     url: jdbc:mysql://localhost:3306/social_network?&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Moscow

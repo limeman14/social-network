@@ -1,3 +1,7 @@
+spring:
+  #  boot.admin.client.url: http://localhost:8082
+  boot.admin.client.url: http://176.118.165.204:8082
+
 server.port: 8082
 
 
