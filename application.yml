@@ -23,6 +23,7 @@ jwt.token:
 
 upload:
   path: "C:/Users/Valet/Desktop/storage"
+recaptcha.secret: "6LfX1LYZAAAAAI4q-5R8HAy6vYvbf1gnAnUsFAw_"
 
 hostname: localhost:8080
 
