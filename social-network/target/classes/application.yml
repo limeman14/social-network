@@ -22,6 +22,7 @@ spring:
 server:
   port: 8080
 
+
 spring.boot.admin.client.username: admin
 spring.boot.admin.client.password: admin-password
 spring.boot.admin.client.instance.metadata.user.name: actuator
@@ -35,6 +36,7 @@ jwt.token:
 
 upload:
   path: "/home/javapro/uploads"
+recaptcha.secret: "6LfX1LYZAAAAAI4q-5R8HAy6vYvbf1gnAnUsFAw_"
 
 hostname: localhost:8080
 

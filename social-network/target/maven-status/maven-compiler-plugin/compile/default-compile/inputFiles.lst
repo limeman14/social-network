@@ -34,6 +34,7 @@ C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\dialog\response\DialogDto.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\dialog\response\DialogUserStatus.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\model\Town.java
+C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\service\RecaptchaService.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\notifications\response\NotificationResponseDto.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\person\response\PersonResponseDto.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\person\request\UpdatePersonRequestDto.java
@@ -46,6 +47,7 @@ C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\auth\response\TokenResponse.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\like\response\LikeResponseFactory.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\security\jwt\JwtTokenProvider.java
+C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\auth\request\CaptchaRequestDto.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\dialog\response\IdDto.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\controller\AuthenticationRestControllerV1.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\model\PostComment.java
@@ -55,7 +57,6 @@ C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\config\MvcConfig.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\service\impl\FileServiceImpl.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\security\JwtUserDetailsService.java
-C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\repository\D2PRepository.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\model\enumerated\NotificationCode.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\post\request\UpdatePostRequestDto.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\model\CommentLike.java
@@ -78,6 +79,7 @@ C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\model\Role.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\exception\InvalidRequestException.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\controller\NotificationsController.java
+C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\service\impl\RecaptchaServiceImpl.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\security\jwt\JwtAuthenticationException.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\service\PostService.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\config\SecurityConfig.java
@@ -101,7 +103,6 @@ C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\service\GeoIPLocationService.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\model\City.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\model\UploadFile.java
-C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\model\DialogToPerson.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\model\enumerated\PostType.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\dto\like\response\IsLikeDto.java
 C:\Users\avkar\Documents\Java\javapro-socialnetwork-studygroup-6\social-network\src\main\java\com\skillbox\socialnetwork\main\util\CodeGenerator.java

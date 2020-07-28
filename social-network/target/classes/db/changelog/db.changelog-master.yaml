@@ -63,6 +63,10 @@ databaseChangeLog:
                   type: ENUM("REGISTERED", "BLOCKED", "DELETED")
                   defaultValue: "REGISTERED"
               - column:
+                  defaultValue: false
+                  name: are_you_blocked
+                  type: BIT(1)
+              - column:
                   constraints:
                     nullable: false
                   name: password
@@ -716,6 +720,10 @@ databaseChangeLog:
                     nullable: false
                   name: creation_date
                   type: datetime
+              - column:
+                  defaultValue: false
+                  name: is_frozen
+                  type: BIT(1)
         - createTable:
             tableName: dialog2person
             columns:
@@ -729,12 +737,12 @@ databaseChangeLog:
               - column:
                   constraints:
                     nullable: false
-                  name: dialog_id
+                  name: person_id
                   type: INT
               - column:
                   constraints:
                     nullable: false
-                  name: person_id
+                  name: dialog_id
                   type: INT
         - addColumn:
             tableName: messages
