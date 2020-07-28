@@ -35,4 +35,6 @@ public class PersonResponseDto implements Dto {
     protected String messagesPermission;
     @JsonProperty("is_friend")
     protected Boolean isFriend;
+    @JsonProperty("is_me")
+    private Boolean isMe;
 }

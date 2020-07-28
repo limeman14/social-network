@@ -82,7 +82,7 @@ public class FriendsController {
     public ResponseEntity<?> deleteFriend(@AuthenticationPrincipal JwtUser user, @PathVariable Integer id) {
         return ResponseEntity.ok().body(friendsService.deleteFriend(
                 personService.findById(user.getId()),
-                personService.findById(id)
+                id
         ));
     }
 
