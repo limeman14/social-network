@@ -70,13 +70,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Logout")
     public void logout(String token) {
-        try {
-            String email = jwtTokenProvider.getUsername(token);
-            personService.logout(personService.findByEmail(email));
-        }catch (Exception ignored){
-            log.warn("User not found.");
-        }
+        String email = jwtTokenProvider.getUsername(token);
+        personService.logout(personService.findByEmail(email));
     }
 
     @Override
@@ -91,17 +88,18 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @MethodLogWithTime
     public Response passwordRecovery(String email, String url) {
         Person person = personService.findByEmail(email);
         person.setConfirmationCode(CodeGenerator.codeGenerator());
         personService.save(person);
         String token = jwtTokenProvider.createToken(person.getEmail() + ":" + person.getConfirmationCode());
         emailService.sendPasswordRecovery(email, person.getFirstName(), url + "/change-password?token=" + token);
-        log.info("User {} requested password recovery, confirmation email was sent", email);
         return ResponseFactory.responseOk();
     }
 
     @Override
+    @MethodLogWithTime
     public Response passwordSet(PasswordSetRequestDto dto, String referer) {
         try {
             URL ub = new URL(referer);
