@@ -70,7 +70,6 @@ public class CommentServiceImpl implements CommentService {
                     isParentComment ? post.getAuthor() : comment.getParentComment().getAuthor(),
                     isParentComment ? NotificationCode.POST_COMMENT : NotificationCode.COMMENT_COMMENT,
                     comment.getCommentText());
-            log.info("SENT COMMENT notification to " + (isParentComment ? post.getAuthor() : comment.getParentComment().getAuthor()).getFirstName() + " " + (isParentComment ? post.getAuthor() : comment.getParentComment().getAuthor()).getLastName());
         }
         log.info("New comment added from user with id = {}", authorId);
         return CommentResponseFactory.getCommentDto(comment, CommentResponseFactory.getCommentList(comment.getChildComments(), comment, commentAuthor), commentAuthor);

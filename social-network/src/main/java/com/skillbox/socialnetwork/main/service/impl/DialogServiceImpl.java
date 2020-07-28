@@ -217,7 +217,6 @@ public class DialogServiceImpl implements DialogService {
 
         //уведомление о сообщении
         notificationService.addNotification(user, dstPerson, NotificationCode.MESSAGE, message.getMessageText());
-        log.info("SENT MESSAGE notification to " + dstPerson.getFirstName() + " " + dstPerson.getLastName());
 
         return new BaseResponse(DialogFactory.formatMessage(messageRepository.save(message), user));
     }

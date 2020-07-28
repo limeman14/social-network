@@ -165,6 +165,21 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void addNotification(Person src, Person dst, NotificationCode code, String message)
     {
+        NotificationSettings settings = notificationSettingsRepository.findByPersonId(dst.getId());
+        boolean settingEnabled = false;
+        switch (code.name()) {
+            case "POST": settingEnabled = settings.isPostNotification(); break;
+            case "POST_COMMENT": settingEnabled = settings.isPostCommentNotification(); break;
+            case "COMMENT_COMMENT": settingEnabled = settings.isCommentCommentNotification(); break;
+            case "FRIEND_REQUEST": settingEnabled = settings.isFriendRequestNotification(); break;
+            case "FRIEND_BIRTHDAY": settingEnabled = settings.isFriendBirthdayNotification(); break;
+            case "MESSAGE": settingEnabled = settings.isMessageNotification(); break;
+            case "LIKE":
+            case "ACTIVATION":
+                settingEnabled = true; break;
+        }
+
+        if (settingEnabled) {
             Notification notification = Notification.builder()
                     .person(dst)
                     .entityAuthor(src)
@@ -174,6 +189,8 @@ public class NotificationServiceImpl implements NotificationService {
                     .readStatus(ReadStatus.SENT)
                     .build();
             notificationRepository.save(notification);
+            log.info("SENT " + code.name() + " notification to " + dst.getFirstName() + " " + dst.getLastName());
+        }
     }
 
     public void getBirthdays(Person user)
