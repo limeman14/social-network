@@ -8,6 +8,7 @@ import com.skillbox.socialnetwork.main.dto.universal.ResponseFactory;
 import com.skillbox.socialnetwork.main.model.Person;
 import com.skillbox.socialnetwork.main.model.Post;
 import com.skillbox.socialnetwork.main.model.Tag;
+import com.skillbox.socialnetwork.main.repository.FriendshipRepository;
 import com.skillbox.socialnetwork.main.repository.PostRepository;
 import com.skillbox.socialnetwork.main.repository.TagRepository;
 import com.skillbox.socialnetwork.main.service.PersonService;
@@ -16,22 +17,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
     private final PersonService personService;
+    private final FriendshipRepository friendshipRepository;
 
     @Autowired
-    public PostServiceImpl(PostRepository repository, TagRepository tagRepository, PersonService personService) {
+    public PostServiceImpl(PostRepository repository, TagRepository tagRepository, PersonService personService, FriendshipRepository friendshipRepository) {
         this.postRepository = repository;
         this.tagRepository = tagRepository;
         this.personService = personService;
+        this.friendshipRepository = friendshipRepository;
     }
 
     @Override
@@ -46,11 +46,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public BaseResponseList feeds(int offset, int limit, Person person) {
-        int count = postRepository.getCountNotBlockedPost();
         int page = offset / limit;
+
+        Set<Person> blockedUsers = friendshipRepository.getUsersBlockedByYou(person);
+        blockedUsers.addAll(friendshipRepository.getUsersThatBlockedYou(person));
         return PostResponseFactory.getPostsList(
-                postRepository.getFeeds(PageRequest.of(page, limit)),
-                count,
+                !blockedUsers.isEmpty()
+                        ? postRepository.getFeedsWithBlocked(blockedUsers, PageRequest.of(page, limit))
+                        : postRepository.getFeeds(PageRequest.of(page, limit)),
+                !blockedUsers.isEmpty()
+                        ? postRepository.countPostsWithBlockedUsers(blockedUsers)
+                        : postRepository.countPosts(),
                 offset,
                 limit,
                 person);
@@ -69,7 +75,7 @@ public class PostServiceImpl implements PostService {
         post.setTime(publishDate == null ? new Date() : new Date(publishDate));
 
         //tags
-        List<Tag> tags = new ArrayList<>();
+        Set<Tag> tags = new HashSet<>();
         if (request.getTags().size() != 0) {            //если тегов нет в запросе, блок пропускается
             request.getTags().forEach(tag -> {
                 Tag postTag;
@@ -96,19 +102,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public BaseResponseList searchPosts(String text, Long dateFrom, Long dateTo, String author, String tagsRequest, int offset, int limit, int personId) {
         List<String> tags = Arrays.asList(tagsRequest.split(","));
-//        if(tags.size()>0){
-//                result = result.stream().filter(post -> {
-//                    boolean flag = false;
-//                    for(Tag tag:post.getTags()){
-//                        for(String queryTag: tags){
-//                            if(tag.getTag().equalsIgnoreCase(queryTag)){
-//                                flag = true;
-//                            }
-//                        }
-//                    }
-//                    return flag;
-//                }).collect(Collectors.toList());
-//            }
         List<Post> result = tagsRequest.length()>0 && tags.size()!=0
                 ? postRepository.searchPostsWithTags(text, new Date(dateFrom), new Date(dateTo), author, tags)
                 : postRepository.searchPosts(text, new Date(dateFrom), new Date(dateTo), author);

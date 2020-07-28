@@ -20,12 +20,18 @@ public class Dialog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @OneToMany(mappedBy = "dialog")
-    @ToString.Exclude
-    private List<DialogToPerson> dialogToPersonList;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "dialog2person",
+            joinColumns = {@JoinColumn(name = "dialog_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "person_id", referencedColumnName = "id")}
+    )
+    private List<Person> people;
     @OneToMany(mappedBy = "dialog")
     @ToString.Exclude
     private List<Message> messages;
     @CreationTimestamp
     private Date creationDate;
+    private boolean isFrozen;
 }

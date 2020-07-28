@@ -35,9 +35,11 @@ public class PersonResponseFactory {
                 person.getCity(),
                 person.getCountry(),
                 person.getIsBlocked(),
+                person.getAreYouBlocked(),
                 person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null,
-                person.getMessagesPermission().toString()
-                , false
+                person.getMessagesPermission().toString(),
+                false,
+                false
         );
     }
 
@@ -55,9 +57,33 @@ public class PersonResponseFactory {
                 person.getCity(),
                 person.getCountry(),
                 person.getIsBlocked(),
+                person.getAreYouBlocked(),
                 person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null,
                 person.getMessagesPermission().toString()
-                , isFriend
+                , isFriend,
+                false
+        );
+    }
+
+    public static PersonResponseDto getPersonById(Person person, boolean isFriend, boolean isMyProfile) {
+        return new PersonResponseDto(
+                person.getId(),
+                person.getFirstName(),
+                person.getLastName(),
+                person.getRegDate().getTime(),
+                person.getBirthDate() != null ? person.getBirthDate().getTime() : null,
+                person.getEmail(),
+                person.getPhone(),
+                person.getPhoto(),
+                person.getAbout(),
+                person.getCity(),
+                person.getCountry(),
+                person.getIsBlocked(),
+                person.getAreYouBlocked(),
+                person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null,
+                person.getMessagesPermission().toString(),
+                isFriend,
+                isMyProfile
         );
     }
 

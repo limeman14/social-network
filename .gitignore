@@ -2,3 +2,5 @@
 *.iml
 .log
 /target
+/social-network-admin/target/
+/social-network/target/

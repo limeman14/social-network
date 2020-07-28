@@ -26,10 +26,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,12 +40,14 @@ public class ProfileServiceImpl implements ProfileService {
     private final FriendshipRepository friendshipRepository;
     private final FileRepository fileRepository;
     private final PersonService personService;
+    private final DialogRepository dialogRepository;
     private final NotificationService notificationService;
 
     @Autowired
     public ProfileServiceImpl(EmailService emailService, PersonService personService, PostRepository postRepository,
-                              TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo,
-                              FriendshipRepository friendshipRepository, FileRepository fileRepository, NotificationService notificationService) {
+            TagRepository tagRepository, FriendshipStatusRepo friendshipStatusRepo,
+            FriendshipRepository friendshipRepository, FileRepository fileRepository, DialogRepository dialogRepository, NotificationService notificationService)
+    {
         this.emailService = emailService;
         this.personService = personService;
         this.postRepository = postRepository;
@@ -56,23 +55,27 @@ public class ProfileServiceImpl implements ProfileService {
         this.friendshipStatusRepo = friendshipStatusRepo;
         this.friendshipRepository = friendshipRepository;
         this.fileRepository = fileRepository;
+        this.dialogRepository = dialogRepository;
         this.notificationService = notificationService;
     }
 
 
     @Override
-    public BaseResponse getMyProfile(Person person) {
+    public BaseResponse getMyProfile(Person person)
+    {
         log.info("IN getMyProfile person: {} found", person);
         return PersonResponseFactory.getPerson(person);
     }
 
     @Override
-    public BaseResponse editMyProfile(Person person, UpdatePersonRequestDto request) {
+    public BaseResponse editMyProfile(Person person, UpdatePersonRequestDto request)
+    {
         person.setFirstName(request.getFirstName());
         person.setLastName(request.getLastName());
         person.setBirthDate(request.getBirthDate());
         person.setPhone(request.getPhone());
-        if (request.getPhotoId() != null) {
+        if (request.getPhotoId() != null)
+        {
             person.setPhoto(fileRepository.findById(request.getPhotoId()).getRelativeFilePath());
         }
         person.setAbout(request.getAbout());
@@ -84,30 +87,35 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public BaseResponse deleteMyProfile(Person person) {
+    public BaseResponse deleteMyProfile(Person person)
+    {
         personService.delete(person);
         log.info("IN deleteMyProfile user: {} deleted successfully", person);
         return ResponseFactory.responseOk();
     }
 
     @Override
-    public BaseResponse getUserById(int id, Person authorizedUser) {
+    public BaseResponse getUserById(int id, Person authorizedUser)
+    {
         Person profile = personService.findById(id);
-        //эта строчка проверяет, заблокировал ли текущий авторизованный юзер юзера, которого ищем по id
         profile.setIsBlocked(friendshipRepository.isBlocked(authorizedUser, profile));
-        Dto response = PersonResponseFactory.getPersonWithFriendshipDto(profile,
-                friendshipRepository.isFriend(authorizedUser, profile));
+        profile.setAreYouBlocked(friendshipRepository.areYouBlocked(authorizedUser, profile));
+        boolean isMyProfile = id == authorizedUser.getId();
+        Dto response = PersonResponseFactory.getPersonById(profile,
+                friendshipRepository.isFriend(authorizedUser, profile), isMyProfile);
         BaseResponse result = ResponseFactory.getBaseResponse(response);
         log.info("IN getUserById user with id: {} {}  found.", id, profile);
         return result;
     }
 
     @Override
-    public BaseResponseList getWallPosts(int id, int offset, int limit) {
+    public Object getWallPosts(int id, int offset, int limit, Person authorizedUser)
+    {
         Person person = personService.findById(id);
 
         List<Post> posts = person.getPosts();
-        posts.sort(Comparator.comparing(Post::getTime).reversed());//сортирую по дате чтобы на стенке выводились сначала новые
+        posts.sort(Comparator.comparing(Post::getTime)
+                .reversed());//сортирую по дате чтобы на стенке выводились сначала новые
         BaseResponseList result = WallResponseFactory.getWall(posts, offset, limit, person);
 
         log.info("IN getWallPosts posts {} have found", result.getData().size());
@@ -115,13 +123,16 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public BaseResponse addPost(int id, long publishDate, AddPostRequestDto request) {
+    public BaseResponse addPost(int id, long publishDate, AddPostRequestDto request)
+    {
         Person person = personService.findById(id);
         Post post = new Post();
         post.setAuthor(person);
-        if (publishDate == 0 || new Date(publishDate).before(new Date())) {
+        if (publishDate == 0 || new Date(publishDate).before(new Date()))
+        {
             post.setTime(new Date());
-        } else {
+        } else
+        {
             post.setTime(new Date(publishDate));
         }
         post.setTitle(request.getTitle());
@@ -135,13 +146,16 @@ public class ProfileServiceImpl implements ProfileService {
 
         Post savedPost = postRepository.save(post);
         //tags
-        List<Tag> tags = new ArrayList<>();
-        if (request.getTags().size() != 0) {            //если тегов нет в запросе, блок пропускается
+        Set<Tag> tags = new HashSet<>();
+        if (request.getTags().size() != 0)
+        {            //если тегов нет в запросе, блок пропускается
             request.getTags().forEach(tag -> {
                 Tag postTag;
-                if (tagRepository.existsByTagIgnoreCase(tag)) {
+                if (tagRepository.existsByTagIgnoreCase(tag))
+                {
                     postTag = tagRepository.findFirstByTagIgnoreCase(tag);
-                } else {
+                } else
+                {
                     postTag = new Tag();
                     postTag.setTag(tag);
                 }
@@ -152,7 +166,9 @@ public class ProfileServiceImpl implements ProfileService {
         Post result = postRepository.save(savedPost);
 
         //Notification
-        person.getFriendshipsDst().stream().map(Friendship::getSrcPerson).forEach(p->notificationService.addNotification(person, p, NotificationCode.POST, "Пользователь добавил новый пост \""+post.getTitle()+"\""));
+        person.getFriendshipsDst().stream().map(Friendship::getSrcPerson).forEach(p -> notificationService
+                .addNotification(person, p, NotificationCode.POST, "Пользователь добавил новый пост \"" + post
+                        .getTitle() + "\""));
 
         log.info("IN addPost post: {} added with tags: {} successfully", post.getId(), tags);
         return PostResponseFactory.getSinglePost(result, person);
@@ -160,48 +176,84 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public BaseResponseList searchPeople(String name, String surname, Integer ageFrom, Integer ageTo, String country,
-                                         String city, Integer offset, Integer limit, int authorizedUserId) {
+            String city, Integer offset, Integer limit, int authorizedUserId)
+    {
         // превращаю из локалдейт в дату ибо spring jpa не может в query воспринимать LocalDate и принимает только Date
-        Date dateTo = Date.from(LocalDate.now().minusYears(ageFrom).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//плюс день для верхней даты и минус день
-        Date dateFrom = Date.from(LocalDate.now().minusYears(ageTo).minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());//для нижней т.к. between строгое сравнение.(<>)
+        Date dateTo = Date.from(LocalDate.now().minusYears(ageFrom).plusDays(1).atStartOfDay(ZoneId.systemDefault())
+                .toInstant());//плюс день для верхней даты и минус день
+        Date dateFrom = Date.from(LocalDate.now().minusYears(ageTo).minusDays(1).atStartOfDay(ZoneId.systemDefault())
+                .toInstant());//для нижней т.к. between строгое сравнение.(<>)
         List<Person> result = personService.search(name, surname, dateFrom, dateTo, city, country);
 
         log.info("IN searchPeople by parameters: name {}, surname {}, ageFrom {}, ageTo {}, country {}, city {} found {} result",
                 name, surname, ageFrom, ageTo, country, city, result.size());
 
         return ResponseFactory.getBaseResponseListWithLimit(result.stream()
-                .map(r -> PersonResponseFactory.getPersonWithFriendshipDto(r,
-                        friendshipRepository.isFriend(personService.findById(authorizedUserId), r)))
+                .map(r -> {
+                    r.setIsBlocked(friendshipRepository.isBlocked(personService.findById(authorizedUserId), r));
+                    r.setAreYouBlocked(friendshipRepository.areYouBlocked(personService.findById(authorizedUserId), r));
+                    return PersonResponseFactory.getPersonWithFriendshipDto(r,
+                            friendshipRepository.isFriend(personService.findById(authorizedUserId), r));
+                })
                 .collect(Collectors.toList()), offset, limit);
     }
 
     @Override
-    public BaseResponse blockUser(int idOfABlockedUser, Person authorizedUser) {
+    public BaseResponse blockUser(int idOfABlockedUser, Person authorizedUser)
+    {
         Person profileToBlock = personService.findById(idOfABlockedUser);
         FriendshipStatus status = new FriendshipStatus();
         status.setCode(FriendshipCode.BLOCKED);
         status.setTime(new Date());
-        Friendship relation = new Friendship();
-        relation.setSrcPerson(authorizedUser);
-        relation.setDstPerson(profileToBlock);
-        relation.setStatus(friendshipStatusRepo.save(status));
 
-        friendshipRepository.save(relation);
+        if (friendshipRepository.isFriend(authorizedUser, profileToBlock))
+        {
+            Friendship srcRelation = friendshipRepository
+                    .findRelation(authorizedUser, profileToBlock, FriendshipCode.FRIEND);
+            Friendship dstRelation = friendshipRepository
+                    .findRelation(profileToBlock, authorizedUser, FriendshipCode.FRIEND);
+            dstRelation.setStatus(
+                    friendshipStatusRepo.save(FriendshipStatus.builder()
+                            .code(FriendshipCode.SUBSCRIBED)
+                            .time(new Date())
+                            .build()));
+            srcRelation.setStatus(friendshipStatusRepo.save(status));
+            friendshipRepository.save(dstRelation);
+            friendshipRepository.save(srcRelation);
+        } else
+        {
+            Friendship relation = new Friendship();
+            relation.setSrcPerson(authorizedUser);
+            relation.setDstPerson(profileToBlock);
+            relation.setStatus(friendshipStatusRepo.save(status));
+
+            friendshipRepository.save(relation);
+        }
+        //заморозка диалогов с заблокированным
+        dialogRepository.updateDialogStatus(getDialogIdByPeople(authorizedUser, profileToBlock), true);
+
         log.info("IN blockUser user: {} blocked user {}", authorizedUser.getEmail(), profileToBlock.getEmail());
         return ResponseFactory.responseOk();
 
     }
 
     @Override
-    public BaseResponse unblockUser(int id, Person authorizedUser) {
+    public BaseResponse unblockUser(int id, Person authorizedUser)
+    {
         Person profileToBlock = personService.findById(id);
-        friendshipRepository.delete(friendshipRepository.findRelation(authorizedUser, profileToBlock, FriendshipCode.BLOCKED));
+        friendshipRepository
+                .delete(friendshipRepository.findRelation(authorizedUser, profileToBlock, FriendshipCode.BLOCKED));
+
+        //разморозка диалогов
+        dialogRepository.updateDialogStatus(getDialogIdByPeople(authorizedUser, profileToBlock), false);
+
         log.info("IN unblockUser user: {} unblocked user {}", authorizedUser, profileToBlock);
         return ResponseFactory.responseOk();
     }
 
     @Override
-    public BaseResponse sendMessageToSupport(ContactSupportRequestDto dto) {
+    public BaseResponse sendMessageToSupport(ContactSupportRequestDto dto)
+    {
         String messageText = new StringBuilder()
                 .append("Пользователь с именем ")
                 .append(dto.getName())
@@ -213,9 +265,21 @@ public class ProfileServiceImpl implements ProfileService {
         emailService.sendSimpleMessage(
                 "skillboxsocial@gmail.com",
                 messageText,
-                "Обращение в службу поддержки от " + LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
+                "Обращение в службу поддержки от " + LocalDate.now()
+                        .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
         log.info("IN sendMessageToSupport user with email {} contacted support", dto.getEmail());
         return ResponseFactory.responseOk();
+    }
+
+    private Integer getDialogIdByPeople(Person p1, Person p2){
+        try
+        {
+            return p1.getDialogs().stream()
+                    .filter(dialog -> dialog.getPeople().contains(p1) && dialog.getPeople()
+                            .contains(p2)).findFirst().get().getId();
+        } catch (NoSuchElementException ex){
+            return -1;
+        }
     }
 
 }

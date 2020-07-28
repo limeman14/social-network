@@ -51,8 +51,9 @@ public class ProfileController {
     public ResponseEntity<?> getWallById(
             @PathVariable int id,
             @RequestParam(name = "offset", defaultValue = "0") Integer offset,
-            @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit) {
-        BaseResponseList result = profileService.getWallPosts(id, offset, limit);
+            @RequestParam(name = "itemPerPage", defaultValue = "20", required = false) Integer limit,
+            @RequestHeader(name = "Authorization") String token) {
+        Object result = profileService.getWallPosts(id, offset, limit, authService.getAuthorizedUser(token));
         return ResponseEntity.ok(result);
     }
 

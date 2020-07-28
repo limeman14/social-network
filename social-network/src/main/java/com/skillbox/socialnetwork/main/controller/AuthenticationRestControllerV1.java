@@ -3,6 +3,7 @@ package com.skillbox.socialnetwork.main.controller;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.skillbox.socialnetwork.main.dto.GeoIP.GeoIP;
 import com.skillbox.socialnetwork.main.dto.auth.request.AuthenticationRequestDto;
+import com.skillbox.socialnetwork.main.dto.auth.request.CaptchaRequestDto;
 import com.skillbox.socialnetwork.main.dto.auth.request.RegisterRequestDto;
 import com.skillbox.socialnetwork.main.dto.notifications.request.NotificationSettingRequestDto;
 import com.skillbox.socialnetwork.main.dto.profile.request.EmailRequestDto;
@@ -14,6 +15,7 @@ import com.skillbox.socialnetwork.main.security.jwt.JwtUser;
 import com.skillbox.socialnetwork.main.service.AuthService;
 import com.skillbox.socialnetwork.main.service.GeoIPLocationService;
 import com.skillbox.socialnetwork.main.service.NotificationService;
+import com.skillbox.socialnetwork.main.service.RecaptchaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,15 +33,17 @@ public class AuthenticationRestControllerV1 {
     private final AuthService authService;
     private final GeoIPLocationService geoService;
     private final NotificationService notificationService;
+    private final RecaptchaService recaptchaService;
 
     @Autowired
     public AuthenticationRestControllerV1(AuthService authService,
-            GeoIPLocationService geoService,
-            NotificationService notificationService)
+                                          GeoIPLocationService geoService,
+                                          NotificationService notificationService, RecaptchaService recaptchaService)
     {
         this.authService = authService;
         this.geoService = geoService;
         this.notificationService = notificationService;
+        this.recaptchaService = recaptchaService;
     }
 
     @PostMapping("/api/v1/auth/login")
@@ -150,5 +154,11 @@ public class AuthenticationRestControllerV1 {
             }
         }
         return geoService.getLocation(ipAddress != null ? ipAddress : remoteAddress);
+    }
+
+    @PostMapping("/api/v1/auth/captcha")
+    public ResponseEntity<?> confirmCaptcha(@RequestParam(value = "ipAddress", required = false) String ipAddress,
+                                            @RequestBody CaptchaRequestDto request) {
+        return ResponseEntity.ok(recaptchaService.verifyRecaptcha(ipAddress, request.getToken()));
     }
 }

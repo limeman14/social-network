@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.skillbox.socialnetwork.main.exception.not.found.PersonNotFoundException;
 import com.skillbox.socialnetwork.main.model.Friendship;
 import com.skillbox.socialnetwork.main.model.FriendshipStatus;
 import com.skillbox.socialnetwork.main.model.Person;
@@ -84,8 +85,8 @@ public class FriendsServiceImpl implements FriendsService {
         Принятие запроса в друзья: Тот, кто подтверждает или отклонияет запрос в друзья srcPerson,
         тот, кто отправлял этот запрос - dstPerson
          */
-        Friendship friendshipSrc = friendshipRepository.findNonBLockedRelation(srcPerson, dstPerson);
-        Friendship friendshipDst = friendshipRepository.findNonBLockedRelation(dstPerson, srcPerson);
+        Friendship friendshipSrc = friendshipRepository.findNonBLockedRelation(srcPerson.getId(), dstPerson.getId());
+        Friendship friendshipDst = friendshipRepository.findNonBLockedRelation(dstPerson.getId(), srcPerson.getId());
         if (friendshipDst != null && (friendshipDst.getStatus().getCode().equals(FriendshipCode.REQUEST)
                 || friendshipDst.getStatus().getCode().equals(FriendshipCode.SUBSCRIBED))) {
             friendshipDst.getStatus().setCode(FriendshipCode.FRIEND);
@@ -149,17 +150,27 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
-    public String deleteFriend(Person owner, Person deletedFriend) {
-        Friendship relationsSrc = friendshipRepository.findNonBLockedRelation(owner, deletedFriend);
-        Friendship relationsDst = friendshipRepository.findNonBLockedRelation(deletedFriend, owner);
+    public String deleteFriend(Person owner, int deletedFriendId) {
+        Friendship relationsSrc = friendshipRepository.findNonBLockedRelation(owner.getId(), deletedFriendId);
+        Friendship relationsDst = friendshipRepository.findNonBLockedRelation(deletedFriendId, owner.getId());
         if (relationsSrc != null
                 && relationsSrc.getStatus().getCode().equals(FriendshipCode.FRIEND)) {
             relationsSrc.getStatus().setCode(FriendshipCode.DECLINED);
-            relationsDst.getStatus().setCode(FriendshipCode.SUBSCRIBED);
             relationsSrc.getStatus().setTime(new Date());
+            friendshipStatusRepo.save(relationsSrc.getStatus());
+            try {
+                personService.findById(deletedFriendId);
+            }
+            catch (PersonNotFoundException e) {
+                friendshipRepository.delete(relationsSrc);
+                friendshipRepository.delete(relationsDst);
+                friendshipStatusRepo.delete(relationsSrc.getStatus());
+                friendshipStatusRepo.delete(relationsDst.getStatus());
+                return "ok";
+            }
+            relationsDst.getStatus().setCode(FriendshipCode.SUBSCRIBED);
             relationsDst.getStatus().setTime(new Date());
             friendshipStatusRepo.save(relationsDst.getStatus());
-            friendshipStatusRepo.save(relationsSrc.getStatus());
         }
         return "ok";
     }

@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @Table(name = "friendship_statuses")
 @RequiredArgsConstructor
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FriendshipStatus {

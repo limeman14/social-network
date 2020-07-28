@@ -44,7 +44,8 @@ public class DialogFactory {
                                 .getMessages()
                                 .stream()
                                 .max(Comparator.comparing(Message::getTime))
-                                .get(), user) : null))
+                                .get(), user) : null,
+                        dialog.isFrozen()))
                 .collect(Collectors.toList());
     }
 
@@ -80,22 +81,5 @@ public class DialogFactory {
                 message.getMessageText(),
                 message.getReadStatus(),
                 message.getAuthor().getId().equals(user.getId()));
-    }
-
-    private static Dto formatDialog(Dialog dialog) {
-        return new DialogDto(
-                dialog.getId(),
-                (int) dialog
-                        .getMessages()
-                        .stream()
-                        .filter(message -> message.getReadStatus() == ReadStatus.SENT)
-                        .count(),
-                null
-//                dialog.getMessages().size()>0 ? formatMessage(dialog.getMessages()
-//                        .stream()
-//                        .sorted(Comparator.comparing(Message::getTime).reversed())
-//                        .findFirst()
-//                        .orElse(null)) : null
-        );
     }
 }
