@@ -116,7 +116,7 @@ public class ProfileServiceImpl implements ProfileService {
         List<Post> posts = person.getPosts();
         posts.sort(Comparator.comparing(Post::getTime)
                 .reversed());//сортирую по дате чтобы на стенке выводились сначала новые
-        BaseResponseList result = WallResponseFactory.getWall(posts, offset, limit, person);
+        BaseResponseList result = WallResponseFactory.getWall(posts, offset, limit, authorizedUser);
 
         return result;
     }
