@@ -8,4 +8,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MethodLogWithTime {
+    String message() default "";
+    String fullMessage() default "";
+    boolean userAuth() default false;
+    String exceptionMessage() default  "";
 }

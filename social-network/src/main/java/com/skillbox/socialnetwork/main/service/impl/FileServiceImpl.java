@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
-@Slf4j
 public class FileServiceImpl implements FileService {
 
     private final FileRepository fileRepository;

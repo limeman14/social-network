@@ -1,5 +1,6 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.like.request.LikeRequest;
 import com.skillbox.socialnetwork.main.dto.like.response.LikeResponseDto;
 import com.skillbox.socialnetwork.main.dto.universal.BaseResponse;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,6 +58,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Like check")
     public Boolean isLiked(Post post, Person person)
     {
         return post.getLikes().stream().map(PostLike::getPerson).collect(Collectors.toList()).contains(person);
@@ -68,9 +71,11 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Like removed")
     public Dto delete(Integer id, Integer postId, String type, Person person)
     {
-        switch (type){
+        switch (type)
+        {
             case "Post":
                 Post post = postRepository.findPostById(id);
                 PostLike postLike = postLikeRepository.findPostLikeByPostAndPerson(post, person);
@@ -86,25 +91,32 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public BaseResponse putLike(LikeRequest request, Person authorizedUser)
+    @MethodLogWithTime(userAuth = true, fullMessage = "Post or Comment was liked")
+    public BaseResponse putLike(LikeRequest request, Person person)
     {
         switch (request.getType())
         {
             case "Post":
+                Post post = postService.findById(request.getId());
                 postLikeRepository.save(
                         PostLike.builder()
-                                .person(authorizedUser)
-                                .post(postService.findById(request.getId()))
+                                .person(person)
+                                .post(post)
                                 .time(new Date())
                                 .build());
+                notificationService.addNotification(person,
+                        post.getAuthor(), NotificationCode.LIKE, "Пользователь "+person.getLastName()+" "+person.getFirstName()+" оценил ваш пост.");
                 return ResponseFactory.responseOk();
             case "Comment":
+                Optional<PostComment> comment = commentRepository.findById(request.getId());
                 commentLikeRepository.save(
                         CommentLike.builder()
-                                .person(authorizedUser)
-                                .comment(commentRepository.findById(request.getId()).get())
+                                .person(person)
+                                .comment(comment.get())
                                 .time(new Date())
                                 .build());
+                notificationService.addNotification(person,
+                        comment.get().getAuthor(), NotificationCode.LIKE, "Пользователь "+person.getLastName()+" "+person.getFirstName()+" оценил ваш комментарий.");
                 return ResponseFactory.responseOk();
         }
         return null;

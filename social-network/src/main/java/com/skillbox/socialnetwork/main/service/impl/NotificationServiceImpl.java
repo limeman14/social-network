@@ -1,6 +1,7 @@
 package com.skillbox.socialnetwork.main.service.impl;
 
 
+import com.skillbox.socialnetwork.main.aspect.MethodLogWithTime;
 import com.skillbox.socialnetwork.main.dto.notifications.request.NotificationSettingRequestDto;
 import com.skillbox.socialnetwork.main.dto.notifications.response.NotificationResponseFactory;
 import com.skillbox.socialnetwork.main.dto.notifications.response.NotificationSettingResponseDto;
@@ -32,7 +33,6 @@ import java.util.stream.Collectors;
 
 import static com.skillbox.socialnetwork.main.util.LastOnlineTimeAdjuster.refreshLastOnlineTime;
 
-@Slf4j
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
@@ -54,6 +54,7 @@ public class NotificationServiceImpl implements NotificationService {
     //По умолчанию данных в БД по поводу настроек оповещений нет, поэтому используем дефолтные значения false
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Notification settings loaded")
     public BaseResponseList getNotificationSettings(int userId)
     {
         List<NotificationSettingResponseDto> settingsList = new ArrayList<>();
@@ -85,6 +86,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Notification settings edited")
     public BaseResponse changeNotificationSetting(int userId, NotificationSettingRequestDto settingDto)
     {
         refreshLastOnlineTime(personRepository.findPersonById(userId));
@@ -117,9 +119,6 @@ public class NotificationServiceImpl implements NotificationService {
                 break;
         }
         notificationSettingsRepository.save(notificationSettings);
-        log.info("Changed notification " + settingDto.getNotificationType()
-                + " setting of user " + notificationSettings.getPerson().getFirstName() + " " + notificationSettings
-                .getPerson().getLastName());
         return ResponseFactory.responseOk();
     }
 
@@ -135,6 +134,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @MethodLogWithTime(userAuth = true, fullMessage = "Notification was marked as read")
     public BaseResponse markNotificationsAsRead(int userId, Integer notificationId, Boolean all)
     {
         Person person = personRepository.findPersonById(userId);
@@ -163,8 +163,24 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @MethodLogWithTime(fullMessage = "Notification created")
     public void addNotification(Person src, Person dst, NotificationCode code, String message)
     {
+        NotificationSettings settings = notificationSettingsRepository.findByPersonId(dst.getId());
+        boolean settingEnabled = false;
+        switch (code.name()) {
+            case "POST": settingEnabled = settings.isPostNotification(); break;
+            case "POST_COMMENT": settingEnabled = settings.isPostCommentNotification(); break;
+            case "COMMENT_COMMENT": settingEnabled = settings.isCommentCommentNotification(); break;
+            case "FRIEND_REQUEST": settingEnabled = settings.isFriendRequestNotification(); break;
+            case "FRIEND_BIRTHDAY": settingEnabled = settings.isFriendBirthdayNotification(); break;
+            case "MESSAGE": settingEnabled = settings.isMessageNotification(); break;
+            case "LIKE":
+            case "ACTIVATION":
+                settingEnabled = true; break;
+        }
+
+        if (settingEnabled && !src.getId().equals(dst.getId())) {
             Notification notification = Notification.builder()
                     .person(dst)
                     .entityAuthor(src)
@@ -174,6 +190,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .readStatus(ReadStatus.SENT)
                     .build();
             notificationRepository.save(notification);
+        }
     }
 
     public void getBirthdays(Person user)
