@@ -28,6 +28,7 @@ upload:
 hostname: localhost:8080
 
 project.name: Социальная сеть разработчиков
+recaptcha.secret: "6LfX1LYZAAAAAI4q-5R8HAy6vYvbf1gnAnUsFAw_"
 
 path.to.dblocation.city: 'src\main\resources\static\GeoLite2-City_20200616_2\GeoLite2-City.mmdb'
 
