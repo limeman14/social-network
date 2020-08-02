@@ -7,7 +7,7 @@
     <groupId>org.skillbox</groupId>
     <artifactId>SocialNetwork</artifactId>
     <packaging>pom</packaging>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <modules>
         <module>social-network-admin</module>
         <module>social-network</module>
