@@ -16,7 +16,7 @@
     <properties>
         <java.version>8</java.version>
         <jsonwebtoken.version>0.8.0</jsonwebtoken.version>
-        <springfox-swagger.version>2.9.2</springfox-swagger.version>
+        <springfox-swagger.version>2.10.0</springfox-swagger.version>
     </properties>
 
     <parent>
